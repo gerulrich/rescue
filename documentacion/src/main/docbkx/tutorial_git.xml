@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
+"http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd">
+<book lang="es">
+  <bookinfo>
+    <title>Tutorial de git</title>
+
+    <releaseinfo><?eval ${project.version}?></releaseinfo>
+
+    <authorgroup>
+      <author>
+        <firstname>German</firstname>
+	    <surname>Ulrich</surname>
+        <affiliation>81343</affiliation>
+      </author>
+    </authorgroup>
+
+    <legalnotice>
+      <para>Copies of this document may be made for your own use and for
+      distribution to others, provided that you do not charge any fee for such
+      copies and further provided that each copy contains this Copyright
+      Notice, whether distributed in print or electronically.</para>
+    </legalnotice>
+  </bookinfo>
+  
+  <chapter id="introduction">
+	<title>¿Que es git?</title>
+
+	<section id="docbook.and.maven">
+		<title>Git</title>
+		<para>
+			
+		</para>
+	</section>
+  </chapter>
+  
+  <chapter id="git.commands">
+	<title>Comandos b&aacute;sicos</title>
+
+	<section id="project.commands">
+		<title>Iniciar un proyecto</title>
+		<para>
+			<itemizedlist>
+				<listitem>
+					<para>
+						Crear un directorio para el proyecto:
+						<screen>mkdir myrpoject</screen>
+					</para>
+				</listitem>
+				<listitem>
+					<para>
+						Ir al directorio creado anteriormente:
+						<screen>cd myrpoject</screen>
+					</para>
+				</listitem>
+				<listitem>
+					<para>
+						Crear el repositorio con git:
+						<screen>git init .</screen>
+					</para>
+				</listitem>
+				<listitem>
+					<para>
+						Agregar algunos archivos al directorio y agregarlos al control de versiones:
+						<screen>git add .</screen>
+					</para>
+				</listitem>
+				<listitem>
+					<para>
+						Dar commit de los cambios:
+						<screen>git commit -m "commit inicial"</screen>
+					</para>
+				</listitem>
+			</itemizedlist>
+		</para>
+	</section>
+	
+	<section id="work.commands">
+		<title>Trabajar sobre el proyecto</title>
+		<para>
+			<itemizedlist>
+				<listitem>
+					<para>
+						Ver archivos que han cambiado:
+						<screen>git status</screen>
+					</para>
+				</listitem>
+				<listitem>
+					<para>
+						Ver los cambios en formato de parche:
+						<screen>git diff</screen>
+					</para>
+				</listitem>
+				<listitem>
+					<para>
+						Agregar archivos:
+						<screen>git add file1 file2 file3</screen>
+					</para>
+				</listitem>
+				<listitem>
+					<para>
+						Dar commit de los cambios:
+						<screen>git commit -m "commit con tales cambios"</screen>
+					</para>
+				</listitem>
+			</itemizedlist>
+		</para>
+	</section>
+	
+	<section id="work.revision.commands">
+		<title>Revisar el trabajo realizado</title>
+		<para>
+			<itemizedlist>
+				<listitem>
+					<para>
+						Ver el historial de cambios:
+						<screen>git log</screen>
+					</para>
+				</listitem>
+				<listitem>
+					<para>
+						Ver solo las ultimas n (ej. 3) revisiones:
+						<screen>git log -n3</screen>
+					</para>
+				</listitem>
+				<listitem>
+					<para>
+						Ver los cambios en forma detallada:
+						<screen>git log --stat --summary</screen>
+					</para>
+				</listitem>
+			</itemizedlist>
+		</para>
+	</section>
+	
+	<section id="correct.errors.commands">
+		<title>Corregir errores</title>
+		<para>
+			<itemizedlist>
+				<listitem>
+					<para>
+						Descartar todos los cambios hechos desde la última revisión:
+						<screen>git reset --hard</screen>
+					</para>
+				</listitem>
+				<listitem>
+					<para>
+						Descartar cambios en un archivo individual (actualizar a la ultima versión conocida):
+						<screen>git checkout archivo</screen>
+					</para>
+				</listitem>
+				<listitem>
+					<para>
+						Corrigiendo la descripción de la última revisión:
+						<screen>git commit --amend</screen>
+					</para>
+				</listitem>
+				<listitem>
+					<para>
+						Incluir algo que debió estar en la ultima revisión creada:
+						<screen><![CDATA[git reset --soft HEAD^
+git add olvidado1 olvidado2
+git commit]]></screen>
+					</para>
+				</listitem>
+			</itemizedlist>
+		</para>
+	</section>
+
+	<section id="work.remote.commands">
+		<title>Trabajando con un repositorio remoto</title>
+		<para>
+			<itemizedlist>
+				<listitem>
+					<para>
+						Crear un clon del repositorio remoto:
+						<screen>git clone git://servidor.com/ruta/al/proyecto.git</screen>
+					</para>
+				</listitem>
+				<listitem>
+					<para>
+						Agregar el origen remoto:
+						<screen>git remote add origin git://servidor.com/ruta/al/proyecto.git</screen>
+					</para>
+				</listitem>
+				<listitem>
+					<para>
+						Hacer cambios y agregar los archivos modificados a una nueva revisión:
+						<screen><![CDATA[git add archivo1 archivo1 carpeta1 carpeta2
+git commit -m "nueva revision con los cambios"]]></screen>
+					</para>
+				</listitem>
+				<listitem>
+					<para>
+						Enviar los cambios al repositorio remoto:
+						<screen>git push origin master</screen>
+					</para>
+				</listitem>
+				<listitem>
+					<para>
+						Obtener los cambios del repositorio remoto:
+						<screen>git pull</screen>
+					</para>
+				</listitem>				
+			</itemizedlist>
+		</para>
+	</section>
+	
+	<section id="branching.merging">
+		<title>Branching and merging</title>
+		<para>
+			<itemizedlist>
+				<listitem>
+					<para>
+						Crear un branch de la rama principal:
+						<screen>git branch nombre_del_branch</screen>
+					</para>
+				</listitem>
+				<listitem>
+					<para>
+						Mostrar una lista de todos los branches
+						<screen>git branch</screen>
+					</para>
+				</listitem>
+				<listitem>
+					<para>
+						Hacer un switch a otro brach
+						<screen>git checkout nombre del branch</screen>
+					</para>
+				</listitem>
+				<listitem>
+					<para>
+						Hacer un merge de la rama principal y un branch.
+						
+						<screen><![CDATA[git checkout master
+git merge nombre_del_branch
+git commit]]></screen>
+					</para>
+				</listitem>
+			</itemizedlist>
+		</para>
+	</section>	
+	
+	
+  </chapter>
+  
+  <chapter id="apendice">
+	<title>Apendice</title>
+
+	<section id="referencias">
+		<title>Referencias</title>
+		<para>
+			Este tutotiral fue escrito basandose en material encontrado en la red.
+		</para>
+		<para>
+			<itemizedlist>
+				<listitem>
+					<para>Mini tutorial de git: <ulink url="http://www.slideshare.net/gnrfan/minitutorial-de-git"></ulink>
+					por Antionio Ognio</para>
+				</listitem>
+			</itemizedlist>
+			<itemizedlist>
+				<listitem>
+					<para>Tutorial de git: <ulink url="http://www.rodolinux.com.ar/docs/Tutorial-de-GIT-Editado.pdf"></ulink></para>
+				</listitem>
+			</itemizedlist>			
+		</para>
+	</section>
+  </chapter>
+  
+</book>

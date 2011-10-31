@@ -1,0 +1,201 @@
+﻿<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>net.rescueapp</groupId>
+	<artifactId>rescue911</artifactId>
+    <version>0.2-SNAPSHOT</version>
+  </parent>
+	<artifactId>documentacion</artifactId>
+	<version>0.1-SNAPSHOT</version>
+	<packaging>pom</packaging>
+	<name>documentacion</name>
+	<url>http://cloud-engine.blogspot.com/</url>
+	<inceptionYear>2011</inceptionYear>
+	<organization>
+		<name>FIUBA</name>
+		<url>http://www.fi.uba.ar</url>
+	</organization>
+	<properties>
+		<docbook.source>${basedir}/src/main/docbkx</docbook.source>
+		<docbook.target>${project.build.directory}/docbkx</docbook.target>
+	</properties>
+	<profiles>
+		<profile>
+			<id>install</id>
+			<build>
+				<plugins>
+					<plugin>
+						<artifactId>maven-antrun-plugin</artifactId>
+						<executions>
+							<execution>
+								<phase>initialize</phase>
+								<configuration>
+									<tasks>
+										<echo>Downloading http://download.java.net/media/jai/builds/release/1_1_3/jai-1_1_3-lib.zip</echo>
+										<mkdir dir="target/" />
+										<get src="http://download.java.net/media/jai/builds/release/1_1_3/jai-1_1_3-lib.zip" dest="target/jai-1_1_3-lib.zip" />
+										<unzip src="target/jai-1_1_3-lib.zip" dest="target/" />
+										<echo>Please install both files by executing target/install.bat</echo>
+										<echo file="target/install.bat"><![CDATA[
+call mvn install:install-file -Dfile=jai-1_1_3\lib\jai_core.jar -DgroupId=javax.media -DartifactId=jai-core -Dversion=1.1.3 -Dpackaging=jar -DgeneratePom=true
+call mvn install:install-file -Dfile=jai-1_1_3\lib\jai_codec.jar -DgroupId=javax.media -DartifactId=jai-codec -Dversion=1.1.3 -Dpackaging=jar -DgeneratePom=true
+]]></echo>
+										<echo file="target/install.sh"><![CDATA[
+mvn install:install-file -Dfile=jai-1_1_3/lib/jai_core.jar -DgroupId=javax.media -DartifactId=jai-core -Dversion=1.1.3 -Dpackaging=jar -DgeneratePom=true
+mvn install:install-file -Dfile=jai-1_1_3/lib/jai_codec.jar -DgroupId=javax.media -DartifactId=jai-codec -Dversion=1.1.3 -Dpackaging=jar -DgeneratePom=true
+]]></echo>
+									</tasks>
+								</configuration>
+								<goals>
+									<goal>run</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+	<build>
+		<!--<defaultGoal>generate-resources</defaultGoal>-->
+		<plugins>
+			<plugin>
+				<groupId>com.agilejava.docbkx</groupId>
+				<artifactId>docbkx-maven-plugin</artifactId>
+				<version>2.0.7</version>
+				<executions>
+					<execution>
+						<id>produce pdf</id>
+						<goals>
+							<goal>generate-pdf</goal>
+						</goals>
+						<configuration>
+							<foCustomization>${basedir}/src/main/resources/xsl/fopdf.xsl</foCustomization>
+							<admonGraphics>${basedir}/src/main/resources/images/admons</admonGraphics>
+							<imgSrcPath>${basedir}/src/main/resources/images</imgSrcPath>
+							<!--<imgSrcPath>src/main/resources/images</imgSrcPath>-->
+							<targetDirectory>${docbook.target}/pdf</targetDirectory>
+						</configuration>
+						<phase>pre-site</phase>
+					</execution>
+<!--					<execution>
+						<id>produce single page html</id>
+						<goals>
+							<goal>generate-html</goal>
+						</goals>
+						<configuration>
+							<chunkedOutput>false</chunkedOutput>
+							<htmlCustomization>${docbook.source}/resources/xsl/html.xsl</htmlCustomization>
+							<targetDirectory>${docbook.target}/html-single</targetDirectory>
+							<postProcess>
+								<copy todir="${docbook.target}/html-single">
+									<fileset dir="${docbook.source}/resources">
+										<include name="**/*.css" />
+										<include name="**/*.png" />
+										<include name="**/*.gif" />
+										<include name="**/*.jpg" />
+									</fileset>
+								</copy>
+								<copy todir="${docbook.target}/html-single/images">
+									<fileset dir="${docbook.source}/reference/images">
+										<include name="**/*.*" />
+									</fileset>
+								</copy>
+							</postProcess>
+						</configuration>
+						<phase>generate-resources</phase>
+					</execution>
+					<execution>
+						<id>crea una pagina html para blogspot</id>
+						<goals>
+							<goal>generate-html</goal>
+						</goals>
+						<configuration>
+							<chunkedOutput>false</chunkedOutput>
+							<htmlStylesheet>http://www.springfuse.com/blog/docbook/html.css</htmlStylesheet>
+							<imgSrcPath>http://cloud-engine.blogspot.com//docbook/</imgSrcPath>
+							<htmlCustomization>${docbook.source}/resources/xsl/html-embeded.xsl</htmlCustomization>
+							<targetDirectory>${docbook.target}/html-embeded</targetDirectory>
+						</configuration>
+						<phase>pre-site</phase>
+					</execution>
+					<execution>
+						<id>produce muti-pages html</id>
+						<goals>
+							<goal>generate-html</goal>
+						</goals>
+						<configuration>
+							<chunkedOutput>true</chunkedOutput>
+							<htmlCustomization>src/docbkx/resources/xsl/html-chunk.xsl</htmlCustomization>
+							<targetDirectory>${docbook.target}/html</targetDirectory>
+							<postProcess>
+								<copy todir="${docbook.target}/html">
+									<fileset dir="${docbook.source}/resources">
+										<include name="**/*.css" />
+										<include name="**/*.png" />
+										<include name="**/*.gif" />
+										<include name="**/*.jpg" />
+									</fileset>
+								</copy>
+								<copy todir="${docbook.target}/html/images">
+									<fileset dir="${docbook.source}/reference/images">
+										<include name="**/*.*" />
+									</fileset>
+								</copy>
+							</postProcess>
+						</configuration>
+						<phase>generate-resources</phase>
+					</execution>-->
+				</executions>
+				<dependencies>
+					<dependency>
+						<groupId>org.docbook</groupId>
+						<artifactId>docbook-xml</artifactId>
+						<version>4.4</version>
+						<scope>runtime</scope>
+					</dependency>
+					<!--  image support for pdf production -->
+					<dependency>
+						<groupId>javax.media</groupId>
+						<artifactId>jai-core</artifactId>
+						<version>1.1.3</version>
+						<scope>runtime</scope>
+					</dependency>
+					<dependency>
+						<groupId>javax.media</groupId>
+						<artifactId>jai-codec</artifactId>
+						<version>1.1.3</version>
+						<scope>runtime</scope>
+					</dependency>
+				</dependencies>
+				<configuration>
+					<!-- <includes>index.xml</includes> -->
+					<htmlStylesheet>css/html.css</htmlStylesheet>
+					<xincludeSupported>true</xincludeSupported>
+					<sourceDirectory>${docbook.source}</sourceDirectory>
+					<imgSrcPath>../resources/</imgSrcPath>
+					<!-- use extensions -->
+					<useExtensions>1</useExtensions>
+					<highlightSource>1</highlightSource>
+					<highlightDefaultLanguage></highlightDefaultLanguage>
+					<!-- callouts -->
+					<calloutsExtension>1</calloutsExtension>
+					<entities>
+						<entity>
+							<name>version</name>
+							<value>${project.version}</value>
+						</entity>
+					</entities>
+				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<configuration>
+					<descriptorRefs>
+						<descriptorRef>src</descriptorRef>
+					</descriptorRefs>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>

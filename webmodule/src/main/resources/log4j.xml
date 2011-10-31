@@ -1,0 +1,42 @@
+﻿<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+
+<log4j:configuration>
+
+	<appender name="CONSOLE" class="org.apache.log4j.ConsoleAppender">
+		<layout class="org.apache.log4j.PatternLayout">
+			<param name="ConversionPattern" value="%d{HH:mm:ss.SSS} %p %C{1} - %m%n"/>
+		</layout>
+	</appender>
+
+	<category name="DataNucleus">
+		<priority value="error"/>
+		<appender-ref ref="CONSOLE"/>
+	</category>
+
+	<category name="org.springframework">
+		<priority value="error"/>
+		<appender-ref ref="CONSOLE"/>
+	</category>
+
+	<category name="org.tuckey">
+		<priority value="error"/>
+		<appender-ref ref="CONSOLE"/>
+	</category>	
+
+	<category name="warn">
+		<priority value="error"/>
+		<appender-ref ref="CONSOLE"/>
+	</category>
+
+	<category name="org.apache">
+		<priority value="error"/>
+		<appender-ref ref="CONSOLE"/>
+	</category>
+
+	<category name="net.cloudengine">
+		<priority value="debug"/>
+		<appender-ref ref="CONSOLE"/>
+	</category>
+
+</log4j:configuration>

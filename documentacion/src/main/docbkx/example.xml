@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
+"http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd">
+<book lang="es">
+  <bookinfo>
+    <title>Trabajo Profesional</title>
+
+    <releaseinfo><?eval ${project.version}?></releaseinfo>
+
+    <authorgroup>
+      <author>
+        <firstname>German</firstname>
+	    <surname>Ulrich</surname>
+        <affiliation>81343</affiliation>
+      </author>
+      <!-- <author>
+        <firstname>Otra</firstname>
+	    <surname>Persona</surname>
+        <affiliation>xxxxx</affiliation>
+      </author>-->  
+    </authorgroup>
+
+    <legalnotice>
+      <para>Copies of this document may be made for your own use and for
+      distribution to others, provided that you do not charge any fee for such
+      copies and further provided that each copy contains this Copyright
+      Notice, whether distributed in print or electronically.</para>
+    </legalnotice>
+  </bookinfo>
+  
+  <chapter id="introduction">
+	<title>Introduci&oacute;n</title>
+
+	<section id="docbook.and.maven">
+		<title>Docbook and maven</title>
+		<para>
+			I was
+			<ulink url="http://twitter.com/framiere/status/7411787250">looking</ulink>
+			for a maven plugin that produces documentation with syntax highlighting from
+			<ulink url="http://docbook.sourceforge.net/">docbook</ulink>
+			.
+		</para>
+	</section>
+  </chapter>
+
+  
+</book>

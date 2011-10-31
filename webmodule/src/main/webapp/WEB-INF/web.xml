@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app 
+    xmlns:xsi=          "http://www.w3.org/2001/XMLSchema-instance"
+    xmlns=              "http://java.sun.com/xml/ns/javaee"
+    xmlns:web=          "http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+    xsi:schemaLocation= "http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+    version="2.5">
+	<display-name>Rescue 911</display-name>
+
+	<context-param>
+		<param-name>contextInitializerClasses</param-name>
+		<param-value>net.cloudengine.api.CloudApplicationContextInitializer</param-value>
+	</context-param>
+	
+	<context-param>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>classpath:spring/spring-*.xml</param-value>
+	</context-param>
+
+	<!-- Enables Spring Security -->
+	<filter>
+		<filter-name>springSecurityFilterChain</filter-name>
+		<filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+	</filter>
+
+	<filter>
+        <description>Url rewrite engine actúa como mod_rewrite, ver http://tuckey.org/urlrewrite/,
+        y su archivo de configuración en WEB-INF/urlrewrite.xml</description>
+        <filter-name>UrlRewriteFilter</filter-name>
+        <filter-class>org.tuckey.web.filters.urlrewrite.UrlRewriteFilter</filter-class>
+        <init-param>
+            <param-name>statusPath</param-name>
+            <param-value>/admin/rewrite-status</param-value>
+        </init-param>
+		<init-param>
+			<param-name>logLevel</param-name>
+			<param-value>log4j</param-value>
+		</init-param>
+	</filter>
+
+	<filter>
+		<filter-name>encoding-filter</filter-name>
+		<filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+		<init-param>
+			<param-name>encoding</param-name>
+			<param-value>UTF-8</param-value>
+		</init-param>
+	</filter>
+
+	<filter-mapping>
+		<filter-name>springSecurityFilterChain</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+
+	<filter-mapping>
+		<filter-name>UrlRewriteFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+		<dispatcher>REQUEST</dispatcher>
+	</filter-mapping>
+
+	<listener>
+		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	</listener>
+
+	<servlet>
+        <description>Configuración para Spring MVC webapp servlet</description>
+        <servlet-name>springmvc</servlet-name>
+        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+        <init-param>
+            <param-name>contextConfigLocation</param-name>
+            <param-value>classpath*:spring/mvc-spring.xml</param-value>
+        </init-param>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>springmvc</servlet-name>
+        <url-pattern>/smvc/*</url-pattern>
+    </servlet-mapping>
+
+	<!-- Session -->
+    <session-config>
+        <!-- session timeout (in minutes) -->
+        <session-timeout>60</session-timeout>
+    </session-config>
+    <!-- Errors -->
+    <error-page>
+        <error-code>404</error-code>
+        <location>/WEB-INF/jsp/errors/404.jsp</location>
+    </error-page>
+    <error-page>
+        <exception-type>java.lang.Exception</exception-type>
+        <location>/WEB-INF/jsp/errors/uncaught-error.jsp</location>
+    </error-page>
+</web-app>

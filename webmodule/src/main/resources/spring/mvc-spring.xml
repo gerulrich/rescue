@@ -1,0 +1,107 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<beans 
+    xmlns               = "http://www.springframework.org/schema/beans"
+    xmlns:context       = "http://www.springframework.org/schema/context"
+    xmlns:mvc           = "http://www.springframework.org/schema/mvc"
+    xmlns:p             = "http://www.springframework.org/schema/p"
+    xmlns:security      = "http://www.springframework.org/schema/security"
+    xmlns:xsi           = "http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:tx            = "http://www.springframework.org/schema/tx"
+    xsi:schemaLocation  = "http://www.springframework.org/schema/beans 
+                           http://www.springframework.org/schema/beans/spring-beans-3.1.xsd    
+                           http://www.springframework.org/schema/context 
+                           http://www.springframework.org/schema/context/spring-context-3.1.xsd    
+                           http://www.springframework.org/schema/security 
+                           http://www.springframework.org/schema/security/spring-security-3.1.xsd    
+                           http://www.springframework.org/schema/mvc
+                           http://www.springframework.org/schema/mvc/spring-mvc-3.1.xsd
+                           http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.0.xsd">
+    
+    <!-- annotation scanning. busca en  los packages especificados en busca de beans de spring -->
+    <context:component-scan base-package="net.cloudengine.web,net.cloudengine.api,net.cloudengine.service"/>
+    
+<!--     <context:component-scan base-package="net.cloudfoundry.service"/> -->
+    
+    <bean class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping"/>
+	
+<!-- 	<bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter"> -->
+<!-- 		<property name="customArgumentResolvers"> -->
+<!-- 			<list> -->
+<!-- 				<bean class="net.cloudengine.web.servlet.SessionAttributeArgumentResolver"/> -->
+<!-- 				<bean class="net.cloudengine.web.servlet.CurrentUserArgumentResolver"/> -->
+<!-- 			</list> -->
+<!-- 		</property> -->
+<!-- 	</bean> -->
+    
+    <!-- enable annotation based controller. soporte para la anotation @Controller -->
+    <mvc:annotation-driven />
+	
+    <!-- add interceptors to the web controllers -->
+<!--     <mvc:interceptors> -->
+<!--        <bean class="net.cloudengine.web.interceptor.AccountContextInterceptor"/>-->
+<!--        <bean class="net.cloudengine.web.interceptor.HibernateFilterInterceptor"/>-->
+<!--         <bean class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor"/> -->
+<!--        <bean class="org.springframework.web.servlet.theme.ThemeChangeInterceptor"/>-->
+<!-- 		<bean class="net.cloudengine.web.servlet.NoCacheInterceptor"/> -->
+<!--     </mvc:interceptors> -->
+    
+    <bean class="org.springframework.aop.aspectj.annotation.AnnotationAwareAspectJAutoProxyCreator" />   
+    
+	<bean class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
+  		<property name="mediaTypes">
+    		<map>
+      			<entry key="html" value="text/html"/>
+      			<entry key="json" value="application/json"/>
+    		</map>
+  		</property>
+  		<property name="viewResolvers">
+    		<list>
+      			<bean class="org.springframework.web.servlet.view.BeanNameViewResolver"/>
+      			<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        			<property name="prefix" value="/WEB-INF/jsp/"/>
+        			<property name="suffix" value=".jsp"/>
+      			</bean>
+    		</list>
+  		</property>
+<!--   		<property name="defaultViews"> -->
+<!--     		<list> -->
+<!--       			<bean class="org.springframework.web.servlet.view.json.MappingJacksonJsonView" /> -->
+<!--     		</list> -->
+<!--   		</property> -->
+	</bean>
+	
+<!-- 	<bean id="tilesConfigurer" -->
+<!--      class="org.springframework.web.servlet.view.tiles2.TilesConfigurer"> -->
+<!--         <property name="definitions"> -->
+<!--             <list> -->
+<!--                 <value>/WEB-INF/tiles-defs/templates.xml</value> -->
+<!--             </list> -->
+<!--         </property> -->
+<!--     </bean> -->
+
+<!-- 	<bean id="messageSource" class="org.springframework.context.support.ReloadableResourceBundleMessageSource"> -->
+<!--          <property name="defaultEncoding" value="UTF-8"/> -->
+<!--          <property name="basename"> -->
+<!-- 			<value>classpath:i18n/messages</value> -->
+<!-- 		</property> -->
+<!-- 	</bean> -->
+    
+    <!-- Declare the Resolver -->
+<!--     <bean id="localeResolver" class="org.springframework.web.servlet.i18n.SessionLocaleResolver" /> -->
+    
+    <bean
+        class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerExceptionResolver" p:order="1">
+        <description>Enables @ExceptionHandler annotations</description>
+    </bean>
+    
+    <bean
+        class="org.springframework.web.servlet.mvc.annotation.ResponseStatusExceptionResolver" p:order="2">
+        <description>Enables @ResponseStatus annotations</description>
+    </bean>
+    
+    <bean
+        class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver"
+        p:defaultErrorView="errors/exception-caught" p:order="3" p:warnLogCategory="warn">
+        <description>When no @ExceptionHandler was found then map these exceptions to view names, set the default error</description>
+    </bean>
+</beans>

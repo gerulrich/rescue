@@ -1,0 +1,16 @@
+.settings
+webmodule/.settings/
+webmodule/release.properties
+release.properties
+pom.xml.releaseBackup
+webmodule/pom.xml.releaseBackup
+webmodule/target/
+shapefile/target
+utilities/target
+utilities/.settings
+target/
+documentacion/target
+webmodule/.classpath
+shapefile/.classpath
+documentacion/.classpath
+
