@@ -9,7 +9,6 @@
 	<configs>
 		<config>src/main/resources/spring/mvc-spring.xml</config>
 		<config>src/main/resources/spring/spring-base.xml</config>
-		<config>src/main/resources/spring/_spring-acl.xml</config>
 		<config>src/main/resources/spring/spring-cloud.xml</config>
 	</configs>
 	<configSets>
@@ -20,7 +19,6 @@
 			<configs>
 				<config>src/main/resources/spring/mvc-spring.xml</config>
 				<config>src/main/resources/spring/spring-base.xml</config>
-				<config>src/main/resources/spring/_spring-acl.xml</config>
 			</configs>
 			<profiles>
 			</profiles>
