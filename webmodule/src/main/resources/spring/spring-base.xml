@@ -9,6 +9,8 @@
                         http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd
                         http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.1.xsd">
 
+		
+		<context:annotation-config />
 
 		<bean class="net.cloudengine.service.ConfigurationServiceImpl" autowire="byType">
 			<property name="version" value="${project.version}" />
@@ -27,6 +29,10 @@
 			<constructor-arg ref="mongoDbFactory"></constructor-arg>
 			<constructor-arg type="java.lang.Class" value="net.cloudengine.service.auth.MongoRememberMeToken"></constructor-arg>
 			<constructor-arg ref="morphia"></constructor-arg>
+		</bean>
+		
+		<bean id="appListener" class="net.cloudengine.AppListener">
+			<constructor-arg ref="userStore"></constructor-arg>
 		</bean>
 		
 <!-- 	<bean class="net.cloudengine.util.MogoPostProcessor"> -->
