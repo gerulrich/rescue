@@ -9,7 +9,7 @@
 
 	<context-param>
 		<param-name>contextInitializerClasses</param-name>
-		<param-value>net.cloudengine.api.CloudApplicationContextInitializer</param-value>
+		<param-value>net.cloudengine.CloudApplicationContextInitializer</param-value>
 	</context-param>
 	
 	<context-param>

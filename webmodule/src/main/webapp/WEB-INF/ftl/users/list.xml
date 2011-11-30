@@ -1,0 +1,116 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>[@spring.message 'home.title'/]</title>
+[@widget.css/]
+</head>
+<body>
+<div class="pagetop">
+	<div class="head pagesize"> <!-- *** head layout *** -->
+		<div class="head_top">
+			<div class="topbuts">
+				<ul class="clear">
+<!-- 				<li><a href="#">View Site</a></li> -->
+<!-- 				<li><a href="#">Messages</a></li> -->
+<!-- 				<li><a href="#">Settings</a></li> -->
+					<li><a href="[@spring.url '/j_spring_security_logout' /]" class="red">[@spring.message "home.logout"/]</a></li>
+				</ul>
+				<div class="user clear">[@widget.userinfo /]</div>
+			</div>
+
+			<div class="logo clear">[@widget.logo /]</div>
+		</div>
+		<div class="menu">[@widget.menu /]</div>
+	</div>
+</div>
+
+<div class="main pagesize"> <!-- *** mainpage layout *** -->
+	<div class="main-wrap">
+		<div class="page clear">
+			
+			<!-- CONTENT BOX - DATATABLE -->
+			<div class="content-box">
+			<div class="box-body">
+				<div class="box-header clear">
+					<ul class="tabs clear">
+<!-- 						<li><a href="#data-table">JS plugin</a></li> -->
+						<li><a href="#table">Table only</a></li>
+					</ul>
+					<h2>Usuarios</h2>
+				</div>
+
+				<div class="box-wrap clear">
+					<div id="table">
+						<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed in porta lectus. Maecenas dignissim enim quis ipsum mattis aliquet. Maecenas id velit et elit gravida bibendum. Duis nec rutrum lorem.</p> 
+						<form method="post" action="#">
+						<table class="style1">
+							<thead>
+								<tr>
+									<th>OID</th>
+									<th>Nombre</th>
+									<th>E-mail</th>
+									<th>Habilitado</th>
+									<th>Acciones</th>
+								</tr>
+							</thead>
+							<tbody>
+								[#list users.list as user]
+								<tr>
+									<td>${user.id}</td>
+									<td>${user.displayName}</td>
+									<td>${user.username}</td>
+									<td>[#if user.account.enabled]Yes[#else]No[/#if]</td>
+									<td>
+										[@widget.detail "/admin/user/show/${user.id}"/]
+										[@widget.edit "/admin/user/${user.id}"/]
+										[@widget.delete "/admin/user/${user.id}"/]
+									</td>
+								</tr>
+								[/#list]
+							</tbody>
+						</table>
+
+
+						<div class="tab-footer clear">
+<!-- 							<div class="fl"> -->
+<!-- 								<select name="dropdown" class="fl-space"> -->
+<!-- 									<option value="option1">choose action...</option> -->
+<!-- 									<option value="option2">Edit</option> -->
+<!-- 									<option value="option3">Delete</option> -->
+<!-- 								</select> -->
+<!-- 								<input type="submit" value="Apply" id="submit2" class="button fl-space" /> -->
+<!-- 							</div> -->
+							<div class="pager fr">
+								<span class="nav">
+									<a href="[@spring.url '/admin/users/1/${users.pageSize}'/]" class="first" title="first page"><span>First</span></a>
+									<a href="#" class="previous" title="previous page"><span>Previous</span></a>
+								</span>
+								<span class="pages">
+									<a href="#" title="page 1" class="active"><span>1</span></a>
+									<a href="#" title="page 2"><span>2</span></a>
+									<a href="#" title="page 3"><span>3</span></a>
+									<a href="#" title="page 4"><span>4</span></a>
+								</span>
+								<span class="nav">
+									<a href="#" class="next" title="next page"><span>Next</span></a>
+									<a href="[@spring.url '/admin/users/${users.totalPages}/${users.pageSize}'/]" class="last" title="last page"><span>Last</span></a>
+								</span>
+							</div>
+						</div>
+						</form>
+					</div><!-- /#table -->
+				</div><!-- end of box-wrap -->
+			</div> <!-- end of box-body -->
+			</div> <!-- end of content-box -->			
+			    
+		</div><!-- end of page -->
+	</div>
+</div>
+
+<div class="footer">[@widget.footer/]</div>
+[@widget.scripts/]
+</body>
+</html>
+
+
+<html>

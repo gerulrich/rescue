@@ -27,8 +27,4 @@ public class ConfigController {
 		return "services/ppp";
 	}
 	
-//	@RequestMapping(value="/cloud", method=RequestMethod.GET)
-//	public String ppp(Model model) {
-//		return "services/p";
-//	}
 }

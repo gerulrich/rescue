@@ -1,28 +1,24 @@
 package net.cloudengine.service.auth;
 
-import net.cloudengine.api.Datastore;
-import net.cloudengine.api.Query;
 import net.cloudengine.model.auth.User;
 
-import org.bson.types.ObjectId;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 public class UserDetailsServiceImpl implements UserDetailsService {
 	
-	Datastore<User, ObjectId> ds;
+	UserService userService;
 	
-	public UserDetailsServiceImpl(Datastore<User, ObjectId> ds) {
+	public UserDetailsServiceImpl(UserService userService) {
 		super();
-		this.ds = ds;
+		this.userService = userService;
 	}
 
 	@Override
 	public UserDetails loadUserByUsername(String username) {
 		try {
-			Query<User> q = ds.createQuery().field("username").eq(username);
-			User ud = q.get();
+			User ud = userService.getByUsername(username);
 			if (ud == null) {
 				throw new UsernameNotFoundException("No matching account");
 			}

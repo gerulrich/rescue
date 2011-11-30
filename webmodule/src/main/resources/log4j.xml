@@ -9,7 +9,7 @@
 		</layout>
 	</appender>
 
-	<category name="DataNucleus">
+	<category name="freemarker.cache">
 		<priority value="error"/>
 		<appender-ref ref="CONSOLE"/>
 	</category>

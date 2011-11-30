@@ -1,8 +1,8 @@
 package net.cloudengine.web.map;
 
 public class Tile {
-	private final String key;
-	public final int x, y, z;
+	private String key;
+	private int x, y, z;
 
 	public Tile(String key, int x, int y, int z) {
 		this.key = key;

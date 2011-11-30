@@ -8,5 +8,7 @@ public interface UserService {
 
 	@PreAuthorize("hasRole('ROLE_ADMIN')")
 	User get(Long id);
+	
+	User getByUsername(String username);
 
 }

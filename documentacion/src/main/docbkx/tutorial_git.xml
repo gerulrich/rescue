@@ -252,7 +252,18 @@ git commit]]></screen>
 		<para>
 			Este tutotiral fue escrito basandose en material encontrado en la red.
 		</para>
+		
+		
+		
+		
 		<para>
+			<itemizedlist>
+				<listitem>
+					<para>Manual de referencia de git: 
+						<ulink url="http://gitref.org/"></ulink>
+					</para>
+				</listitem>
+			</itemizedlist>		
 			<itemizedlist>
 				<listitem>
 					<para>Mini tutorial de git: <ulink url="http://www.slideshare.net/gnrfan/minitutorial-de-git"></ulink>

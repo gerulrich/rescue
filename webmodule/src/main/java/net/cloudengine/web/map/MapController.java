@@ -8,6 +8,8 @@ import java.net.URL;
 
 import net.cloudengine.maps.GoogleMapsTileServer;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,15 +21,17 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @Controller
 public class MapController {
 	
+	private static Logger logger = LoggerFactory.getLogger(MapController.class);
 	private static final String URI = "/tiles/{zoom}/{x}/{y}";
 	
-	// zoom 16
-	// x 22092
-	// y 39464
+	// zoom 16, x 22092, y 39464
+	
 	
 	@RequestMapping(value = URI, method = RequestMethod.GET)
 	public ResponseEntity<byte[]> tile(@PathVariable("zoom") int zoom, @PathVariable("x") int x, @PathVariable("y") int y) {
-		System.out.println("Buscando tile");
+		
+		logger.debug("Buscando tile, zoom = {}, x = {}, y = {}", new Object[] {zoom, x, y});
+		
 		TileServer server = new GoogleMapsTileServer();
 		String url = server.tileUrl(zoom, x, y);
 		

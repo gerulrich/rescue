@@ -35,22 +35,7 @@
 			<constructor-arg ref="userStore"></constructor-arg>
 		</bean>
 		
-<!-- 	<bean class="net.cloudengine.util.MogoPostProcessor"> -->
-<!-- 		<constructor-arg ref="morphia"></constructor-arg> -->
-<!-- 	</bean> -->
-    
-<!--     <bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl"> -->
-<!-- 		<property name="host" value="${mail.host}"/> -->
-<!-- 		<property name="port" value="${mail.port}"/> -->
-<!--     	<property name="username" value="${mail.username}" /> -->
-<!--     	<property name="password" value="${mail.password}" /> -->
-<!--     	<property name="javaMailProperties"> -->
-<!--         <props> -->
-<!--             <prop key="mail.smtp.auth">${mail.smtp.auth}</prop> -->
-<!--             <prop key="mail.smtps.starttls.enable">true</prop> -->
-<!-- 			<prop key="mail.smtps.debug">true</prop> -->
-<!--         </props> -->
-<!--     </property> -->
-<!-- 	</bean> -->
-	
+		<context:component-scan base-package="net.cloudengine.service"/>
+		<context:component-scan base-package="net.cloudengine.api"/>
+		
 </beans>

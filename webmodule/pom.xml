@@ -1,29 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-  <modelVersion>4.0.0</modelVersion>
-  
-  <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-  <!--                           INFORMATIONS                          -->
-  <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-  <parent>
-    <groupId>net.rescueapp</groupId>
-	<artifactId>rescue911</artifactId>
-    <version>0.2-SNAPSHOT</version>
-  </parent>
-  <artifactId>webmodule</artifactId>
-  <name>webmodule</name>
-  <packaging>war</packaging>
-  <url>http://maven.apache.org</url>
+	<modelVersion>4.0.0</modelVersion>
 
-  <repositories>
-  	<repository>
-  		<id>morphia</id>
-  		<url>http://morphia.googlecode.com/svn/mavenrepo/</url>
-   	</repository>
-   	
-   	
-   	
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- INFORMATIONS -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<parent>
+		<groupId>net.rescueapp</groupId>
+		<artifactId>rescue911</artifactId>
+		<version>0.2-SNAPSHOT</version>
+	</parent>
+	<artifactId>webmodule</artifactId>
+	<name>webmodule</name>
+	<packaging>war</packaging>
+	<url>http://maven.apache.org</url>
+
+	<repositories>
+		<repository>
+			<id>morphia</id>
+			<url>http://morphia.googlecode.com/svn/mavenrepo/</url>
+		</repository>
+
 		<!-- For developing against latest Spring milestones -->
 		<repository>
 			<id>org.springframework.maven.milestone</id>
@@ -33,323 +32,346 @@
 				<enabled>false</enabled>
 			</snapshots>
 		</repository>
-	
-   	
-   	
-  </repositories>
-  
-  <pluginRepositories>
-    <pluginRepository>
-        <id>repository.springframework.maven.milestone</id>
-        <name>Spring Framework Maven Milestone Repository</name>
-        <url>http://maven.springframework.org/milestone</url>
-    </pluginRepository>  
-  </pluginRepositories>
-  
-  <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-  <!--                           DEPENDENCIAS                          -->
-  <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-  <dependencies>
-	<!-- ~~~~~~~~~~~~~~~~~ SPRINGFRAMEWORK ~~~~~~~~~~~~~~~~~  -->
-	<dependency>
+
+	</repositories>
+
+	<pluginRepositories>
+		<pluginRepository>
+			<id>repository.springframework.maven.milestone</id>
+			<name>Spring Framework Maven Milestone Repository</name>
+			<url>http://maven.springframework.org/milestone</url>
+		</pluginRepository>
+	</pluginRepositories>
+
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<!-- DEPENDENCIAS -->
+	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+	<dependencies>
+		<!-- ~~~~~~~~~~~~~~~~~ SPRINGFRAMEWORK ~~~~~~~~~~~~~~~~~ -->
+		<dependency>
 			<groupId>org.cloudfoundry</groupId>
 			<artifactId>cloudfoundry-runtime</artifactId>
 			<version>${org.cloudfoundry-version}</version>
 		</dependency>
-	<dependency>
-		<groupId>org.springframework</groupId>
-		<artifactId>spring-core</artifactId>
-		<version>${spring.version}</version>
-		<exclusions>
-			<exclusion>
-				<groupId>commons-logging</groupId>
-				<artifactId>commons-logging</artifactId>
-			</exclusion>
-		</exclusions>
-	</dependency>
-	<dependency>
-		<groupId>org.springframework</groupId>
-		<artifactId>spring-web</artifactId>
-		<version>${spring.version}</version>
-	</dependency>
-<!-- 	<dependency> -->
-<!-- 		<groupId>org.springframework</groupId> -->
-<!-- 		<artifactId>spring-orm</artifactId> -->
-<!-- 		<version>${spring.version}</version> -->
-<!-- 	</dependency> -->
-	<dependency>
-		<groupId>org.springframework</groupId>
-		<artifactId>spring-context-support</artifactId>
-		<version>${spring.version}</version>
-	</dependency>
-	<dependency>
-		<groupId>org.springframework</groupId>
-		<artifactId>spring-webmvc</artifactId>
-		<version>${spring.version}</version>
-	</dependency>
-	<dependency>
-		<groupId>org.springframework</groupId>
-		<artifactId>spring-aspects</artifactId>
-		<version>${spring.version}</version>
-	</dependency>
-	<dependency>
-		<groupId>org.springframework.security</groupId>
-		<artifactId>spring-security-core</artifactId>
-		<version>${spring.version}</version>
-	</dependency>
-	<dependency>
-		<groupId>org.springframework.security</groupId>
-		<artifactId>spring-security-config</artifactId>
-		<version>${spring.version}</version>
-	</dependency>
-	<dependency>
-		<groupId>org.springframework.security</groupId>
-		<artifactId>spring-security-web</artifactId>
-		<version>${spring.version}</version>
-	</dependency>
-	<dependency>
-		<groupId>org.springframework.security</groupId>
-		<artifactId>spring-security-taglibs</artifactId>
-		<version>${spring.version}</version>
-	</dependency>
-	<dependency>
-		<groupId>org.springframework</groupId>
-		<artifactId>spring-test</artifactId>
-		<version>${spring.version}</version>
-		<scope>test</scope>
-	</dependency>
-	<!-- ~~~~~~~~~~~~~~~~~~~~~ SERVLET ~~~~~~~~~~~~~~~~~~~~~  -->
-	<dependency>
-		<groupId>javax.servlet</groupId>
-		<artifactId>jstl</artifactId>
-		<version>1.2</version>
-	</dependency>
-	<dependency>
-		<groupId>taglibs</groupId>
-		<artifactId>standard</artifactId>
-		<version>1.1.2</version>
-	</dependency>
-	<!-- ~~~~~~~~~~~~~~~~~ OTRAS DEPENDENCIAS ~~~~~~~~~~~~~~  -->
-	<dependency>
-		<groupId>org.codehaus.groovy</groupId>
-		<artifactId>groovy-all</artifactId>
-		<version>${groovy-version}</version>
-	</dependency>
-	<dependency>
-		<groupId>org.tuckey</groupId>
-		<artifactId>urlrewritefilter</artifactId>
-		<version>3.1.0</version>
-	</dependency>
-	<dependency>
-		<groupId>org.mongodb</groupId>
-		<artifactId>mongo-java-driver</artifactId>
-		<version>2.5</version>
-	</dependency>
-	
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-core</artifactId>
+			<version>${spring.version}</version>
+			<exclusions>
+				<exclusion>
+					<groupId>commons-logging</groupId>
+					<artifactId>commons-logging</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-web</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<!-- <dependency> -->
+		<!-- <groupId>org.springframework</groupId> -->
+		<!-- <artifactId>spring-orm</artifactId> -->
+		<!-- <version>${spring.version}</version> -->
+		<!-- </dependency> -->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context-support</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-webmvc</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-aspects</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-core</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-config</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-web</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-taglibs</artifactId>
+			<version>${spring.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-test</artifactId>
+			<version>${spring.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<!-- ~~~~~~~~~~~~~~~~~~~~~ SERVLET ~~~~~~~~~~~~~~~~~~~~~ -->
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>jstl</artifactId>
+			<version>1.2</version>
+		</dependency>
+		<dependency>
+			<groupId>taglibs</groupId>
+			<artifactId>standard</artifactId>
+			<version>1.1.2</version>
+		</dependency>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>jsp-api</artifactId>
+			<version>2.0</version>
+			<scope>provided</scope>
+		</dependency>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<version>2.5</version>
+			<scope>provided</scope>
+		</dependency>
+		<!-- ~~~~~~~~~~~~~~~~~ OTRAS DEPENDENCIAS ~~~~~~~~~~~~~~ -->
+		<dependency>
+			<groupId>org.codehaus.groovy</groupId>
+			<artifactId>groovy-all</artifactId>
+			<version>${groovy-version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.tuckey</groupId>
+			<artifactId>urlrewritefilter</artifactId>
+			<version>3.1.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.mongodb</groupId>
+			<artifactId>mongo-java-driver</artifactId>
+			<version>2.5</version>
+		</dependency>
 		<dependency>
 			<groupId>org.springframework.data</groupId>
 			<artifactId>spring-data-mongodb</artifactId>
 			<version>1.0.0.M3</version>
-		</dependency>	
+		</dependency>
+		<dependency>
+			<groupId>com.google.code.morphia</groupId>
+			<artifactId>morphia</artifactId>
+			<version>0.99</version>
+		</dependency>
+		<dependency>
+			<groupId>org.freemarker</groupId>
+			<artifactId>freemarker</artifactId>
+			<version>2.3.18</version>
+		</dependency>
+		<dependency>
+			<groupId>javax.validation</groupId>
+			<artifactId>validation-api</artifactId>
+			<version>1.0.0.GA</version>
+		</dependency>
 	
-	<dependency>
-		<groupId>com.google.code.morphia</groupId>
-		<artifactId>morphia</artifactId>
-		<version>0.99</version>
-	</dependency>	
-  </dependencies>
+		<dependency>
+			<groupId>org.apache.bval</groupId>
+			<artifactId>bval-jsr303</artifactId>
+			<version>0.2-incubating</version>
+		</dependency>		
+	</dependencies>
 
-  <build>
-	<finalName>webmodule</finalName>
-	<resources>
-		<resource>
-			<directory>${basedir}/src/main/resources</directory>
-			<includes>
-				<include>**/*.*</include>
-			</includes>
-			<filtering>true</filtering>
-		</resource>
-		
-		<resource>
-			<directory>${basedir}/src/test/resources</directory>
-			<includes>
-				<include>**/*.*</include>
-			</includes>
-		</resource>
+	<build>
+		<finalName>webmodule</finalName>
+		<resources>
+			<resource>
+				<directory>${basedir}/src/main/resources</directory>
+				<includes>
+					<include>**/*.*</include>
+				</includes>
+				<filtering>true</filtering>
+			</resource>
 
-		<resource>
-			<directory>${basedir}/src/main/java</directory>
-			<includes>
-				<include>**/*.xml</include>
-				<include>**/*.properties</include>
-			</includes>
-		</resource>
-		
-		<resource>
-			<directory>${basedir}/src/main/groovy</directory>
-			<includes>
-				<include>**/*.xml</include>
-			</includes>
-		</resource>
-		
-	</resources>
+			<resource>
+				<directory>${basedir}/src/test/resources</directory>
+				<includes>
+					<include>**/*.*</include>
+				</includes>
+			</resource>
 
-  <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-  <!--                              PLUGINS                            -->
-  <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-	<plugins>
-		
-		<plugin>
-			<groupId>org.apache.maven.plugins</groupId>
-			<artifactId>maven-resources-plugin</artifactId>
-			<version>2.4.3</version>
-			<configuration>
-				<encoding>UTF-8</encoding>
-			</configuration>
-		</plugin>
-		
-		<plugin>
-			<groupId>org.apache.maven.plugins</groupId>
-			<artifactId>maven-compiler-plugin</artifactId>
-			<version>2.3.2</version>
-			<configuration>
-				<source>${jdk-version}</source>
-				<target>${jdk-version}</target>
-				<encoding>UTF-8</encoding>
-				<processor>org.datanucleus.enhancer.EnhancerProcessor</processor>
-			</configuration>
-		</plugin>
-		
-		<plugin>
-			<groupId>org.codehaus.mojo</groupId>
-			<artifactId>aspectj-maven-plugin</artifactId>
-			<version>1.3.1</version>
-			<configuration>
-				<source>1.6</source>
-				<complianceLevel>1.6</complianceLevel>
-				<verbose>true</verbose>
-				<showWeaveInfo>true</showWeaveInfo>
-				<outxml>true</outxml>
-<!-- 				<excludes>net.cloudengine.model</excludes> -->
-				
-<!-- 				<aspectLibraries> -->
-<!-- 					<aspectLibrary> -->
-<!-- 						<groupId>org.springframework</groupId> -->
-<!-- 						<artifactId>spring-aspects</artifactId> -->
-<!-- 					</aspectLibrary> -->
-<!-- 				</aspectLibraries> -->
-			</configuration>
-			<executions>
-				<execution>
-					<goals>
-						<goal>compile</goal>
-					</goals>
-				</execution>
-			</executions>
-		</plugin>
+			<resource>
+				<directory>${basedir}/src/main/java</directory>
+				<includes>
+					<include>**/*.xml</include>
+					<include>**/*.properties</include>
+				</includes>
+			</resource>
 
-		<plugin>
-			<groupId>org.apache.maven.plugins</groupId>
-			<artifactId>maven-war-plugin</artifactId>
-			<version>2.1.1</version>
-			<configuration>
-				<failOnMissingWebXml>true</failOnMissingWebXml>
-				<webXml>src/main/webapp/WEB-INF/web.xml</webXml>
-				<webResources>
-					<resource>
-						<directory>src/main/webapp</directory>
-						<filtering>true</filtering>
-						<includes>
-							<include>**/*.xml</include>
-						</includes>
-					</resource>
-				</webResources>
-			</configuration>
-		</plugin>
-		
-		<plugin>
-			<groupId>org.codehaus.groovy.maven</groupId>
-			<artifactId>gmaven-plugin</artifactId>
-			<version>1.0</version>
-			<executions>
-				<execution>
-					<goals>
-						<goal>generateStubs</goal>
-						<goal>compile</goal>
-						<goal>generateTestStubs</goal>
-						<goal>testCompile</goal>
-					</goals>
-				</execution>
-			</executions>
-		</plugin>
-		
-		
-		<plugin>
-			<groupId>org.cloudfoundry</groupId>
-			<artifactId>cf-maven-plugin</artifactId>
-			<version>1.0.0.M1</version>
-			<configuration>
-                    <server>mycloudfoundry-instance</server>
-                    <target>http://api.cloudfoundry.com</target>
-                    <url>http://rescue.cloudfoundry.com</url>
-                    <memory>256</memory>
-        	</configuration>
-		</plugin>
-		
-		
-	</plugins>
-	
-	
-	<pluginManagement>
-        <plugins>
-            <!--This plugin's configuration is used to store Eclipse 
-                m2e settings only. It has no influence on the Maven build itself. -->
-            <plugin>
-                <groupId>org.eclipse.m2e</groupId>
-                <artifactId>lifecycle-mapping</artifactId>
-                <version>1.0.0</version>
-                <configuration>
-                    <lifecycleMappingMetadata>
-                        <pluginExecutions>
-                            <pluginExecution>
-                                <pluginExecutionFilter>
-                                    <groupId>org.codehaus.groovy.maven</groupId>
-                                    <artifactId>gmaven-plugin</artifactId>
-                                    <versionRange>[1.0,)</versionRange>
-                                    <goals>
-										<goal>generateStubs</goal>
-										<goal>compile</goal>
-										<goal>generateTestStubs</goal>
-										<goal>testCompile</goal>
-                                    </goals>
-                                </pluginExecutionFilter>
-                                <action>
-                                    <ignore />
-                                </action>
-                            </pluginExecution>
-							<pluginExecution>
-                                <pluginExecutionFilter>
-									<groupId>org.codehaus.mojo</groupId>
-									<artifactId>aspectj-maven-plugin</artifactId>
-                                    <versionRange>[1.3,)</versionRange>
-                                    <goals>
-										<goal>compile</goal>
-                                    </goals>
-                                </pluginExecutionFilter>
-                                <action>
-                                    <ignore />
-                                </action>
-                            </pluginExecution>                            
-                        </pluginExecutions>
-                    </lifecycleMappingMetadata>
-                </configuration>
-            </plugin>
-            
-          
-            
-        </plugins>
-    </pluginManagement>
-	
-  </build>
+			<resource>
+				<directory>${basedir}/src/main/groovy</directory>
+				<includes>
+					<include>**/*.xml</include>
+				</includes>
+			</resource>
+
+		</resources>
+
+		<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+		<!-- PLUGINS -->
+		<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
+		<plugins>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>2.4.3</version>
+				<configuration>
+					<encoding>UTF-8</encoding>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.3.2</version>
+				<configuration>
+					<source>${jdk-version}</source>
+					<target>${jdk-version}</target>
+					<encoding>UTF-8</encoding>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>aspectj-maven-plugin</artifactId>
+				<version>1.3.1</version>
+				<configuration>
+					<source>1.6</source>
+					<complianceLevel>1.6</complianceLevel>
+					<verbose>true</verbose>
+					<showWeaveInfo>true</showWeaveInfo>
+					<outxml>true</outxml>
+					<!-- <excludes>net.cloudengine.model</excludes> -->
+
+					<!-- <aspectLibraries> -->
+					<!-- <aspectLibrary> -->
+					<!-- <groupId>org.springframework</groupId> -->
+					<!-- <artifactId>spring-aspects</artifactId> -->
+					<!-- </aspectLibrary> -->
+					<!-- </aspectLibraries> -->
+				</configuration>
+				<executions>
+					<execution>
+						<goals>
+							<goal>compile</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-war-plugin</artifactId>
+				<version>2.1.1</version>
+				<configuration>
+					<failOnMissingWebXml>true</failOnMissingWebXml>
+					<webXml>src/main/webapp/WEB-INF/web.xml</webXml>
+					<webResources>
+						<resource>
+							<directory>src/main/webapp</directory>
+							<filtering>true</filtering>
+							<includes>
+								<include>**/*.xml</include>
+							</includes>
+						</resource>
+					</webResources>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.codehaus.groovy.maven</groupId>
+				<artifactId>gmaven-plugin</artifactId>
+				<version>1.0</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>generateStubs</goal>
+							<goal>compile</goal>
+							<goal>generateTestStubs</goal>
+							<goal>testCompile</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+
+			<plugin>
+				<groupId>org.cloudfoundry</groupId>
+				<artifactId>cf-maven-plugin</artifactId>
+				<version>1.0.0.M1</version>
+				<configuration>
+					<server>mycloudfoundry-instance</server>
+					<target>http://api.cloudfoundry.com</target>
+					<url>http://rescue.cloudfoundry.com</url>
+					<memory>256</memory>
+				</configuration>
+			</plugin>
+
+
+		</plugins>
+
+
+		<pluginManagement>
+			<plugins>
+				<!--This plugin's configuration is used to store Eclipse m2e settings 
+					only. It has no influence on the Maven build itself. -->
+				<plugin>
+					<groupId>org.eclipse.m2e</groupId>
+					<artifactId>lifecycle-mapping</artifactId>
+					<version>1.0.0</version>
+					<configuration>
+						<lifecycleMappingMetadata>
+							<pluginExecutions>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>org.codehaus.groovy.maven</groupId>
+										<artifactId>gmaven-plugin</artifactId>
+										<versionRange>[1.0,)</versionRange>
+										<goals>
+											<goal>generateStubs</goal>
+											<goal>compile</goal>
+											<goal>generateTestStubs</goal>
+											<goal>testCompile</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore />
+									</action>
+								</pluginExecution>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>org.codehaus.mojo</groupId>
+										<artifactId>aspectj-maven-plugin</artifactId>
+										<versionRange>[1.3,)</versionRange>
+										<goals>
+											<goal>compile</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore />
+									</action>
+								</pluginExecution>
+							</pluginExecutions>
+						</lifecycleMappingMetadata>
+					</configuration>
+				</plugin>
+
+
+
+			</plugins>
+		</pluginManagement>
+
+	</build>
 
 </project>
