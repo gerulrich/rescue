@@ -1,6 +1,7 @@
 package net.cloudengine.service.auth;
 
 import net.cloudengine.model.auth.User;
+import net.cloudengine.util.Assert;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -19,6 +20,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
 	@Override
 	public UserDetails loadUserByUsername(String username) {
+		Assert.notNull(username, "El parámetro username no puede ser null");
 		try {
 			User ud = userService.getByUsername(username);
 			if (ud == null) {
