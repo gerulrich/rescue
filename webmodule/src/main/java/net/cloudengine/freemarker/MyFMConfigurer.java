@@ -1,4 +1,4 @@
-package net.cloudengine.groovyx;
+package net.cloudengine.freemarker;
 
 import org.springframework.web.servlet.view.freemarker.FreeMarkerConfigurer;
 

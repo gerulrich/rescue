@@ -65,7 +65,7 @@
 <!--   		</property> -->
 	</bean>
 	
-	<bean id="freemarkerConfig" class="net.cloudengine.groovyx.MyFMConfigurer">
+	<bean id="freemarkerConfig" class="net.cloudengine.freemarker.MyFMConfigurer">
     	<property name="templateLoaderPath" value="/WEB-INF/ftl/"/>
     	<property name="defaultEncoding" value="UTF-8"></property>
 	</bean>
