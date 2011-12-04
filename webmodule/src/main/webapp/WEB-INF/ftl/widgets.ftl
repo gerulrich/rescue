@@ -22,8 +22,6 @@
 <#macro menu>
 <ul class="clear">
 	<li><a href="<@spring.url '/'/>">Dashboard</a></li>
-	<li><a href="<@spring.url '/config.html'/>">Configuración</a><li>
-	
 	<li>
 		<a href="#">Administracion</a>
 		<ul>
@@ -40,39 +38,13 @@
 </ul>
 </#macro>
 
-<#macro footer>
-	<div class="pagesize clear">
-		<p class="bt-space15"><span class="copy"><strong>© 2010 Copyright by <a href="http://www.ait.sk/">Affinity Information Technology.</a></strong></span> Powered by <a href="#">TERMINATOR ADMIN.</a></p>
-		<p><a href="<@spring.url '/home.html?locale=es'/>" />Español</p> </p>
-		<img src="<@spring.url '/static/images/logo_earth_bw50.png'/>" alt="" class="block center" />
-	</div>
-</#macro>
-
 <#macro loginError>
 	<@spring.bind "loginForm" />
 	<#if spring.status.error>
 	<div id="login_error">
 		<strong>ERROR</strong>: ${spring.status.errorMessages[0]}
-	</div>					
+	</div>
 	</#if>
-</#macro>
-
-<#macro scripts>
-	<script type="text/javascript" src="<@spring.url '/static/js/jquery.js'/>"></script>
-	<script type="text/javascript" src="<@spring.url '/static/js/jquery.visualize.js'/>"></script>
-	<script type="text/javascript" src="<@spring.url '/static/js/jquery.wysiwyg.js'/>"></script>
-	<script type="text/javascript" src="<@spring.url '/static/js/tiny_mce/jquery.tinymce.js'/>"></script>
-	<script type="text/javascript" src="<@spring.url '/static/js/jquery.fancybox.js'/>"></script>
-	<script type="text/javascript" src="<@spring.url '/static/js/jquery.idtabs.js'/>"></script>
-	<script type="text/javascript" src="<@spring.url '/static/js/jquery.datatables.js'/>"></script>
-	<script type="text/javascript" src="<@spring.url '/static/js/jquery.jeditable.js'/>"></script>
-	<script type="text/javascript" src="<@spring.url '/static/js/jquery.ui.js'/>"></script>
-	<script type="text/javascript" src="<@spring.url '/static/js/jquery.jcarousel.js'/>"></script>
-	<script type="text/javascript" src="<@spring.url '/static/js/jquery.validate.js'/>"></script>
-	<script type="text/javascript" src="<@spring.url '/static/js/excanvas.js'/>"></script>
-	<script type="text/javascript" src="<@spring.url '/static/js/cufon.js'/>"></script>
-	<script type="text/javascript" src="<@spring.url '/static/js/Zurich_Condensed_Lt_Bd.js'/>"></script>
-	<script type="text/javascript" src="<@spring.url '/static/js/script.js'/>"></script>
 </#macro>
 
 <#macro css>
@@ -87,13 +59,62 @@
 </#macro>
 
 <#macro detail url>
-<a href="<@spring.url url/>"><img src="<@spring.url '/static/images/ico_detail_16.png'/>" class="icon16 fl-space2" alt="" title="edit" /></a>
+<a href="<@spring.url url/>"><img src="<@spring.url '/static/images/ico_detail_16.png'/>" class="icon16 fl-space2" alt="" title="<@spring.message 'accion.show'/>" /></a>
 </#macro>
 
 <#macro edit url>
-<a href="<@spring.url url/>"><img src="<@spring.url '/static/images/ico_edit_16.png'/>" class="icon16 fl-space2" alt="" title="edit" /></a>
+<a href="<@spring.url url/>"><img src="<@spring.url '/static/images/ico_edit_16.png'/>" class="icon16 fl-space2" alt="" title="<@spring.message 'accion.edit'/>" /></a>
 </#macro>
 
 <#macro delete url>
-<a href="<@spring.url url/>"><img src="<@spring.url '/static/images/ico_delete_16.png'/>" class="icon16 fl-space2" alt="" title="edit" /></a>
+<a href="<@spring.url url/>"><img src="<@spring.url '/static/images/ico_delete_16.png'/>" class="icon16 fl-space2" alt="" title="<@spring.message 'accion.delete'/>" /></a>
+</#macro>
+
+
+<#macro tablePaging paging  baseUrl>
+<#assign previousPage = paging.pageNumber-1 >
+<#assign nextPage = paging.pageNumber+1 >
+<#assign currentPage = paging.pageNumber >
+<#assign pageSize = paging.pageSize >
+<#assign totalPages = paging.totalPages >
+<div class="pager fr">
+	
+	<span class="nav">
+		<a href="<@spring.url '${baseUrl}/1/${pageSize}'/>" class="first" title="first page">
+			<span>First</span>
+		</a>
+		<#if ( previousPage >= 1 ) >
+		<a href="<@spring.url '${baseUrl}/${previousPage}/${pageSize}'/>" class="previous" title="previous page">
+			<span>Previous</span>
+		</a>
+		</#if>
+	</span>
+	
+	<span class="pages">
+	<#assign start=paging.pageNumber-2>
+	<#if (start <= 0)>
+		<#assign start=1>
+	</#if>
+	<#assign end=start+5>
+	<#if (end > paging.totalPages)>
+		<#assign end=paging.totalPages>
+	</#if>		
+	<#assign seq=start..end>
+	<#list seq as x>
+		<a href="<@spring.url '${baseUrl}/${x}/${pageSize}'/>" title="page ${x}" <#if (currentPage == x)>class="active"</#if>><span>${x}</span></a>
+	</#list>
+	</span>
+	<span class="nav">
+		
+		<#if (nextPage <= paging.totalPages) >
+		<a href="<@spring.url '${baseUrl}/${nextPage}/${pageSize}'/>" class="next" title="next page">
+			<span>Next</span>
+		</a>
+		</#if>
+		
+		<a href="<@spring.url '${baseUrl}/${totalPages}/${pageSize}'/>" class="last" title="last page">
+			<span>Last</span>
+		</a>
+	</span>
+</div>
 </#macro>

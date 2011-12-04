@@ -11,7 +11,8 @@ public class MyFMConfigurer extends FreeMarkerConfigurer {
 		Configuration conf = super.getConfiguration();
 		conf.addAutoImport("spring", "/spring.ftl");
 		conf.addAutoImport("widget", "/widgets.ftl");
-		conf.setTagSyntax(Configuration.SQUARE_BRACKET_TAG_SYNTAX);
+		conf.addAutoImport("layout", "/layouts/layout.ftl");
+//		conf.setTagSyntax(Configuration.SQUARE_BRACKET_TAG_SYNTAX);
 		return conf;
 	}
 	

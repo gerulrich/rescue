@@ -42,9 +42,8 @@ public final class MongoPagingResult<E> implements PagingResult<E> {
 	public long getPageSize() {
 		// FIXME fijarse en el caso de que es la ultima página puede tener
 		// menos resultados que el máximo por página.
-		if ( (pageNumber+1) == getTotalPages())
-			return getTotalSize();
-					
+//		if ( (pageNumber+1) == getTotalPages())
+//			return getTotalSize();
 		return pageSize;
 	}
 	

@@ -52,7 +52,7 @@
 				<bean class="org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver">
         			<property name="prefix" value=""/>
         			<property name="cache" value="true"/>
-  					<property name="suffix" value=".xml"/>
+  					<property name="suffix" value=".ftl"/>
 					<property name="exposeSpringMacroHelpers" value="true"/>
 					<property name="exposeSessionAttributes" value="true"/>
       			</bean>
