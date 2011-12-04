@@ -1,12 +1,12 @@
-﻿<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>net.rescueapp</groupId>
 	<artifactId>rescue911</artifactId>
-    <version>0.2-SNAPSHOT</version>
+    <version>0.2</version>
   </parent>
 	<artifactId>documentacion</artifactId>
-	<version>0.1-SNAPSHOT</version>
+	<version>0.2</version>
 	<packaging>pom</packaging>
 	<name>documentacion</name>
 	<url>http://cloud-engine.blogspot.com/</url>
@@ -177,7 +177,7 @@ mvn install:install-file -Dfile=jai-1_1_3/lib/jai_codec.jar -DgroupId=javax.medi
 					<!-- use extensions -->
 					<useExtensions>1</useExtensions>
 					<highlightSource>1</highlightSource>
-					<highlightDefaultLanguage></highlightDefaultLanguage>
+					<highlightDefaultLanguage />
 					<!-- callouts -->
 					<calloutsExtension>1</calloutsExtension>
 					<entities>
