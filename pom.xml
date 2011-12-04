@@ -8,7 +8,7 @@
   <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
   <groupId>net.rescueapp</groupId>
   <artifactId>rescue911</artifactId>
-  <version>0.2</version>
+  <version>0.2-SNAPSHOT</version>
   <name>Rescue911</name>
   <packaging>pom</packaging>
 
