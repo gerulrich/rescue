@@ -1,5 +1,6 @@
 package net.cloudengine.web;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
@@ -34,17 +35,27 @@ public class AvatarController {
 		InputStream is = null;
 		
 		try {
+			out = resp.getOutputStream();
+			
 			HttpURLConnection con = (HttpURLConnection) url.openConnection(); 
 			
 			is = con.getInputStream();
-			out = resp.getOutputStream();
+			
 			
 			resp.setContentType(con.getContentType());
 			
 			IOUtils.copy(is, out);
 			
 		} catch (Exception e) {
-			e.printStackTrace();
+			
+			// si hay algun problema de conexión envio
+			// la imagen por default.
+			try {
+				IOUtils.copy(AvatarController.class.getResourceAsStream("avatar.jpg"), out);
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}			
+			
 		} finally {
 			IOUtils.closeQuietly(is);
 			IOUtils.closeQuietly(out);

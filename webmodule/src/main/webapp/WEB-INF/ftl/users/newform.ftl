@@ -1,4 +1,4 @@
-<@layout.main>
+<@layout.main template="admin">
 
 <h2>Alta de usuario</h2>
 

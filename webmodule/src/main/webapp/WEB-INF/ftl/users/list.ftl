@@ -1,4 +1,4 @@
-<@layout.main>			
+<@layout.main template="admin">			
 
 <!-- CONTENT BOX - DATATABLE -->
 <div class="content-box">

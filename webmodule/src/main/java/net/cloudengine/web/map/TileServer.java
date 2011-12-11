@@ -1,12 +1,13 @@
 package net.cloudengine.web.map;
 
-public abstract class TileServer {
+import net.cloudengine.model.map.Tile;
+
+public interface TileServer {
 	
 	
-	public byte[] get(int zoom, int x, int y) {
-		return null;
-	}
+	Tile get(int zoom, int x, int y);
+	String getKey();
 	
-	protected abstract String tileUrl(int zoom, int x, int y);	
+	
 
 }

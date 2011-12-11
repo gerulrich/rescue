@@ -1,29 +1,19 @@
-/*
- * $HeadURL$
- *
- * (c)2009 Stepan Rutz, Licensed under LGPL License
- */
 package net.cloudengine.mapviewer;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-import java.io.InputStream;
-import java.net.URL;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.FutureTask;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
-import java.util.concurrent.atomic.AtomicReference;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import net.cloudengine.mapviewer.layers.BasicLayer;
+import net.cloudengine.mapviewer.layers.DebugTileLayer;
+import net.cloudengine.mapviewer.layers.MapLayer;
+import net.cloudengine.mapviewer.tiles.TileCache;
+import net.cloudengine.mapviewer.tiles.TileServer;
+import net.cloudengine.mapviewer.tiles.TileServerType;
+import net.sf.swtgraph.layeredcanvas.ICanvasLayer;
+import net.sf.swtgraph.layeredcanvas.ISelectable;
+import net.sf.swtgraph.layeredcanvas.LayeredCanvas;
 
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.SWTException;
-import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.MouseEvent;
@@ -31,73 +21,10 @@ import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.events.MouseMoveListener;
 import org.eclipse.swt.events.MouseTrackListener;
 import org.eclipse.swt.events.MouseWheelListener;
-import org.eclipse.swt.events.PaintEvent;
-import org.eclipse.swt.events.PaintListener;
-import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.Device;
-import org.eclipse.swt.graphics.GC;
-import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.layout.FillLayout;
-import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
 
-
-
-/**
- * MapPanel display tiles from openstreetmap as is. This simple minimal viewer supports zoom around mouse-click center and has a simple api.
- * A number of tiles are cached. See {@link #CACHE_SIZE} constant. If you use this it will create traffic on the tileserver you are
- * using. Please be conscious about this.
- *
- * This class is a JPanel which can be integrated into any swing app just by creating an instance and adding like a JLabel.
- *
- * The map has the size <code>256*1<<zoomlevel</code>. This measure is referred to as map-coordinates. Geometric locations
- * like longitude and latitude can be obtained by helper methods. Note that a point in map-coordinates corresponds to a given
- * geometric position but also depending on the current zoom level.
- *
- * You can zoomIn around current mouse position by left double click. Left right click zooms out.
- *
- * <p>
- * Methods of interest are
- * <ul>
- * <li>{@link #setZoom(int)} which sets the map's zoom level. Values between 1 and 18 are allowed.</li>
- * <li>{@link #setMapPosition(Point)} which sets the map's top left corner. (In map coordinates)</li>
- * <li>{@link #setCenterPosition(Point)} which sets the map's center position. (In map coordinates)</li>
- * <li>{@link #computePosition(java.awt.geom.Point2D.Double)} returns the position in the map panels coordinate system
- * for the given longitude and latitude. If you want to center the map around this geometric location you need
- * to pass the result to the method</li>
- * </ul>
- * </p>
- *
- * <p>As mentioned above Longitude/Latitude functionality is available via the method {@link #computePosition(java.awt.geom.Point2D.Double)}.
- * If you have a GIS database you can get this info out of it for a given town/location, invoke {@link #computePosition(java.awt.geom.Point2D.Double)} to
- * translate to a position for the given zoom level and center the view around this position using {@link #setCenterPosition(Point)}.
- * </p>
- *
- * <p>The properties <code>zoom</code> and <code>mapPosition</code> are bound and can be tracked via
- * regular {@link PropertyChangeListener}s.</p>
- *
- * <p>License is LGPL http://www.gnu.org has the full text.  Contact at stepan.rutz@gmx.de</p>
- *
- * @author stepan.rutz
- * @version $Revision$
- */
-public class MapWidget extends Canvas {
-    
-    /*
-    wait icon 
-    credits to: RaminusFalcon
-    obtained from: http://commons.wikimedia.org/wiki/File:GreenHourglass_up.svg
-    
-    world icon
-    credits to: Zeus
-    http://commons.wikimedia.org/wiki/File:Gartoon-fs-ftp.png
-     */
-    
-
-    private static final Logger log = Logger.getLogger(MapWidget.class.getName());
+public class MapWidget extends LayeredCanvas {
     
     public static final class PointD {
         public double x, y;
@@ -105,49 +32,6 @@ public class MapWidget extends Canvas {
             this.x = x;
             this.y = y;
         }
-    }
-    
-    
-    
-    public static final class TileServer {
-        private final String url;
-        private final int maxZoom;
-        private boolean broken;
-        private TileServerType type;
-
-        private TileServer(String url, int maxZoom, TileServerType type) {
-            this.url = url;
-            this.maxZoom = maxZoom;
-            this.type = type;
-        }
-
-        public String toString() {
-            return url;
-        }
-
-        public int getMaxZoom() {
-            return maxZoom;
-        }
-        public String getURL() {
-            return url;
-        }
-
-        public boolean isBroken() {
-            return broken;
-        }
-
-        public void setBroken(boolean broken) {
-            this.broken = broken;
-        }
-
-		public TileServerType getType() {
-			return type;
-		}
-
-		public void setType(TileServerType type) {
-			this.type = type;
-		}
-
     }
     
     public static class Stats {
@@ -162,159 +46,6 @@ public class MapWidget extends Canvas {
         }
     }
     
-    private static class Tile {
-        private final String key;
-        public final int x, y, z;
-        public Tile(String tileServer, int x, int y, int z) {
-            this.key = tileServer;
-            this.x = x;
-            this.y = y;
-            this.z = z;
-        }
-        public int hashCode() {
-            final int prime = 31;
-            int result = 1;
-            result = prime * result + ((key == null) ? 0 : key.hashCode());
-            result = prime * result + x;
-            result = prime * result + y;
-            result = prime * result + z;
-            return result;
-        }
-        public boolean equals(Object obj) {
-            if (this == obj)
-                return true;
-            if (obj == null)
-                return false;
-            if (getClass() != obj.getClass())
-                return false;
-            Tile other = (Tile) obj;
-            if (key == null) {
-                if (other.key != null)
-                    return false;
-            } else if (!key.equals(other.key))
-                return false;
-            if (x != other.x)
-                return false;
-            if (y != other.y)
-                return false;
-            if (z != other.z)
-                return false;
-            return true;
-        }
-    }
-    
-    public class TileCache {
-        private LinkedHashMap<Tile,AsyncImage> map = new LinkedHashMap<Tile,AsyncImage>(CACHE_SIZE, 0.75f, true) {
-			
-        	private static final long serialVersionUID = 1L;
-
-			protected boolean removeEldestEntry(Map.Entry<Tile,AsyncImage> eldest) {
-                boolean remove = size() > CACHE_SIZE;
-                if (remove)
-                    eldest.getValue().dispose(getDisplay());
-                return remove;
-            }
-        };
-        public void put(TileServer tileServer, int x, int y, int z, AsyncImage image) {
-            map.put(new Tile(tileServer.getURL(), x, y, z), image);
-        }
-        public AsyncImage get(TileServer tileServer, int x, int y, int z) {
-            return map.get(new Tile(tileServer.getURL(), x, y, z));
-        }
-        public void remove(TileServer tileServer, int x, int y, int z) {
-            map.remove(new Tile(tileServer.getURL(), x, y, z));
-        }
-        public int getSize() {
-            return map.size();
-        }
-    }
-    
-    public final class AsyncImage implements Runnable {
-        private final AtomicReference<ImageData> imageData = new AtomicReference<ImageData>();
-        private Image image; // might as well be thread-local
-        private FutureTask<Boolean> task;
-        private volatile long stamp = zoomStamp.longValue();
-        private final TileServer tileServer;
-        private final int x, y, z;
-
-        public AsyncImage(TileServer tileServer, int x, int y, int z) {
-            this.tileServer = tileServer;
-            this.x = x;
-            this.y = y;
-            this.z = z;
-            task = new FutureTask<Boolean>(this, Boolean.TRUE);
-            executor.execute(task);
-        }
-        
-        public void run() {
-            String url = getTileString(tileServer, x, y, z);
-            if (stamp != zoomStamp.longValue()) {
-                //System.err.println("pending load killed: " + url);
-                try {
-                    // here is a race, we just live with.
-                    if (!getDisplay().isDisposed()) {
-                        getDisplay().asyncExec(new Runnable() {
-                            public void run() {
-                                getCache().remove(tileServer, x, y, z);
-                            }
-                        });
-                    }
-                } catch (SWTException e) {
-                    log.log(Level.INFO, "swt exception during redraw display-race, ignoring");
-                }
-                
-                return;
-            }
-            try {
-                //System.err.println("fetch " + url);
-                //Thread.sleep(2000);
-                InputStream in = new URL(url).openConnection().getInputStream();
-                imageData.set(new ImageData(in));
-                try {
-                    // here is a race, we just live with.
-                    if (!getDisplay().isDisposed()) {
-                        getDisplay().asyncExec(new Runnable() {
-                            public void run() {
-                                redraw();
-                            }
-                        });
-                    }
-                } catch (SWTException e) {
-                    log.log(Level.INFO, "swt exception during redraw display-race, ignoring");
-                }
-            } catch (Exception e) {
-                log.log(Level.SEVERE, "failed to load imagedata from url: " + url, e);
-            }
-        }
-        
-        public ImageData getImageData(Device device) {
-            return imageData.get();
-        }
-        
-        public Image getImage(Display display) {
-            checkThread(display);
-            if (image == null && imageData.get() != null) {
-                image = new Image(display, imageData.get());
-            }
-            return image;
-        }
-        
-        public void dispose(Display display) {
-            checkThread(display);
-            if (image != null) {
-                //System.err.println("disposing: " + getTileString(tileServer, x, y, z));
-                image.dispose();
-            }
-        }
-        
-        private void checkThread(Display display) {
-            // jdk 1.6 bug from checkWidget still fails here
-            if (display.getThread() != Thread.currentThread()) {
-                throw new IllegalStateException("wrong thread to pick up the image");
-            }
-        }
-    }
-   
     private class MapMouseListener implements MouseListener, MouseWheelListener, MouseMoveListener, MouseTrackListener {
         private Point mouseCoords = new Point(0, 0);
         private Point downCoords;
@@ -328,6 +59,7 @@ public class MapWidget extends Canvas {
         }
 
         public void mouseHover(MouseEvent e) {
+        	
         }
         
         public void mouseDoubleClick(MouseEvent e) {
@@ -337,7 +69,7 @@ public class MapWidget extends Canvas {
                 zoomOut(new Point(mouseCoords.x, mouseCoords.y));
         }
         public void mouseDown(MouseEvent e) {
-            if (e.button == 1 && (e.stateMask & SWT.CTRL) != 0) {
+        	if (e.button == 1 && (e.stateMask & SWT.CTRL) != 0) {
                 setCenterPosition(getCursorPosition());
                 redraw();
             }
@@ -345,6 +77,22 @@ public class MapWidget extends Canvas {
                 downCoords = new Point(e.x, e.y);
                 downPosition = getMapPosition();
             }
+            
+            if (e.button == 1 && (e.stateMask & SWT.SHIFT) != 0 ) {
+            	System.out.println("Click");
+            	try {
+                	Point p = new Point(mouseCoords.x, mouseCoords.y);
+                	for(ICanvasLayer layer:  MapWidget.this.getLayers()) {
+                		if (layer instanceof ISelectable) {
+                			((ISelectable)layer).selectObjects(p.x, p.y);
+                		}
+                	}
+                	
+                } catch (Exception ex) {
+                	ex.printStackTrace();
+                }
+            }
+            
         }
         public void mouseUp(MouseEvent e) {
             if (e.count == 1) {
@@ -379,71 +127,17 @@ public class MapWidget extends Canvas {
         }
     }
     
-    //-------------------------------------------------------------------------
-    // tile url construction.
-    // change here to support some other tile
-
-    public static String getTileString(TileServer tileServer, int xtile, int ytile, int zoom) {
-        String number = ("" + zoom + "/" + xtile + "/" + ytile);
-        if (TileServerType.WMS.equals(tileServer.getType())) {
-        	BoundingBox bb = MapWidget.tile2boundingBox(xtile, ytile, zoom);
-        
-        	String url = tileServer.getURL()+"?SERVICE=WMS&VERSION=1.1.1&REQUEST" +
-        	"=GetMap&layers=rosario:rosario_calles&STYLES=&EXCEPTIONS=application%2Fvnd.ogc.se_inimage&FORMAT=image%2Fjpeg&SRS=EPSG%3A4326&" +
-        	"BBOX="+bb.west+","+bb.south+","+bb.east+","+bb.north+"&WIDTH=256&HEIGHT=256";
-        	System.out.println(url);
-         
-        	return url;
-        } else if (TileServerType.GOOGLEMAPS.equals(tileServer.getType())) {
-        	 String url = tileServer.getURL()+"&x="+xtile+"&y="+ytile+"&z="+zoom+"&s=Galil";
-   	       return url; // return URL for the tile  
-        } else {
-        	String url = tileServer.getURL() + number + ".png";
-        	return url;	
-        }
-    }
-    
-    
-    private static class BoundingBox {
-        double north;
-        double south;
-        double east;
-        double west;   
-    }
-    
-    public static BoundingBox tile2boundingBox(final int x, final int y, final int zoom) {
-        BoundingBox bb = new BoundingBox();
-        bb.north = tile2lat(y, zoom);
-        bb.south = tile2lat(y + 1, zoom);
-        bb.west = tile2lon(x, zoom);
-        bb.east = tile2lon(x + 1, zoom);
-        return bb;
-     }
-     
     /* constants ... */
     public static final TileServer[] TILESERVERS = {
+    	new TileServer("http://localhost:8080/webmodule/tiles", 18, TileServerType.LOCAL),
     	new TileServer("http://mt1.google.com/vt/lyrs=m@139&hl=es", 18, TileServerType.GOOGLEMAPS),
     	new TileServer("http://tile.openstreetmap.org/", 18, TileServerType.OPENSTREET),
         new TileServer("http://tah.openstreetmap.org/Tiles/tile/", 17, TileServerType.OPENSTREET)
 //    	new TileServer("http://10.0.0.3:8080/geoserver/wms", 18, TileServerType.WMS),
 //    	new TileServer("http://khm0.google.com.ar/kh/v=74", 18, TileServerType.GOOGLEMAPS),
-    	
+//    	
     };
  
-    public static final String NAMEFINDER_URL = "http://gazetteer.openstreetmap.org/namefinder/search.xml";
-    
-    public static final String ABOUT_MSG =
-        "MapWidget - Minimal Openstreetmap/Maptile Viewer\r\n" +
-        "Requirements: Java + SWT. Opensource and licensed under LGPL.\r\n" +
-        "\r\n" +
-        "Web/Source: <a href=\"http://mappanel.sourceforge.net\">http://mappanel.sourceforge.net</a>\r\n" +
-        "Written by stepan.rutz. Contact <a href=\"mailto:stepan.rutz@gmx.de?subject=SWT%20MapWidget\">stepan.rutz@gmx.de</a>\r\n\r\n" +
-        "Tileserver and Namefinder are part of Openstreetmap.org or associated projects.\r\n";
-    	//"MapPanel gets all its data the openstreetmap servers.\r\n\r\n" +
-        //"Please support the effort at <a href=\"http://www.openstreetmap.org\">http://www.openstreetmap.org/</a>.\r\n";
-        //"Please keep in mind this application is just a alternative renderer for swt.\r\n";
-    
-    
     /* basically not be changed */
     private static final int TILE_SIZE = 256;
     public static final int CACHE_SIZE = 256;
@@ -451,7 +145,7 @@ public class MapWidget extends Canvas {
     
     private PropertyChangeSupport pcs = new PropertyChangeSupport(this);
     private Point mapSize = new Point(0, 0);
-    private Point mapPosition = new Point(0, 0);
+    public Point mapPosition = new Point(0, 0);
     private int zoom;
     private AtomicLong zoomStamp = new AtomicLong();
 
@@ -460,130 +154,47 @@ public class MapWidget extends Canvas {
     private Stats stats = new Stats();
     private MapMouseListener mouseListener = new MapMouseListener();
     
-    private BlockingQueue<Runnable> workQueue = new LinkedBlockingQueue<Runnable>();
-    private ThreadFactory threadFactory = new ThreadFactory( ) {
-        public Thread newThread(Runnable r) {
-            Thread t = new Thread(r);
-            t.setName("Async Image Loader " + t.getId() + " " + System.identityHashCode(t));
-            t.setDaemon(true);
-            return t;
-        }
-    };
-    private ThreadPoolExecutor executor = new ThreadPoolExecutor(IMAGEFETCHER_THREADS, 16, 2, TimeUnit.SECONDS, workQueue, threadFactory);
-    
-    private Color waitBackground, waitForeground;
-    
     public MapWidget(Composite parent, int style) {
-        this(parent, style, new Point(275091, 180145), 17);
+        this(parent, style, new Point(354083, 631905), 12);
     }
     
     public MapWidget(Composite parent, int style, Point mapPosition, int zoom) {
         super(parent, SWT.DOUBLE_BUFFERED | style);
-        waitBackground = new Color(getDisplay(), 0x88, 0x88, 0x88);
-        waitForeground = new Color(getDisplay(), 0x77, 0x77, 0x77);
         
-        mapPosition.x = MapWidget.lon2position(-58.51205, zoom);
-        mapPosition.y = MapWidget.lat2position(-34.52610, zoom);
-        
-  
-        
-        
+//         FIXME sacar del argumento del constructor
+//        mapPosition.x = MapWidget.lon2position(-58.43422, zoom);
+//        mapPosition.y = MapWidget.lat2position(-34.60778, zoom);
         
         addDisposeListener(new DisposeListener() {
             public void widgetDisposed(DisposeEvent e) {
                MapWidget.this.widgetDisposed(e);
             }
         });
-        addPaintListener(new PaintListener() {
-            public void paintControl(PaintEvent e) {
-                MapWidget.this.paintControl(e);
-            }
-        });
-        setMapPosition(mapPosition);
-        setCenterPosition(mapPosition);
-        setZoom(zoom);
+//        addPaintListener(new PaintListener() {
+//            public void paintControl(PaintEvent e) {
+//                MapWidget.this.paintControl(e);
+//            }
+//        });
         
         addMouseListener(mouseListener);
         addMouseMoveListener(mouseListener);
         addMouseWheelListener(mouseListener);
         addMouseTrackListener(mouseListener);
-        /// TODO: check tileservers
+        // TODO: check tileservers
+        
+      this.addLayer(new MapLayer(this));
+//      this.addLayer(new DebugTileLayer(this));
+      this.addLayer(new BasicLayer(this));
+      
+      setZoom(zoom);
+//    setMapPosition(mapPosition);
+    setCenterPosition(mapPosition);
+    this.redraw();
+      
     }
     
-    protected void paintControl(PaintEvent e) {
-        GC gc = e.gc;
-        
-        getStats().reset();
-        long t0 = System.currentTimeMillis();
-        Point size = getSize();
-        int width = size.x, height = size.y;
-        int x0 = (int) Math.floor(((double) mapPosition.x) / TILE_SIZE);
-        int y0 = (int) Math.floor(((double) mapPosition.y) / TILE_SIZE);
-        int x1 = (int) Math.ceil(((double) mapPosition.x + width) / TILE_SIZE);
-        int y1 = (int) Math.ceil(((double) mapPosition.y + height) / TILE_SIZE);
-
-        int dy = y0 * TILE_SIZE - mapPosition.y;
-        for (int y = y0; y < y1; ++y) {
-            int dx = x0 * TILE_SIZE - mapPosition.x;
-            for (int x = x0; x < x1; ++x) {
-                paintTile(gc, dx, dy, x, y);
-                dx += TILE_SIZE;
-                ++getStats().tileCount;
-            }
-            dy += TILE_SIZE;
-        }
-        
-        long t1 = System.currentTimeMillis();
-        stats.dt = t1 - t0;
-        //gc.drawString("dis ya draw", 20, 50);
-    }
-    
-    private void paintTile(GC gc, int dx, int dy, int x, int y) {
-        Display display = getDisplay();
-        boolean DRAW_IMAGES = true;
-        boolean DEBUG = false;
-        boolean DRAW_OUT_OF_BOUNDS = false;
-
-        boolean imageDrawn = false;
-        int xTileCount = 1 << zoom;
-        int yTileCount = 1 << zoom;
-        boolean tileInBounds = x >= 0 && x < xTileCount && y >= 0 && y < yTileCount;
-        boolean drawImage = DRAW_IMAGES && tileInBounds;
-        if (drawImage) {
-            TileCache cache = getCache();
-            TileServer tileServer = getTileServer();
-            AsyncImage image = cache.get(tileServer, x, y, zoom);
-            if (image == null) {
-                image = new AsyncImage(tileServer, x, y, zoom);
-                cache.put(tileServer, x, y, zoom, image);
-            }
-            if (image.getImage(getDisplay()) != null) {
-                gc.drawImage(image.getImage(getDisplay()), dx, dy);
-                imageDrawn = true;
-            }
-        }
-        if (DEBUG && (!imageDrawn && (tileInBounds || DRAW_OUT_OF_BOUNDS))) {
-            gc.setBackground(display.getSystemColor(tileInBounds ? SWT.COLOR_GREEN : SWT.COLOR_RED));
-            gc.fillRectangle(dx + 4, dy + 4, TILE_SIZE - 8, TILE_SIZE - 8);
-            gc.setForeground(display.getSystemColor(SWT.COLOR_BLACK));
-            String s = "T " + x + ", " + y + (!tileInBounds ? " #" : "");
-            gc.drawString(s, dx + 4+ 8, dy + 4 + 12);
-        }  else if (!DEBUG && !imageDrawn && tileInBounds) {
-            gc.setBackground(waitBackground);
-            gc.fillRectangle(dx, dy, TILE_SIZE, TILE_SIZE);
-            gc.setForeground(waitForeground);
-            for (int yl = 0; yl < TILE_SIZE; yl += 32) {
-            	gc.drawLine(dx, dy + yl, dx + TILE_SIZE, dy + yl);
-            }
-            for (int xl = 0; xl < TILE_SIZE; xl += 32) {
-            	gc.drawLine(dx + xl, dy, dx + xl, dy + TILE_SIZE);
-            }
-        }
-    }
-
     protected void widgetDisposed(DisposeEvent e) {
-        waitBackground.dispose();
-        waitForeground.dispose();
+        // TODO dispose de los layers
     }
 
     public void addPropertyChangeListener(PropertyChangeListener listener) {
@@ -636,8 +247,6 @@ public class MapWidget extends Canvas {
         pcs.firePropertyChange("mapPosition", oldMapPosition, getMapPosition());
     }
     
-    
-
     public void translateMapPosition(int tx, int ty) {
         setMapPosition(mapPosition.x + tx, mapPosition.y + ty);
     }
@@ -696,22 +305,39 @@ public class MapWidget extends Canvas {
         redraw();
     }
 
+    /**
+     * Calcula la cantidad de tiles en el sentido x que tiene el mapa
+     * @return
+     */
     public int getXTileCount() {
         return (1 << zoom);
     }
 
+    /**
+     * Calcula la cantidad de tiles en el sentido y que tiene el mapa
+     * @return
+     */
     public int getYTileCount() {
         return (1 << zoom);
     }
 
+    /**
+     * Calcula la cantidad de pixels en el sentido x que tiene el mapa
+     * @return
+     */
     public int getXMax() {
         return TILE_SIZE * getXTileCount();
     }
 
+    /**
+     * Calcula la cantidad de pixels en el sentido x que tiene el mapa
+     * @return
+     */
     public int getYMax() {
         return TILE_SIZE * getYTileCount();
     }
 
+    
     public Point getCursorPosition() {
         return new Point(mapPosition.x + mouseListener.mouseCoords.x, mapPosition.y + mouseListener.mouseCoords.y);
     }
@@ -721,12 +347,12 @@ public class MapWidget extends Canvas {
     }
 
     public Point getCenterPosition() {
-        org.eclipse.swt.graphics.Point size = getSize();
+        Point size = getSize();
         return new Point(mapPosition.x + size.x / 2, mapPosition.y + size.y / 2);
     }
 
     public void setCenterPosition(Point p) {
-        org.eclipse.swt.graphics.Point size = getSize();
+        Point size = getSize();
         setMapPosition(p.x - size.x / 2, p.y - size.y / 2);
     }
 
@@ -734,6 +360,12 @@ public class MapWidget extends Canvas {
         return new PointD(
                 position2lon(position.x, getZoom()),
                 position2lat(position.y, getZoom()));
+    }
+    
+    public Point computePosition(double x1, double y1) {
+        int x = lon2position(x1, getZoom());
+        int y = lat2position(y1, getZoom());
+        return new Point(x, y);
     }
 
     public Point computePosition(PointD coords) {
@@ -784,65 +416,6 @@ public class MapWidget extends Canvas {
     public static String getTileNumber(TileServer tileServer, double lat, double lon, int zoom) {
         int xtile = (int) Math.floor((lon + 180) / 360 * (1 << zoom));
         int ytile = (int) Math.floor((1 - Math.log(Math.tan(Math.toRadians(lat)) + 1 / Math.cos(Math.toRadians(lat))) / Math.PI) / 2 * (1 << zoom));
-        return getTileString(tileServer, xtile, ytile, zoom);
+        return tileServer.getType().getTileString(tileServer.getURL(), xtile, ytile, zoom);
     }
-    
-    
-    public final class MapBrowserComposite extends Composite {
-        private SashForm sashForm;
-
-        public MapBrowserComposite(Composite parent, int style) {
-            super(parent, style);
-            
-            setLayout(new FillLayout());
-            
-            sashForm = new SashForm(this, SWT.HORIZONTAL);
-            sashForm.setLayout(new FillLayout());
-            
-            
-        }
-    }
-    
-    
-//    public static void main (String [] args) throws Exception {
-//        InputStream in = new URL(WAITICON_URL).openConnection().getInputStream();
-//        byte[] buf = new byte[32];
-//        int c;
-//        System.err.println("byte[] image1 = {");
-//        while ((c = in.read(buf, 0, buf.length)) > 0) {
-//            System.err.print("    ");
-//            for (int i = 0; i < c; ++i) {
-//                if (i != 0)
-//                    System.err.print(", ");
-//                System.err.print(buf[i]);
-//            }
-//            System.err.println(",");
-//        }
-//        System.err.println("}");
-//        if (true)
-//            return;
-//        
-//        Display display = new Display ();
-//        
-//        
-//        
-//        Shell shell = new Shell(display);
-//        shell.setText("Map Widget - SWT Native Map Browsing, Map data from openstreetmap.org");
-//        shell.setImage(small);
-//        shell.setSize(600, 710);
-//        shell.setLocation(10, 10);
-//        shell.setLayout (new FillLayout());
-//        
-//        
-//        new MapWidget(shell, SWT.NONE);
-//        shell.open ();
-//        while (!shell.isDisposed ()) {
-//            if (!display.readAndDispatch ()) display.sleep ();
-//        }
-//        display.dispose ();
-//        
-//        
-//    }
 }
-
-

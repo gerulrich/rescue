@@ -48,7 +48,8 @@ public class InfoPage extends AbstractPage implements Page {
                         return mapWidget.getStats().tileCount + " of " + NumberFormat.getIntegerInstance().format((long)mapWidget.getXTileCount() * mapWidget.getYTileCount());
                     }
                 },
-                new Spec("Tilecache") { public String computeValue() { return String.format("%3d / %3d", mapWidget.getCache().getSize(), MapWidget.CACHE_SIZE); }},
+                //FIXME
+                new Spec("Tilecache") { public String computeValue() { return String.format("%3d / %3d", /*mapWidget.getCache().getSize()*/0, MapWidget.CACHE_SIZE); }},
                 new Spec("Longitude/Latitude") {
                     public String computeValue() {
                         Point p = mapWidget.getCursorPosition();

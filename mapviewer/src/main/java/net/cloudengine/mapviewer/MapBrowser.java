@@ -28,10 +28,6 @@ import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Shell;
 
-/**
- * @author stepan.rutz@gmx.de
- * @version $Revision$
- */
 public class MapBrowser extends Composite {
     private SashForm sashForm;
     private PageContainer pageContainer;
@@ -132,12 +128,13 @@ public class MapBrowser extends Composite {
         
         Shell shell = new Shell(display);
         shell.setText("Map Widget - SWT Native Map Browsing, Map data from openstreetmap.org");
-        shell.setSize(800, 710);
+        shell.setSize(950, 710);
+        
         shell.setImages(new Image[] {small, medium, large});
         shell.setLocation(10, 10);
         
         
-        
+        shell.setMaximized(true);
         shell.setLayout (new FillLayout());
 
         MapBrowser mb = new MapBrowser(shell, SWT.NONE);

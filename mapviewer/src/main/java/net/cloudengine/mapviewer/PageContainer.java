@@ -45,7 +45,7 @@ public class PageContainer extends Composite {
         TitleControl title = new TitleControl(this);
         adapt(title);
         title.setLayoutData(new GridData(GridData.FILL, GridData.BEGINNING, true, false));
-//        title.setText("Mapa");
+        title.setText("Mapa");
         
         content = new Composite(this, SWT.NONE);
         content.setLayout(stackLayout);

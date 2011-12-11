@@ -11,7 +11,11 @@
         <from>/(css|img|js|static)/(.*)</from>
         <to last="true">/$1/$2</to>
     </rule>
-    
+	<rule match-type="regex">
+        <note>Serve root directory </note>
+        <from>^/$</from>
+        <to last="true">/smvc/home</to>
+    </rule>
     <rule match-type="wildcard">
         <note>Direct access to the springMVC servlet should not be cached</note>
         <from>/smvc/**</from>

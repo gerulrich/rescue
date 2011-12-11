@@ -20,11 +20,20 @@ import org.springframework.web.filter.GenericFilterBean;
 public class UserSessionFilter extends GenericFilterBean {
 
     private static final String CURRENT_USER = "currentUser";
+    private static final String DEVELOPMENT = "development";
 	
 	@Override
     public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest) req;
         request.getSession().setAttribute(CURRENT_USER, SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        if (System.getenv("VCAP_APPLICATION") != null) {
+        	// se esta ejecutando en producción.
+        	request.getSession().setAttribute(DEVELOPMENT, Boolean.FALSE);
+        } else {
+        	request.getSession().setAttribute(DEVELOPMENT, Boolean.TRUE);
+        }
+        
+        
         chain.doFilter(request, res);
     }
 }

@@ -9,6 +9,6 @@
 			</div>
 			<div class="logo clear"><@widget.logo /></div>
 		</div>
-		<div class="menu"><@widget.menu /></div>
+		<div class="menu"><@widget.menu selected=template/></div>
 	</div>
 </div>

@@ -1,15 +1,12 @@
 package net.cloudengine.web.map;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
-
 import net.cloudengine.maps.GoogleMapsTileServer;
+import net.cloudengine.model.map.Tile;
+import net.cloudengine.service.map.TileCache;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,49 +22,40 @@ public class MapController {
 	private static final String URI = "/tiles/{zoom}/{x}/{y}";
 	
 	// zoom 16, x 22092, y 39464
+	private TileCache tileCache;
 	
-	
+	@Autowired
+	public MapController(TileCache tileCache) {
+		super();
+		this.tileCache = tileCache;
+	}
+
+
+
 	@RequestMapping(value = URI, method = RequestMethod.GET)
 	public ResponseEntity<byte[]> tile(@PathVariable("zoom") int zoom, @PathVariable("x") int x, @PathVariable("y") int y) {
 		
-		logger.debug("Buscando tile, zoom = {}, x = {}, y = {}", new Object[] {zoom, x, y});
+		TileServer tileServer = new GoogleMapsTileServer();//FIXME poner como dependencia de spring.
 		
-		TileServer server = new GoogleMapsTileServer();
-		String url = server.tileUrl(zoom, x, y);
+		logger.debug("Petición de tile, zoom = {}, x = {}, y = {}", new Object[] {zoom, x, y});
 		
+		// verifico si el tile está en el cache
+		logger.debug("Buscando tile en el cache, zoom = {}, x = {}, y = {}", new Object[] {zoom, x, y});
 		
-			try {
-				InputStream is = new URL(url).openConnection().getInputStream();
-
-				ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-
-				int nRead;
-				byte[] data = new byte[16384];
-
-				while ((nRead = is.read(data, 0, data.length)) != -1) {
-				  buffer.write(data, 0, nRead);
-				}
-
-				buffer.flush();
-				byte[] imagen = buffer.toByteArray();
-
-				HttpHeaders responseHeaders = new HttpHeaders();
-				responseHeaders.set("Content-Type", "image/png");
-				
-				return new ResponseEntity<byte[]>(imagen, responseHeaders, HttpStatus.OK);		
-							
-			
-			} catch (MalformedURLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			return null;
+		HttpHeaders responseHeaders = new HttpHeaders();
+		responseHeaders.set("Content-Type", "image/png");
 		
+		Tile requestedTile = tileCache.get(zoom, x, y, tileServer.getKey());
+		if (requestedTile != null) {
+			logger.debug("Tile encontrado en el cache, zoom = {}, x = {}, y = {}", new Object[] {zoom, x, y});
+			return new ResponseEntity<byte[]>(requestedTile.getImage(), responseHeaders, HttpStatus.OK);
+		}
+		
+		Tile tile  = tileServer.get(zoom, x, y);
+
+		if (tile.isCacheable()) {
+			tileCache.put(tile);
+		}
+		return new ResponseEntity<byte[]>(tile.getImage(), responseHeaders, HttpStatus.OK);		
 	}	
-	
-
-	
 }

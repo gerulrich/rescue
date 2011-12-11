@@ -19,13 +19,24 @@
 	</a>
 </#macro>
 
-<#macro menu>
+<#macro menu selected="">
 <ul class="clear">
-	<li><a href="<@spring.url '/'/>">Dashboard</a></li>
+	<li<#if (selected="dashboard")> class="active"</#if>><a href="<@spring.url '/'/>">Dashboard</a></li>
+	<#if (development == false)>
+		<#assign jnlpUrl = "https://jnlprescue.cloudfoundry.com/applications/application1.jnlp">
+	<#else>
+		<#assign jnlpUrl = "http://localhost:18080/client-deploy/applications/application1.jnlp">
+	</#if>
 	<li>
+		<a href="#">Aplicación</a>
+		<ul>
+			<li><a href="${jnlpUrl}">Descargar</a></li>
+		</ul>
+	</li>	
+	
+	<li<#if (selected="admin")> class="active"</#if>>
 		<a href="#">Administracion</a>
 		<ul>
-			<li><a href="<@spring.url '/config.html'/>">Ver configuración</a></li>
 			<li><a href="#">Usuarios</a>
 				<ul>
 					<li><a href="<@spring.url '/admin/user/new'/>">Nuevo...</a></li>

@@ -1,0 +1,226 @@
+<?xml version="1.0"?>
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<artifactId>rescue911</artifactId>
+		<groupId>net.rescueapp</groupId>
+		<version>0.2-SNAPSHOT</version>
+	</parent>
+	<artifactId>client-deploy</artifactId>
+	<packaging>war</packaging>
+	<name>client-deploy Maven Webapp</name>
+	<url>http://maven.apache.org</url>
+	<repositories>
+		<repository>
+			<id>morphia</id>
+			<url>http://morphia.googlecode.com/svn/mavenrepo/</url>
+		</repository>
+
+		<!-- For developing against latest Spring milestones -->
+		<repository>
+			<id>org.springframework.maven.milestone</id>
+			<name>Spring Maven Milestone Repository</name>
+			<url>http://maven.springframework.org/milestone</url>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+		</repository>
+
+	</repositories>
+
+	<pluginRepositories>
+		<pluginRepository>
+			<id>repository.springframework.maven.milestone</id>
+			<name>Spring Framework Maven Milestone Repository</name>
+			<url>http://maven.springframework.org/milestone</url>
+		</pluginRepository>
+	</pluginRepositories>	
+
+	<dependencies>
+		<!-- Sun's JnlpDownladServlet takes the template JNLP file and inserts 
+			relevant values for $$codebase and other parameters -->
+		<!-- <dependency> -->
+		<!-- <groupId>com.sun.java.jnlp</groupId> -->
+		<!-- <artifactId>jnlp-servlet</artifactId> -->
+		<!-- <version>5.0</version> -->
+		<!-- <scope>runtime</scope> -->
+		<!-- </dependency> -->
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<version>2.5</version>
+			<scope>provided</scope>
+		</dependency>
+	</dependencies>
+
+
+	<build>
+		<finalName>client-deploy</finalName>
+
+		<resources>
+			<resource>
+				<directory>${basedir}/src/main/resources</directory>
+				<includes>
+					<include>**/*.*</include>
+				</includes>
+			</resource>
+
+			<resource>
+				<directory>${basedir}/src/main/java</directory>
+				<includes>
+					<include>**/*.xml</include>
+					<include>**/*.properties</include>
+				</includes>
+			</resource>
+
+		</resources>
+		<plugins>
+			<plugin>
+				<groupId>org.cloudfoundry</groupId>
+				<artifactId>cf-maven-plugin</artifactId>
+				<version>1.0.0.M1</version>
+				<configuration>
+					<server>mycloudfoundry-instance</server>
+					<target>http://api.cloudfoundry.com</target>
+					<url>http://jnlprescue.cloudfoundry.com</url>
+					<memory>256</memory>
+				</configuration>
+			</plugin>
+			
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>2.5</version>
+			</plugin>
+		
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.3.2</version>
+				<configuration>
+					<source>${jdk-version}</source>
+					<target>${jdk-version}</target>
+					<encoding>UTF-8</encoding>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.codehaus.mojo.webstart</groupId>
+				<artifactId>webstart-maven-plugin</artifactId>
+				<version>1.0-beta-2</version>
+				<executions>
+					<execution>
+						<phase>process-resources</phase>
+						<goals>
+							<goal>jnlp-download-servlet</goal>
+						</goals>
+					</execution>
+				</executions>
+
+				<configuration>
+					<!-- Este es el directorio que contiene las plantillas de velocity a partir de las cuales
+						se generán los archivos jnlp. La ubicación predeterminada es 'src/main/jnlp. -->
+					<templateDirectory>src/main/jnlp/templates</templateDirectory>
+
+					<!-- Este es el nombre del directorio en el que los archivos JNLP procesados serán colocados. 
+					     Este directorio se encuentran en la raíz del archivo WAR producido por este proyecto. 
+					     El nombre que aquí debe coincidir con el servlet-mapping url-pattern proporcionada en el archivo web.xml. 
+					     El valor por defecto es 'webstart. -->
+					<outputDirectoryName>applications</outputDirectoryName>
+
+					<jnlpFiles>
+
+						<jnlpFile>
+							<templateFilename>template.vm</templateFilename>
+							<outputFilename>application1.jnlp</outputFilename>
+							<jarResources>
+								<jarResource>
+									<groupId>net.rescueapp</groupId>
+									<artifactId>mapviewer</artifactId>
+									<version>${project.version}</version>
+									<!-- <classifier>[some optional classifier]</classifier> -->
+									<!-- Un elemento MainClass debe ser especificado, y sólo uno, por jarResource jnlpFile -->
+									<mainClass>net.cloudengine.mapviewer.MapBrowser</mainClass>
+								</jarResource>
+							</jarResources>
+						</jnlpFile>
+
+					</jnlpFiles>
+
+					<!-- Set to true to exclude all transitive dependencies from the JNLP bundle. Default is false. -->
+					<excludeTransitive>false</excludeTransitive>
+
+					<!-- SIGNING -->
+					<!-- defining this will automatically sign the jar and its dependencies, if necessary -->
+					<sign>
+						<keystore>${basedir}/src/main/jnlp/fillme</keystore>
+						<keypass>fillme</keypass>  <!-- we need to override passwords easily from the command line. ${keypass} -->
+						<storepass>fillme</storepass> <!-- ${storepass} -->
+						<!--storetype>fillme</storetype -->
+						<alias>fillme</alias>
+
+						<!--validity>fillme</validity -->
+
+						<!-- only required for generating the keystore -->
+						<!--dnameCn>fillme</dnameCn> <dnameOu>fillme</dnameOu> <dnameO>fillme</dnameO> 
+							<dnameL>fillme</dnameL> <dnameSt>fillme</dnameSt> <dnameC>fillme</dnameC -->
+
+						<verify>true</verify> <!-- verify that the signing operation succeeded -->
+
+						<!-- KEYSTORE MANAGEMENT -->
+						<keystoreConfig>
+							<delete>false</delete> <!-- delete the keystore -->
+							<gen>false</gen>       <!-- optional shortcut to generate the store. -->
+						</keystoreConfig>
+					</sign>
+
+				</configuration>
+
+			</plugin>
+
+		</plugins>
+
+
+
+		<pluginManagement>
+			<plugins>
+				<!--This plugin's configuration is used to store Eclipse m2e settings 
+					only. It has no influence on the Maven build itself. -->
+				<plugin>
+					<groupId>org.eclipse.m2e</groupId>
+					<artifactId>lifecycle-mapping</artifactId>
+					<version>1.0.0</version>
+					<configuration>
+						<lifecycleMappingMetadata>
+							<pluginExecutions>
+								<pluginExecution>
+									<pluginExecutionFilter>
+										<groupId>org.codehaus.mojo.webstart</groupId>
+										<artifactId>webstart-maven-plugin</artifactId>
+										<versionRange>1.0-beta-2</versionRange>
+										<goals>
+											<goal>jnlp-download-servlet</goal>
+										</goals>
+									</pluginExecutionFilter>
+									<action>
+										<ignore />
+									</action>
+								</pluginExecution>
+							</pluginExecutions>
+						</lifecycleMappingMetadata>
+					</configuration>
+				</plugin>
+
+
+
+			</plugins>
+		</pluginManagement>
+
+
+	</build>
+
+
+</project>
+		

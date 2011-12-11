@@ -12,7 +12,7 @@
 		
 		<context:annotation-config />
 
-		<bean class="net.cloudengine.service.ConfigurationServiceImpl" autowire="byType">
+		<bean class="net.cloudengine.service.admin.ConfigurationServiceImpl" autowire="byType">
 			<property name="version" value="${project.version}" />
 			<property name="buildNumber" value="${timestamp}"/>
 		</bean>		
@@ -22,6 +22,12 @@
 		<bean id="userStore" class="net.cloudengine.api.mongo.MongoStore">
 			<constructor-arg ref="mongoDbFactory"></constructor-arg>
 			<constructor-arg type="java.lang.Class" value="net.cloudengine.model.auth.User"></constructor-arg>
+			<constructor-arg ref="morphia"></constructor-arg>
+		</bean>
+		
+		<bean id="tileStore" class="net.cloudengine.api.mongo.MongoStore">
+			<constructor-arg ref="mongoDbFactory"></constructor-arg>
+			<constructor-arg type="java.lang.Class" value="net.cloudengine.model.map.Tile"></constructor-arg>
 			<constructor-arg ref="morphia"></constructor-arg>
 		</bean>
 	

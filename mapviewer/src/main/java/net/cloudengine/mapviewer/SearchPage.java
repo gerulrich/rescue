@@ -125,29 +125,42 @@ public class SearchPage extends AbstractPage implements Page {
         		"the map is rendered. Click on the mapinfos link to see details " +
         		"about the currently rendered part of the map.");
         
-        addActionLink(container, composite, "<a>Toggle Rendering</a>", new SelectionAdapter() {
+        
+        addActionLink(container, composite, "<a>Cambiar fuente de datos</a>", new SelectionAdapter() {
             public void widgetSelected(SelectionEvent e) {
-                MapWidget mapWidget = mapBrowser.getMapWidget();
+            	MapWidget mapWidget = mapBrowser.getMapWidget();
                 int next = (Arrays.asList(MapWidget.TILESERVERS).indexOf(mapWidget.getTileServer()) + 1) % MapWidget.TILESERVERS.length;
                 mapWidget.setTileServer(MapWidget.TILESERVERS[next]);
             }
         });
 
-        addActionLink(container, composite, "Show <a>Technical Mapinfos</a>", new SelectionAdapter() {
+        addActionLink(container, composite, "Ver <a>Technical Mapinfos</a>", new SelectionAdapter() {
             public void widgetSelected(SelectionEvent e) {
                 mapBrowser.getPageContainer().showPage(mapBrowser.getPageContainer().indexOfPage(mapBrowser.getInfoPage()));
             }
         });
-        addActionLink(container, composite, "Show <a>Mi casa</a>", new SelectionAdapter() {
+        addActionLink(container, composite, "Ver <a>FIUBA</a>", new SelectionAdapter() {
 
         	public void widgetSelected(SelectionEvent e) {
                 MapWidget mapWidget = mapBrowser.getMapWidget();
                 mapWidget.setZoom(16);
-                Point position = mapWidget.computePosition(new PointD(-58.51205,-34.52610)); 
+                Point position = mapWidget.computePosition(new PointD(-58.36798, -34.61761)); 
                 mapWidget.setCenterPosition(position);
                 mapWidget.redraw();
             }
         });
+        
+        addActionLink(container, composite, "Ver <a>FullMap</a>", new SelectionAdapter() {
+
+        	public void widgetSelected(SelectionEvent e) {
+                MapWidget mapWidget = mapBrowser.getMapWidget();
+                mapWidget.setZoom(12);
+                Point position = new Point(354083, 631905); 
+                mapWidget.setCenterPosition(position);
+                mapWidget.redraw();
+            }
+        });
+        
         
         addHeaderRow(container, composite, "Search location");
         addInfoText(container, composite, "Enter any location or landmark site to search openstreetmap's " +
@@ -211,7 +224,8 @@ public class SearchPage extends AbstractPage implements Page {
 //        table.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
         
         addHeaderRow(container, composite, "Actions");
-        addInfoText(container, composite, MapWidget.ABOUT_MSG);
+        // FIXME
+        addInfoText(container, composite, /*MapWidget.ABOUT_MSG*/"About message");
     }
 
     protected void widgetDisposed(DisposeEvent e) {
@@ -256,7 +270,8 @@ public class SearchPage extends AbstractPage implements Page {
         results.clear();
         try {
             String args = URLEncoder.encode(newSearch, "UTF-8");
-            String path = MapWidget.NAMEFINDER_URL + "?find= " + args;
+            // FIXME
+            String path = "http://"/*MapWidget.NAMEFINDER_URL */+ "?find= " + args;
             SAXParserFactory factory = SAXParserFactory.newInstance();
             factory.setValidating(false);
             factory.newSAXParser().parse(path, new DefaultHandler() {

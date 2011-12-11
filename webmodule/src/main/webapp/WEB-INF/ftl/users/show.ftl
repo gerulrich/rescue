@@ -1,4 +1,4 @@
-<@layout.main>
+<@layout.main template="admin">
 <table>
 	<tr>
 		<td>Nombre de usuario</td>

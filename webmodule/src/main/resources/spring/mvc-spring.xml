@@ -29,9 +29,6 @@
     
     <bean class="org.springframework.aop.aspectj.annotation.AnnotationAwareAspectJAutoProxyCreator" />
     
-    <!-- map the homepage to the index view -->
-    <mvc:view-controller path="/" view-name="/home" />   
-    
 	<bean class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
   		<property name="mediaTypes">
     		<map>

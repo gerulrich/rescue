@@ -36,13 +36,13 @@ public class TitleControl extends Canvas {
 	public TitleControl(Composite parent) {
 		super(parent, SWT.DOUBLE_BUFFERED);
 		addPaintListener(new PaintListener() {
-			@Override
+			
 			public void paintControl(PaintEvent e) {
 				onPaint(e);
 			}
 		});
 		addDisposeListener(new DisposeListener() {
-			@Override
+			
 			public void widgetDisposed(DisposeEvent e) {
 				onDispose(e);
 			}
