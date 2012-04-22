@@ -12,6 +12,7 @@
                         <li><a href="#"><img src="images/ico_clock_64.png" class="icon" alt="" /><span class="text">Add Event</span></a></li>-->
 				        <li><a href="<@spring.url '/admin/users'/>"><img src="<@spring.url '/static/images/icon_users_64.png'/>" class="icon" alt="" /><span class="text">Usuarios</span></a></li>
 		                <li><a href="<@spring.url '/admin/mongo/list'/>"><img src="<@spring.url '/static/images/icon_db_64.png'/>" class="icon" alt="" /><span class="text">MongoDB</span></a></li>
+		                <li><a href="<@spring.url '/admin/properties'/>"><img src="<@spring.url '/static/images/ico_settings_64.png'/>" class="icon" alt="" /><span class="text">Configuración</span></a></li>
 		                <!--<li><a href="#modal" class="modal-link"><img src="images/ico_chat_64.png" class="icon" alt="" /><span class="text">Open Modal</span></a></li>
            		        <li><a href="#"><img src="images/ico_folder_64.png" class="icon" alt="" /><span class="text">Create an Article</span></a></li>
                    		<li class="active"><a href="#"><img src="images/ico_page_64.png" class="icon" alt="" /><span class="text">Active icon</span></a></li>

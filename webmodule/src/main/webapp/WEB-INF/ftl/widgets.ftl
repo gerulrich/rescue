@@ -22,11 +22,7 @@
 <#macro menu selected="">
 <ul class="clear">
 	<li<#if (selected="dashboard")> class="active"</#if>><a href="<@spring.url '/'/>">Dashboard</a></li>
-	<#if (development == false)>
-		<#assign jnlpUrl = "https://jnlprescue.cloudfoundry.com/applications/application1.jnlp">
-	<#else>
-		<#assign jnlpUrl = "http://localhost:18080/client-deploy/applications/application1.jnlp">
-	</#if>
+
 	<li>
 		<a href="#">Aplicación</a>
 		<ul>

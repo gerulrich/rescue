@@ -27,9 +27,14 @@
 				<td><@spring.formPasswordInput "user.passwordVerification" /></td>
 				<td><@spring.showErrors "" /></td>
 			</tr>
+			<tr>
+				<td><label path="roles">Roles</label></td>
+				<td><@spring.formInput "user.roles" /></td>
+				<td><@spring.showErrors "" /></td>
+			</tr>
 		</table>
 	</fieldset>
-	<input type="submit" value="Guardar"/>		
+	<input type="submit" value="Guardar"/>
 </form>	
 
 </@layout.main>

@@ -12,7 +12,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.GenericFilterBean;
 
 /**
- * Filtro que se ejecuta al iniciar sesión y guarda el usuario en la sesiónpara que se pueda
+ * Filtro que se ejecuta al iniciar sesión y guarda el usuario en la sesión para que se pueda
  * obtener en la vista.
  * @author German Ulrich
  *

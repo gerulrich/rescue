@@ -32,6 +32,9 @@ class NewUser implements Serializable, PasswordVerificable {
 	@NotNull
     String passwordVerification;
 	
+	@Size(min=3)
+	String roles;
+	
 	@Override
 	public String getPassword() {
 		return password;

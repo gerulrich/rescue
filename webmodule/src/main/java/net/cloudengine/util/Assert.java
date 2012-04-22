@@ -23,5 +23,11 @@ public abstract class Assert {
 			throw new IllegalArgumentException(message);
 		}
 	}
+	
+	public static void notEmpty(String object, String message) {
+		if (object == null || object.trim().equals("")) {
+			throw new IllegalArgumentException(message);
+		}
+	}	
 
 }

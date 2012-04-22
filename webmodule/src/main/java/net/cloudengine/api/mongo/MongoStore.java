@@ -5,7 +5,9 @@ import java.io.Serializable;
 import net.cloudengine.api.Datastore;
 import net.cloudengine.api.PagingResult;
 import net.cloudengine.api.Query;
+import net.cloudengine.web.MongoDBWrapper;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.document.mongodb.SimpleMongoDbFactory;
 
 import com.google.code.morphia.Morphia;
@@ -19,9 +21,10 @@ public class MongoStore<E, PK extends Serializable> implements Datastore<E, PK> 
 	private Class<E> entityClass;
 	private Morphia morphia;
 	
-	public MongoStore(SimpleMongoDbFactory factory, Class<E> entityClass, Morphia morphia) {
+	@Autowired
+	public MongoStore(MongoDBWrapper wrapper, Class<E> entityClass, Morphia morphia) {
 		super();
-		this.factory = factory;
+		this.factory = wrapper.getFactory();
 		this.entityClass = entityClass;
 		this.morphia = morphia;
 	}

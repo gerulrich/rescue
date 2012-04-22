@@ -1,0 +1,58 @@
+org.asteriskjava.manager.event.NewChannelEvent
+callerId,2001
+callerIdName,device
+callerIdNum,2001
+channel,IAX2/2001-3240
+channelState,4
+channelStateDesc,Ring
+context,from-internal
+dateReceived,19/02/2012 12:11:39
+exten,*43
+privilege,call,all
+source,ManagerConnection[id='0',hostname='192.168.0.104',port=5038,systemHashcode=13523740]
+state,Ring
+uniqueId,1329604112.56
+--------------------------------------------------------
+org.asteriskjava.manager.event.NewStateEvent
+callerId,2001
+callerIdName,device
+callerIdNum,2001
+channel,IAX2/2001-3240
+channelState,6
+channelStateDesc,Up
+dateReceived,19/02/2012 12:11:39
+privilege,call,all
+source,ManagerConnection[id='0',hostname='192.168.0.104',port=5038,systemHashcode=13523740]
+state,Up
+uniqueId,1329604112.56
+--------------------------------------------------------
+org.asteriskjava.manager.event.ExtensionStatusEvent
+context,ext-local
+dateReceived,19/02/2012 12:11:39
+exten,2001
+hint,IAX2/2001
+privilege,call,all
+source,ManagerConnection[id='0',hostname='192.168.0.104',port=5038,systemHashcode=13523740]
+status,1
+--------------------------------------------------------
+org.asteriskjava.manager.event.HangupEvent
+callerId,2001
+callerIdName,device
+callerIdNum,2001
+cause,16
+causeTxt,Normal Clearing
+channel,IAX2/2001-3240
+dateReceived,19/02/2012 12:11:50
+privilege,call,all
+source,ManagerConnection[id='0',hostname='192.168.0.104',port=5038,systemHashcode=13523740]
+uniqueId,1329604112.56
+--------------------------------------------------------
+org.asteriskjava.manager.event.ExtensionStatusEvent
+context,ext-local
+dateReceived,19/02/2012 12:11:50
+exten,2001
+hint,IAX2/2001
+privilege,call,all
+source,ManagerConnection[id='0',hostname='192.168.0.104',port=5038,systemHashcode=13523740]
+status,0
+--------------------------------------------------------

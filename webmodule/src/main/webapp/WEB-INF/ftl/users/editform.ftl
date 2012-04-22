@@ -16,6 +16,10 @@
 	           		<td><label path="displayName">Nombre a visualizar</label></td>
                		<td><@spring.formInput  "user.displayName" /></td>
 				</tr>
+            	<tr>
+	           		<td><label path="displayName">Roles</label></td>
+               		<td><@spring.formInput  "user.roles" /></td>
+				</tr>				
 			</table>
 		</fieldset>
 		

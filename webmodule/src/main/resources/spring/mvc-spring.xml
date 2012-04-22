@@ -14,7 +14,7 @@
     
    	<!-- annotation scanning. busca en  los packages especificados en busca de beans de spring -->
     <context:component-scan base-package="net.cloudengine.web"/>
-
+	
 	<!-- Soporte para la anotation @Controller -->
 	<mvc:annotation-driven>
 		<mvc:argument-resolvers>
@@ -89,5 +89,8 @@
         class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver"
         p:defaultErrorView="errors/exception-caught" p:order="3" p:warnLogCategory="warn">
         <description>When no @ExceptionHandler was found then map these exceptions to view names, set the default error</description>
+    
     </bean>
+    
+    	<bean id="pepe" class="net.cloudengine.web.HessianServiceExporterPostProcessor" />
 </beans>

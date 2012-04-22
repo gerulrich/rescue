@@ -21,6 +21,7 @@
 							<th>OID</th>
 							<th>Nombre</th>
 							<th>E-mail</th>
+							<th>Roles</th>
 							<th>Habilitado</th>
 							<th>Acciones</th>
 						</tr>
@@ -31,6 +32,7 @@
 							<td>${user.id}</td>
 							<td>${user.displayName}</td>
 							<td>${user.username}</td>
+							<td>${user.roles}</td>
 							<td><#if user.account.enabled>Yes<#else>No</#if></td>
 							<td>
 								<@widget.detail "/admin/user/show/${user.id}"/>

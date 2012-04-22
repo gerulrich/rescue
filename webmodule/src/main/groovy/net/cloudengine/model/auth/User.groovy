@@ -20,16 +20,18 @@ class User implements UserDetails {
 	String displayName
 	String username
 	String password
-
+	String roles;
+	
 	Account account = new Account();
-	Collection<Role> roles;
 		
 	@Override
 	Collection<GrantedAuthority> getAuthorities() {
-		// FIXME sacar los roles de algun lado
 		List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
-		authorities.add(new SimpleGrantedAuthority('ROLE_USER'));
-		authorities.add(new SimpleGrantedAuthority('ROLE_ADMIN'));
+		if (roles!=null && roles) {
+			for (String roleName : roles.split(',')) {
+				authorities.add(new SimpleGrantedAuthority(roleName));
+			}
+		}
 		return authorities;
 	}
 	
@@ -48,14 +50,6 @@ class User implements UserDetails {
 		}
 		result.append("}");
 		return result.toString();
-	}
-
-	def addRole(Role role) {
-		this.roles.add(role);
-	}
-	
-	def removeRole(Role role) {
-		this.roles.remove(role);
 	}
 
 	@Override

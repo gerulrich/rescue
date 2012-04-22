@@ -17,13 +17,14 @@
 	<http security="none" pattern="/css/**"/>
 	<http security="none" pattern="/img/**"/>
 	<http security="none" pattern="/tiles/**"/>
+	<http security="none" pattern="/hessian/SigninService**"/>
 	<http security="none" pattern="/static/**"/>
 	<http security="none" pattern="/cloud/**"/>
 	<http security="none" pattern="/account/signin.html"/>
 	
 
    <http use-expressions="true">
-    	<intercept-url pattern="/admin/**" access="hasRole('ROLE_ADMIN')"/>
+    	<intercept-url pattern="/admin/**" access="hasRole('ADMIN')"/>
     	<!--  Para todas las otras url se debe estar autenticado. -->
         <intercept-url pattern="/**" access="isAuthenticated()" />
 		<form-login login-page="/account/signin.html" authentication-failure-url="/account/signin.html"/>

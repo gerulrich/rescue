@@ -1,9 +1,3 @@
-/*
- * $HeadURL$
- *
- * (c)2010 Stepan Rutz, Licensed under LGPL License
- */
-
 package net.cloudengine.mapviewer;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -17,10 +11,6 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 
-/**
- * @author stepan.rutz@gmx.de
- * @version $Revision$
- */
 public class PageContainer extends Composite {
 
     private Composite content;
@@ -42,10 +32,10 @@ public class PageContainer extends Composite {
         
         stackLayout = new StackLayout();
 
-        TitleControl title = new TitleControl(this);
-        adapt(title);
-        title.setLayoutData(new GridData(GridData.FILL, GridData.BEGINNING, true, false));
-        title.setText("Mapa");
+//        TitleControl title = new TitleControl(this);
+//        adapt(title);
+//        title.setLayoutData(new GridData(GridData.FILL, GridData.BEGINNING, true, false));
+//        title.setText("Mapa");
         
         content = new Composite(this, SWT.NONE);
         content.setLayout(stackLayout);

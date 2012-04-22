@@ -1,5 +1,7 @@
 package net.cloudengine.api.mongo;
 
+import java.util.Collection;
+
 import net.cloudengine.api.Field;
 import net.cloudengine.api.Query;
 
@@ -26,6 +28,11 @@ public class QueryImpl<E, PK> implements Query<E>, Field<E> {
 	@Override
 	public E get() {
 		return query.get();
+	}
+	
+	@Override
+	public Collection<E> list() {
+		return query.asList();
 	}
 
 	@Override

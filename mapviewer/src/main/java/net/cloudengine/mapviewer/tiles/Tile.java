@@ -4,8 +4,8 @@ public class Tile {
 	private final String key;
 	public final int x, y, z;
 
-	public Tile(String tileServer, int x, int y, int z) {
-		this.key = tileServer;
+	public Tile(TileServerType type, int x, int y, int z) {
+		this.key = type.toString();
 		this.x = x;
 		this.y = y;
 		this.z = z;

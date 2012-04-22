@@ -1,0 +1,191 @@
+org.asteriskjava.manager.event.NewChannelEvent
+callerId,4002
+callerIdName,device
+callerIdNum,4002
+channel,SIP/4002-0000001d
+channelState,0
+channelStateDesc,Down
+context,from-internal
+dateReceived,19/02/2012 12:20:26
+exten,4003
+privilege,call,all
+source,ManagerConnection[id='0',hostname='192.168.0.104',port=5038,systemHashcode=3414368]
+state,Down
+uniqueId,1329604640.59
+--------------------------------------------------------
+org.asteriskjava.manager.event.NewStateEvent
+callerId,4002
+callerIdName,device
+callerIdNum,4002
+channel,SIP/4002-0000001d
+channelState,4
+channelStateDesc,Ring
+dateReceived,19/02/2012 12:20:26
+privilege,call,all
+source,ManagerConnection[id='0',hostname='192.168.0.104',port=5038,systemHashcode=3414368]
+state,Ring
+uniqueId,1329604640.59
+--------------------------------------------------------
+org.asteriskjava.manager.event.ExtensionStatusEvent
+context,ext-local
+dateReceived,19/02/2012 12:20:26
+exten,4002
+hint,SIP/4002
+privilege,call,all
+source,ManagerConnection[id='0',hostname='192.168.0.104',port=5038,systemHashcode=3414368]
+status,1
+--------------------------------------------------------
+org.asteriskjava.manager.event.NewChannelEvent
+callerId,4003
+callerIdName,device
+callerIdNum,4003
+channel,SIP/4003-0000001e
+channelState,0
+channelStateDesc,Down
+context,from-internal
+dateReceived,19/02/2012 12:20:27
+privilege,call,all
+source,ManagerConnection[id='0',hostname='192.168.0.104',port=5038,systemHashcode=3414368]
+state,Down
+uniqueId,1329604640.60
+--------------------------------------------------------
+org.asteriskjava.manager.event.ExtensionStatusEvent
+context,ext-local
+dateReceived,19/02/2012 12:20:27
+exten,4003
+hint,SIP/4003
+privilege,call,all
+source,ManagerConnection[id='0',hostname='192.168.0.104',port=5038,systemHashcode=3414368]
+status,8
+--------------------------------------------------------
+org.asteriskjava.manager.event.DialEvent
+callerId,4002
+callerIdName,Operador 2
+callerIdNum,4002
+channel,SIP/4002-0000001d
+dateReceived,19/02/2012 12:20:27
+destUniqueId,1329604640.60
+destination,SIP/4003-0000001e
+dialString,4003
+privilege,call,all
+source,ManagerConnection[id='0',hostname='192.168.0.104',port=5038,systemHashcode=3414368]
+src,SIP/4002-0000001d
+srcUniqueId,1329604640.59
+subEvent,Begin
+uniqueId,1329604640.59
+--------------------------------------------------------
+org.asteriskjava.manager.event.NewStateEvent
+callerId,4003
+callerIdName,device
+callerIdNum,4003
+channel,SIP/4003-0000001e
+channelState,5
+channelStateDesc,Ringing
+dateReceived,19/02/2012 12:20:27
+privilege,call,all
+source,ManagerConnection[id='0',hostname='192.168.0.104',port=5038,systemHashcode=3414368]
+state,Ringing
+uniqueId,1329604640.60
+--------------------------------------------------------
+org.asteriskjava.manager.event.NewStateEvent
+callerId,4003
+callerIdName,device
+callerIdNum,4003
+channel,SIP/4003-0000001e
+channelState,6
+channelStateDesc,Up
+dateReceived,19/02/2012 12:20:31
+privilege,call,all
+source,ManagerConnection[id='0',hostname='192.168.0.104',port=5038,systemHashcode=3414368]
+state,Up
+uniqueId,1329604640.60
+--------------------------------------------------------
+org.asteriskjava.manager.event.NewStateEvent
+callerId,4002
+callerIdName,Operador 2
+callerIdNum,4002
+channel,SIP/4002-0000001d
+channelState,6
+channelStateDesc,Up
+dateReceived,19/02/2012 12:20:31
+privilege,call,all
+source,ManagerConnection[id='0',hostname='192.168.0.104',port=5038,systemHashcode=3414368]
+state,Up
+uniqueId,1329604640.59
+--------------------------------------------------------
+org.asteriskjava.manager.event.ExtensionStatusEvent
+context,ext-local
+dateReceived,19/02/2012 12:20:31
+exten,4003
+hint,SIP/4003
+privilege,call,all
+source,ManagerConnection[id='0',hostname='192.168.0.104',port=5038,systemHashcode=3414368]
+status,1
+--------------------------------------------------------
+org.asteriskjava.manager.event.UnlinkEvent
+bridgeState,Unlink
+callerId1,4002
+callerId2,4003
+channel1,SIP/4002-0000001d
+channel2,SIP/4003-0000001e
+dateReceived,19/02/2012 12:20:39
+link,false
+privilege,call,all
+source,ManagerConnection[id='0',hostname='192.168.0.104',port=5038,systemHashcode=3414368]
+uniqueId1,1329604640.59
+uniqueId2,1329604640.60
+unlink,true
+--------------------------------------------------------
+org.asteriskjava.manager.event.HangupEvent
+callerId,4003
+callerIdName,device
+callerIdNum,4003
+cause,16
+causeTxt,Normal Clearing
+channel,SIP/4003-0000001e
+dateReceived,19/02/2012 12:20:39
+privilege,call,all
+source,ManagerConnection[id='0',hostname='192.168.0.104',port=5038,systemHashcode=3414368]
+uniqueId,1329604640.60
+--------------------------------------------------------
+org.asteriskjava.manager.event.DialEvent
+channel,SIP/4002-0000001d
+dateReceived,19/02/2012 12:20:39
+dialStatus,ANSWER
+privilege,call,all
+source,ManagerConnection[id='0',hostname='192.168.0.104',port=5038,systemHashcode=3414368]
+src,SIP/4002-0000001d
+srcUniqueId,1329604640.59
+subEvent,End
+uniqueId,1329604640.59
+--------------------------------------------------------
+org.asteriskjava.manager.event.HangupEvent
+callerId,4002
+callerIdName,Operador 2
+callerIdNum,4002
+cause,16
+causeTxt,Normal Clearing
+channel,SIP/4002-0000001d
+dateReceived,19/02/2012 12:20:39
+privilege,call,all
+source,ManagerConnection[id='0',hostname='192.168.0.104',port=5038,systemHashcode=3414368]
+uniqueId,1329604640.59
+--------------------------------------------------------
+org.asteriskjava.manager.event.ExtensionStatusEvent
+context,ext-local
+dateReceived,19/02/2012 12:20:39
+exten,4003
+hint,SIP/4003
+privilege,call,all
+source,ManagerConnection[id='0',hostname='192.168.0.104',port=5038,systemHashcode=3414368]
+status,0
+--------------------------------------------------------
+org.asteriskjava.manager.event.ExtensionStatusEvent
+context,ext-local
+dateReceived,19/02/2012 12:20:39
+exten,4002
+hint,SIP/4002
+privilege,call,all
+source,ManagerConnection[id='0',hostname='192.168.0.104',port=5038,systemHashcode=3414368]
+status,0
+--------------------------------------------------------

@@ -7,12 +7,12 @@
 package net.cloudengine.mapviewer;
 import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import javax.xml.parsers.SAXParserFactory;
 
+import net.cloudengine.app.Application;
 import net.cloudengine.mapviewer.MapWidget.PointD;
 
 import org.eclipse.swt.SWT;
@@ -105,7 +105,7 @@ public class SearchPage extends AbstractPage implements Page {
         }
 
     }
-    private final MapBrowser mapBrowser;
+    private Application app;
     private ProgressBar progressBar;
     private GridData progressBarLayoutData;
     private Text searchText;
@@ -115,8 +115,8 @@ public class SearchPage extends AbstractPage implements Page {
     private ArrayList<SearchResult> results = new ArrayList<SearchResult>();
     private Link searchLink;
     
-    public SearchPage(MapBrowser mapBrowser) {
-        this.mapBrowser = mapBrowser;
+    public SearchPage(Application app) {
+        this.app = app;
     }
     
     protected void initContent(final PageContainer container, Composite composite) {
@@ -126,23 +126,24 @@ public class SearchPage extends AbstractPage implements Page {
         		"about the currently rendered part of the map.");
         
         
-        addActionLink(container, composite, "<a>Cambiar fuente de datos</a>", new SelectionAdapter() {
-            public void widgetSelected(SelectionEvent e) {
-            	MapWidget mapWidget = mapBrowser.getMapWidget();
-                int next = (Arrays.asList(MapWidget.TILESERVERS).indexOf(mapWidget.getTileServer()) + 1) % MapWidget.TILESERVERS.length;
-                mapWidget.setTileServer(MapWidget.TILESERVERS[next]);
-            }
-        });
+//        addActionLink(container, composite, "<a>Cambiar fuente de datos</a>", new SelectionAdapter() {
+//            public void widgetSelected(SelectionEvent e) {
+//            	MapWidget mapWidget = app.getMapWidget();
+//                int next = (Arrays.asList(MapWidget.TILESERVERS).indexOf(mapWidget.getTileServer()) + 1) % MapWidget.TILESERVERS.length;
+//                mapWidget.setTileServer(MapWidget.TILESERVERS[next]);
+//            }
+//        });
 
-        addActionLink(container, composite, "Ver <a>Technical Mapinfos</a>", new SelectionAdapter() {
-            public void widgetSelected(SelectionEvent e) {
-                mapBrowser.getPageContainer().showPage(mapBrowser.getPageContainer().indexOfPage(mapBrowser.getInfoPage()));
-            }
-        });
+//        addActionLink(container, composite, "Ver <a>Technical Mapinfos</a>", new SelectionAdapter() {
+//            public void widgetSelected(SelectionEvent e) {
+//                mapBrowser.getPageContainer().showPage(mapBrowser.getPageContainer().indexOfPage(mapBrowser.getInfoPage()));
+//            }
+//        });
+        
         addActionLink(container, composite, "Ver <a>FIUBA</a>", new SelectionAdapter() {
 
         	public void widgetSelected(SelectionEvent e) {
-                MapWidget mapWidget = mapBrowser.getMapWidget();
+                MapWidget mapWidget = app.getMapWidget();
                 mapWidget.setZoom(16);
                 Point position = mapWidget.computePosition(new PointD(-58.36798, -34.61761)); 
                 mapWidget.setCenterPosition(position);
@@ -153,7 +154,7 @@ public class SearchPage extends AbstractPage implements Page {
         addActionLink(container, composite, "Ver <a>FullMap</a>", new SelectionAdapter() {
 
         	public void widgetSelected(SelectionEvent e) {
-                MapWidget mapWidget = mapBrowser.getMapWidget();
+                MapWidget mapWidget = app.getMapWidget();
                 mapWidget.setZoom(12);
                 Point position = new Point(354083, 631905); 
                 mapWidget.setCenterPosition(position);
@@ -338,10 +339,10 @@ public class SearchPage extends AbstractPage implements Page {
         getComposite().getDisplay().asyncExec(new Runnable() {
             public void run() {
                 try {
-                    ResultsPage resultsPage = mapBrowser.getResultsPage();
-                    resultsPage.setSearch(newSearch);
-                    mapBrowser.getPageContainer().showPage(mapBrowser.getPageContainer().indexOfPage(resultsPage));
-                    resultsPage.setResults(results.toArray(new SearchResult[results.size()]));
+//                    ResultsPage resultsPage = mapBrowser.getResultsPage();
+//                    resultsPage.setSearch(newSearch);
+//                    mapBrowser.getPageContainer().showPage(mapBrowser.getPageContainer().indexOfPage(resultsPage));
+//                    resultsPage.setResults(results.toArray(new SearchResult[results.size()]));
                     //System.err.println(html_);
                 } finally {
                     searching = false;

@@ -49,7 +49,7 @@ public class MapBrowser extends Composite {
         
         sashForm.setWeights(new int[] { 100, 200 });
          
-        searchPage = new SearchPage(this);
+        searchPage = new SearchPage(null);
         resultsPage = new ResultsPage(this);
         infoPage = new InfoPage(this);
         pageContainer.setPages(searchPage, resultsPage, infoPage);
@@ -110,6 +110,24 @@ public class MapBrowser extends Composite {
         item.setText ("&Salir\tCtrl+S");
         item.setAccelerator(SWT.MOD1 + 'S');
         
+        MenuItem layerItem = new MenuItem(bar, SWT.CASCADE);
+        layerItem.setText("&Capas");
+        Menu submenu2 = new Menu (shell, SWT.DROP_DOWN);
+        layerItem.setMenu (submenu2);
+        
+        MenuItem item2 = new MenuItem (submenu2, SWT.PUSH);
+        item2.addListener (SWT.Selection, new Listener () {
+            public void handleEvent (Event e) {
+//                Runtime.getRuntime().halt(0);
+            }
+        });
+        item2.setText ("&OpenStreetMap\tCtrl+S");
+        item2.setAccelerator(SWT.MOD1 + 'S');
+        
+//        Menu layerSubmenu = new Menu(shell, SWT.PUSH);
+//        layerSubmenu.setMenu(layerItem);
+
+        
         shell.addListener(SWT.Close, new Listener() {
         	public void handleEvent(Event event) {
         		Runtime.getRuntime().halt(0);
@@ -127,12 +145,11 @@ public class MapBrowser extends Composite {
         Image large = new Image(display, MapBrowser.class.getResourceAsStream("starthere_48.png"));
         
         Shell shell = new Shell(display);
-        shell.setText("Map Widget - SWT Native Map Browsing, Map data from openstreetmap.org");
+        shell.setText("Mapa");
         shell.setSize(950, 710);
         
         shell.setImages(new Image[] {small, medium, large});
         shell.setLocation(10, 10);
-        
         
         shell.setMaximized(true);
         shell.setLayout (new FillLayout());
@@ -141,7 +158,6 @@ public class MapBrowser extends Composite {
         mb.createMenu(shell);
         
         shell.open ();
-        
         
         
         while (!shell.isDisposed ()) {

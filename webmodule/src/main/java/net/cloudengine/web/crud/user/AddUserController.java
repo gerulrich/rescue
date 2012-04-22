@@ -55,6 +55,7 @@ public class AddUserController {
 			user.setDisplayName(newUser.getDisplayName());
 			user.setUsername(newUser.getEmail());
 			user.setPassword(new Cipher().encrypt(newUser.getPassword()));
+			user.setRoles(newUser.getRoles());
 			datastore.save(user);
 			mav.setViewName("redirect:/admin/user/show/" + user.getId());
 		}

@@ -21,6 +21,7 @@
     <groovy-version>1.7.5</groovy-version>
     <org.cloudfoundry-version>0.7.1</org.cloudfoundry-version>
     <maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
+    <swt-version>3.5.2</swt-version>
   	<timestamp>${maven.build.timestamp}</timestamp>
   </properties>
 
@@ -132,6 +133,9 @@
 	<module>documentacion</module>
     <module>utilities</module>
     <module>mapviewer</module>
+    <module>common</module>
+    <module>desktop</module>
+    <module>telephone</module>
   </modules>
   
   <build>

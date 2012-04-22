@@ -1,7 +1,10 @@
 package net.cloudengine.web.map;
 
-import net.cloudengine.maps.GoogleMapsTileServer;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+
 import net.cloudengine.model.map.Tile;
+import net.cloudengine.service.admin.ConfigurationService;
 import net.cloudengine.service.map.TileCache;
 
 import org.slf4j.Logger;
@@ -19,23 +22,30 @@ import org.springframework.web.bind.annotation.RequestMethod;
 public class MapController {
 	
 	private static Logger logger = LoggerFactory.getLogger(MapController.class);
-	private static final String URI = "/tiles/{zoom}/{x}/{y}";
+	private static final String URI = "/tiles/{zoom}/{x}/{y}/{key}/";
 	
 	// zoom 16, x 22092, y 39464
 	private TileCache tileCache;
 	
+	private ConcurrentMap<String, TileServer> servers = new ConcurrentHashMap<String, TileServer>();
+	
 	@Autowired
-	public MapController(TileCache tileCache) {
+	public MapController(TileCache tileCache, ConfigurationService service) {
 		super();
 		this.tileCache = tileCache;
+		servers.put("map.google.street", new KeyConfigTileServer("map.google.street", service));
+		servers.put("map.google.sat", new KeyConfigTileServer("map.google.sat", service));
+		servers.put("map.osm", new KeyConfigTileServer("map.osm", service));
 	}
 
-
-
 	@RequestMapping(value = URI, method = RequestMethod.GET)
-	public ResponseEntity<byte[]> tile(@PathVariable("zoom") int zoom, @PathVariable("x") int x, @PathVariable("y") int y) {
+	public ResponseEntity<byte[]> tile(@PathVariable("zoom") int zoom, @PathVariable("x") int x, 
+			@PathVariable("y") int y, @PathVariable("key") String key) {
+		if (!servers.containsKey(key)) {
+			throw new IllegalArgumentException("La clave proporcionada no es válida: "+key);
+		}
 		
-		TileServer tileServer = new GoogleMapsTileServer();//FIXME poner como dependencia de spring.
+		TileServer tileServer = servers.get(key);
 		
 		logger.debug("Petición de tile, zoom = {}, x = {}, y = {}", new Object[] {zoom, x, y});
 		

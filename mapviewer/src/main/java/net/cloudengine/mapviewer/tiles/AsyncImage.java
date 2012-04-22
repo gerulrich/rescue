@@ -22,7 +22,21 @@ import org.eclipse.swt.widgets.Display;
 public class AsyncImage implements Runnable {
 
 	//FIXME
-	 private static final int IMAGEFETCHER_THREADS = 4;
+	private static final int IMAGEFETCHER_THREADS = 4;
+	private static ThreadPoolExecutor executor;
+	
+	static {
+		BlockingQueue<Runnable> workQueue = new LinkedBlockingQueue<Runnable>();
+		ThreadFactory threadFactory = new ThreadFactory( ) {
+	        public Thread newThread(Runnable r) {
+	            Thread t = new Thread(r);
+	            t.setName("Async Image Loader " + t.getId() + " " + System.identityHashCode(t));
+	            t.setDaemon(true);
+	            return t;
+	        }
+	    };
+	    executor = new ThreadPoolExecutor(IMAGEFETCHER_THREADS, 16, 2, TimeUnit.SECONDS, workQueue, threadFactory);
+	}	
 	
 	private final AtomicReference<ImageData> imageData = new AtomicReference<ImageData>();
     private Image image; // might as well be thread-local
@@ -30,18 +44,8 @@ public class AsyncImage implements Runnable {
     private volatile long stamp;
     private final TileServer tileServer;
     private final int x, y, z;
-    private MapWidget map;
+    private MapWidget map;    
     
-    private BlockingQueue<Runnable> workQueue = new LinkedBlockingQueue<Runnable>();
-    private ThreadFactory threadFactory = new ThreadFactory( ) {
-        public Thread newThread(Runnable r) {
-            Thread t = new Thread(r);
-            t.setName("Async Image Loader " + t.getId() + " " + System.identityHashCode(t));
-            t.setDaemon(true);
-            return t;
-        }
-    };
-    private ThreadPoolExecutor executor = new ThreadPoolExecutor(IMAGEFETCHER_THREADS, 16, 2, TimeUnit.SECONDS, workQueue, threadFactory);
     
     public AsyncImage(MapWidget map, TileServer tileServer, int x, int y, int z) {
         this.tileServer = tileServer;

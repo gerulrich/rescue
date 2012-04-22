@@ -174,12 +174,26 @@
 			<artifactId>validation-api</artifactId>
 			<version>1.0.0.GA</version>
 		</dependency>
-	
+		<dependency>
+			<groupId>com.caucho</groupId>
+			<artifactId>hessian</artifactId>
+			<version>4.0.7</version>
+		</dependency>
+		<dependency>
+			<groupId>com.jcraft</groupId>
+			<artifactId>jsch</artifactId>
+			<version>0.1.46</version>
+		</dependency>
 		<dependency>
 			<groupId>org.apache.bval</groupId>
 			<artifactId>bval-jsr303</artifactId>
 			<version>0.2-incubating</version>
-		</dependency>		
+		</dependency>
+		<dependency>
+			<groupId>net.rescueapp</groupId>
+			<artifactId>common</artifactId>
+			<version>${project.version}</version>
+		</dependency>
 	</dependencies>
 
 	<build>

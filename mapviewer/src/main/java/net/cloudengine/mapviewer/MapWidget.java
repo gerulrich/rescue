@@ -10,7 +10,7 @@ import net.cloudengine.mapviewer.tiles.TileCache;
 import net.cloudengine.mapviewer.tiles.TileServer;
 import net.cloudengine.mapviewer.tiles.TileServerType;
 import net.sf.swtgraph.layeredcanvas.ICanvasLayer;
-import net.sf.swtgraph.layeredcanvas.ISelectable;
+import net.sf.swtgraph.layeredcanvas.ISelectableLayer;
 import net.sf.swtgraph.layeredcanvas.LayeredCanvas;
 
 import org.eclipse.swt.SWT;
@@ -21,12 +21,17 @@ import org.eclipse.swt.events.MouseListener;
 import org.eclipse.swt.events.MouseMoveListener;
 import org.eclipse.swt.events.MouseTrackListener;
 import org.eclipse.swt.events.MouseWheelListener;
+import org.eclipse.swt.graphics.Cursor;
+import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Composite;
 
 public class MapWidget extends LayeredCanvas {
     
-    public static final class PointD {
+	private Cursor openHand;
+	private Cursor closedHand;
+	
+	public static final class PointD {
         public double x, y;
         public PointD(double x, double y) {
             this.x = x;
@@ -69,6 +74,8 @@ public class MapWidget extends LayeredCanvas {
                 zoomOut(new Point(mouseCoords.x, mouseCoords.y));
         }
         public void mouseDown(MouseEvent e) {
+        	MapWidget.this.setCursor(closedHand);
+        	
         	if (e.button == 1 && (e.stateMask & SWT.CTRL) != 0) {
                 setCenterPosition(getCursorPosition());
                 redraw();
@@ -83,11 +90,12 @@ public class MapWidget extends LayeredCanvas {
             	try {
                 	Point p = new Point(mouseCoords.x, mouseCoords.y);
                 	for(ICanvasLayer layer:  MapWidget.this.getLayers()) {
-                		if (layer instanceof ISelectable) {
-                			((ISelectable)layer).selectObjects(p.x, p.y);
+                		if (layer instanceof ISelectableLayer) {
+                			
+                			((ISelectableLayer)layer).selectObjects(p.x, p.y);
                 		}
                 	}
-                	
+                	MapWidget.this.redraw();
                 } catch (Exception ex) {
                 	ex.printStackTrace();
                 }
@@ -95,6 +103,7 @@ public class MapWidget extends LayeredCanvas {
             
         }
         public void mouseUp(MouseEvent e) {
+        	MapWidget.this.setCursor(openHand);
             if (e.count == 1) {
                 handleDrag(e);
             }
@@ -128,14 +137,12 @@ public class MapWidget extends LayeredCanvas {
     }
     
     /* constants ... */
+    // FIXME la url base de la aplicacion la tiene que sacar por configuracion.
     public static final TileServer[] TILESERVERS = {
-    	new TileServer("http://localhost:8080/webmodule/tiles", 18, TileServerType.LOCAL),
-    	new TileServer("http://mt1.google.com/vt/lyrs=m@139&hl=es", 18, TileServerType.GOOGLEMAPS),
-    	new TileServer("http://tile.openstreetmap.org/", 18, TileServerType.OPENSTREET),
-        new TileServer("http://tah.openstreetmap.org/Tiles/tile/", 17, TileServerType.OPENSTREET)
-//    	new TileServer("http://10.0.0.3:8080/geoserver/wms", 18, TileServerType.WMS),
-//    	new TileServer("http://khm0.google.com.ar/kh/v=74", 18, TileServerType.GOOGLEMAPS),
-//    	
+    	new TileServer("http://localhost:8080/webmodule/tiles", 18, TileServerType.GOOGLEMAPS),
+    	new TileServer("http://localhost:8080/webmodule/tiles", 18, TileServerType.GOOGLESAT),
+    	new TileServer("http://localhost:8080/webmodule/tiles", 18, TileServerType.OPENSTREET),
+    	new TileServer("http://mt1.google.com/vt/lyrs=m@139&hl=es", 18, TileServerType.GOOGLEMAPS_DIRECT)    	
     };
  
     /* basically not be changed */
@@ -161,6 +168,14 @@ public class MapWidget extends LayeredCanvas {
     public MapWidget(Composite parent, int style, Point mapPosition, int zoom) {
         super(parent, SWT.DOUBLE_BUFFERED | style);
         
+        
+    	ImageData openHandimageData = new ImageData(MapWidget.class.getResourceAsStream("open_hand.ico"));
+    	ImageData closedHandimageData = new ImageData(MapWidget.class.getResourceAsStream("closed_hand.ico"));
+    	
+    	openHand = new Cursor(this.getDisplay(), openHandimageData, 0, 0);
+    	closedHand = new Cursor(this.getDisplay(), closedHandimageData, 0, 0);
+    	this.setCursor(openHand);
+        
 //         FIXME sacar del argumento del constructor
 //        mapPosition.x = MapWidget.lon2position(-58.43422, zoom);
 //        mapPosition.y = MapWidget.lat2position(-34.60778, zoom);
@@ -183,7 +198,7 @@ public class MapWidget extends LayeredCanvas {
         // TODO: check tileservers
         
       this.addLayer(new MapLayer(this));
-//      this.addLayer(new DebugTileLayer(this));
+      this.addLayer(new DebugTileLayer(this));
       this.addLayer(new BasicLayer(this));
       
       setZoom(zoom);
@@ -417,5 +432,9 @@ public class MapWidget extends LayeredCanvas {
         int xtile = (int) Math.floor((lon + 180) / 360 * (1 << zoom));
         int ytile = (int) Math.floor((1 - Math.log(Math.tan(Math.toRadians(lat)) + 1 / Math.cos(Math.toRadians(lat))) / Math.PI) / 2 * (1 << zoom));
         return tileServer.getType().getTileString(tileServer.getURL(), xtile, ytile, zoom);
+    }
+    
+    public TileServer[] getServers() {
+    	return TILESERVERS;
     }
 }

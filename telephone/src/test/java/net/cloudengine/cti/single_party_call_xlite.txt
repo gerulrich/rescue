@@ -1,0 +1,71 @@
+org.asteriskjava.manager.event.NewChannelEvent
+callerId,4002
+callerIdName,device
+callerIdNum,4002
+channel,SIP/4002-00000019
+channelState,0
+channelStateDesc,Down
+context,from-internal
+dateReceived,18/02/2012 11:44:43
+exten,*43
+privilege,call,all
+source,ManagerConnection[id='0',hostname='192.168.0.104',port=5038,systemHashcode=29346106]
+state,Down
+uniqueId,1329602497.54
+--------------------------------------------------------
+org.asteriskjava.manager.event.NewStateEvent
+callerId,4002
+callerIdName,device
+callerIdNum,4002
+channel,SIP/4002-00000019
+channelState,4
+channelStateDesc,Ring
+dateReceived,18/02/2012 11:44:43
+privilege,call,all
+source,ManagerConnection[id='0',hostname='192.168.0.104',port=5038,systemHashcode=29346106]
+state,Ring
+uniqueId,1329602497.54
+--------------------------------------------------------
+org.asteriskjava.manager.event.ExtensionStatusEvent
+context,ext-local
+dateReceived,18/02/2012 11:44:43
+exten,4002
+hint,SIP/4002
+privilege,call,all
+source,ManagerConnection[id='0',hostname='192.168.0.104',port=5038,systemHashcode=29346106]
+status,1
+--------------------------------------------------------
+org.asteriskjava.manager.event.NewStateEvent
+callerId,4002
+callerIdName,device
+callerIdNum,4002
+channel,SIP/4002-00000019
+channelState,6
+channelStateDesc,Up
+dateReceived,18/02/2012 11:44:43
+privilege,call,all
+source,ManagerConnection[id='0',hostname='192.168.0.104',port=5038,systemHashcode=29346106]
+state,Up
+uniqueId,1329602497.54
+--------------------------------------------------------
+org.asteriskjava.manager.event.HangupEvent
+callerId,4002
+callerIdName,device
+callerIdNum,4002
+cause,16
+causeTxt,Normal Clearing
+channel,SIP/4002-00000019
+dateReceived,18/02/2012 11:45:08
+privilege,call,all
+source,ManagerConnection[id='0',hostname='192.168.0.104',port=5038,systemHashcode=29346106]
+uniqueId,1329602497.54
+--------------------------------------------------------
+org.asteriskjava.manager.event.ExtensionStatusEvent
+context,ext-local
+dateReceived,18/02/2012 11:45:08
+exten,4002
+hint,SIP/4002
+privilege,call,all
+source,ManagerConnection[id='0',hostname='192.168.0.104',port=5038,systemHashcode=29346106]
+status,0
+--------------------------------------------------------
