@@ -47,6 +47,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.TimeZone;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
@@ -57,6 +59,8 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+
+import jnlp.sample.jardiff.JarSnapshots;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -98,28 +102,28 @@ public class JnlpFileHandler {
     }
     
     /* Main method to lookup an entry */
-    public synchronized DownloadResponse getJnlpFile(JnlpResource jnlpres, DownloadRequest dreq) 
-	throws IOException {		
-	String path = jnlpres.getPath();
-	URL resource = jnlpres.getResource();		
-	long lastModified = jnlpres.getLastModified();	
+    public synchronized DownloadResponse getJnlpFile(JnlpResource jnlpres, DownloadRequest dreq) throws IOException {		
+	
+    	String path = jnlpres.getPath();
+    	URL resource = jnlpres.getResource();		
+    	long lastModified = jnlpres.getLastModified();	
 	
 	
-	_log.addDebug("lastModified: " + lastModified + " " + new Date(lastModified));
-	if (lastModified == 0) {
-	    _log.addWarning("servlet.log.warning.nolastmodified", path);
-	}
+    	_log.addDebug("lastModified: " + lastModified + " " + new Date(lastModified));
+    	if (lastModified == 0) {
+    		_log.addWarning("servlet.log.warning.nolastmodified", path);
+    	}
 	
-	// fix for 4474854:  use the request URL as key to look up jnlp file
-	// in hash map
-	String reqUrl = HttpUtils.getRequestURL(dreq.getHttpRequest()).toString();
+    	// 	fix for 4474854:  use the request URL as key to look up jnlp file
+    	// in hash map
+    	String reqUrl = HttpUtils.getRequestURL(dreq.getHttpRequest()).toString();
 
-	// Check if entry already exist in HashMap
-	JnlpFileEntry jnlpFile = (JnlpFileEntry)_jnlpFiles.get(reqUrl);
+    	// Check if entry already exist in HashMap
+    	JnlpFileEntry jnlpFile = (JnlpFileEntry)_jnlpFiles.get(reqUrl);
 
-	if (jnlpFile != null && jnlpFile.getLastModified() == lastModified) {
-	    // Entry found in cache, so return it
-	    return jnlpFile.getResponse();   
+    	if (jnlpFile != null && jnlpFile.getLastModified() == lastModified) {
+    		// Entry found in cache, so return it
+    		return jnlpFile.getResponse();   
 	} 
 	
 	// Read information from WAR file
@@ -141,6 +145,18 @@ public class JnlpFileHandler {
 	    line = br.readLine();   
 	}
 	while(line != null) {
+		
+		Pattern snapshopPattern = Pattern.compile(".*version=\"(.*-SNAPSHOT)\".*");
+    	Pattern filenamePattern = Pattern.compile(   ".*href=\"(.*jar)\".*");
+		Matcher m1 = snapshopPattern.matcher(line);
+		Matcher m2 = filenamePattern.matcher(line);
+    	if (m1.matches() && m2.matches()) {
+    		String version = m1.group(1);
+    		String jarFile = m2.group(1);
+    		JarSnapshots.putVersion(jarFile, version);
+    		line = line.replaceAll("version=\".*-SNAPSHOT\"", "");
+    	}
+
 	    jnlpFileTemplate.append(line);
 	    line = br.readLine();
 	}

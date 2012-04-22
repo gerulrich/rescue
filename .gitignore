@@ -9,4 +9,6 @@ utilities/target
 utilities/.settings
 target/
 documentacion/target
+common/target
+common/.settings
 

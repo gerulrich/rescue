@@ -10,7 +10,7 @@
 	</parent>
 	<artifactId>client-deploy</artifactId>
 	<packaging>war</packaging>
-	<name>client-deploy Maven Webapp</name>
+	<name>Trabajo profesional FIUBA</name>
 	<url>http://maven.apache.org</url>
 	<repositories>
 		<repository>
@@ -138,11 +138,11 @@
 							<jarResources>
 								<jarResource>
 									<groupId>net.rescueapp</groupId>
-									<artifactId>mapviewer</artifactId>
+									<artifactId>desktop</artifactId>
 									<version>${project.version}</version>
 									<!-- <classifier>[some optional classifier]</classifier> -->
 									<!-- Un elemento MainClass debe ser especificado, y sólo uno, por jarResource jnlpFile -->
-									<mainClass>net.cloudengine.mapviewer.MapBrowser</mainClass>
+									<mainClass>net.cloudengine.client.main.Main</mainClass>
 								</jarResource>
 							</jarResources>
 						</jnlpFile>
@@ -155,31 +155,20 @@
 					<!-- SIGNING -->
 					<!-- defining this will automatically sign the jar and its dependencies, if necessary -->
 					<sign>
-						<keystore>${basedir}/src/main/jnlp/fillme</keystore>
-						<keypass>fillme</keypass>  <!-- we need to override passwords easily from the command line. ${keypass} -->
-						<storepass>fillme</storepass> <!-- ${storepass} -->
+						<keystore>${basedir}/src/main/jnlp/.keystore</keystore>
+						<keypass>rescue</keypass>  <!-- we need to override passwords easily from the command line. ${keypass} -->
+						<storepass>rescue</storepass> <!-- ${storepass} -->
 						<!--storetype>fillme</storetype -->
-						<alias>fillme</alias>
-
-						<!--validity>fillme</validity -->
-
-						<!-- only required for generating the keystore -->
-						<!--dnameCn>fillme</dnameCn> <dnameOu>fillme</dnameOu> <dnameO>fillme</dnameO> 
-							<dnameL>fillme</dnameL> <dnameSt>fillme</dnameSt> <dnameC>fillme</dnameC -->
-
+						<alias>rescue</alias>
 						<verify>true</verify> <!-- verify that the signing operation succeeded -->
-
 						<!-- KEYSTORE MANAGEMENT -->
 						<keystoreConfig>
 							<delete>false</delete> <!-- delete the keystore -->
 							<gen>false</gen>       <!-- optional shortcut to generate the store. -->
 						</keystoreConfig>
 					</sign>
-
 				</configuration>
-
 			</plugin>
-
 		</plugins>
 
 

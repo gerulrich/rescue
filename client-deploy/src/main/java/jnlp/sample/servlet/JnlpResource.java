@@ -35,12 +35,17 @@
  */
 
 package jnlp.sample.servlet;
-import javax.servlet.ServletContext;
-import java.net.URL;
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.net.URLConnection;
-import java.util.*;
+import java.util.Date;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import javax.servlet.ServletContext;
+
+import jnlp.sample.jardiff.JarSnapshots;
 
 /** 
  *  A JnlpResource encapsulate the information about a resource that is
@@ -94,7 +99,7 @@ public class JnlpResource {
 //    private String _encoding;        // Accept encoding
     
     public JnlpResource(ServletContext context, String path) { 
-	this(context, null, null, null, null, null, path, null); 
+    	this(context, null, null, null, null, null, path, null); 
     }
 
     public JnlpResource(ServletContext context, 
@@ -105,8 +110,8 @@ public class JnlpResource {
 			String[] localeList,
 			String path,
 			String returnVersionId) {
-	this(context, name, versionId, osList, archList, localeList, path,
-	     returnVersionId, null);
+    	this(context, name, versionId, osList, archList, localeList, path,
+    			returnVersionId, null);
     }
     
     public JnlpResource(ServletContext context, 
@@ -142,7 +147,14 @@ public class JnlpResource {
 	    
 	    
 	    _mimeType = getMimeType(context, orig_path);
-	    if (_resource != null) {
+	    
+	    if (_resource == null && _versionId == null) {
+	    	String version = JarSnapshots.getVersion(orig_path.replaceAll("/.*/", ""));
+	    	orig_path = orig_path.replace(".jar", "-"+version+".jar");
+		    _resource = context.getResource(orig_path);
+	    }
+	    
+	    		if (_resource != null) {
 	
 		boolean found = false;
 		// pack200 compression

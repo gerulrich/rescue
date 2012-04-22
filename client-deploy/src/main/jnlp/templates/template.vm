@@ -5,15 +5,13 @@
     href="$$name">
   <information>
   
-  <title>aaa</title>
-  <vendor>aaa</vendor>
+        <icon href="emergency-icon-32.png" width="32" height="32"/>
   
-  
-#if($project.Name)
-    <title>$project.Name</title>
+#if($project.name)
+    <title>$project.name</title>
 #end
-#if($project.Organization.Name)
-    <vendor>$project.Organization.Name</vendor>
+#if($project.organization.name)
+    <vendor>$project.organization.name $project.organization.url</vendor>
 #end
 #if($project.Url)
     <homepage href="$project.Url"/>

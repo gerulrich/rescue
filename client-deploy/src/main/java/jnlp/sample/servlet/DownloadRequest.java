@@ -226,6 +226,10 @@ public class DownloadRequest {
 	if (value == null) return "";
 	return msg + java.util.Arrays.asList(value).toString();	
     }
+    
+    public boolean isSnapshot() {
+    	return (_version != null && _version.contains("SNAPSHOT"));
+    }
 }
 
 

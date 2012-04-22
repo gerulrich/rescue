@@ -127,8 +127,11 @@ public class JnlpDownloadServlet extends HttpServlet {
 	if (_log.isDebugLevel()) {
 	    _log.addDebug(dreq.toString());
 	}   
+	
+	boolean forzarDescarga = true;
+	System.out.println("Version snapshot: "+forzarDescarga);
        
-        long ifModifiedSince = request.getDateHeader("If-Modified-Since");
+	long ifModifiedSince = request.getDateHeader("If-Modified-Since");
 
 	// Check if it is a valid request
 	try { 
@@ -158,7 +161,7 @@ public class JnlpDownloadServlet extends HttpServlet {
                 
             } else if (ifModifiedSince != -1 && 
                     (ifModifiedSince / 1000) >= 
-                    (jnlpres.getLastModified() / 1000)) {
+                    (jnlpres.getLastModified() / 1000) && !forzarDescarga) {
                 // We divide the value returned by getLastModified here by 1000
                 // because if protocol is HTTP, last 3 digits will always be 
                 // zero.  However, if protocol is JNDI, that's not the case.
