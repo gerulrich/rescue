@@ -1,6 +1,7 @@
 package net.cloudengine.cti.utils;
 
 import java.net.InetAddress;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -86,13 +87,12 @@ class MockConnection implements Connection {
 
 	@Override
 	public void connect() {
-		// TODO Auto-generated method stub
+
 	}
 
 	@Override
 	public void register(ManagerEventListener listener) {
-		// TODO Auto-generated method stub
-		
+		as.getManagerConnection().addEventListener(listener);
 	}
 
 	@Override
