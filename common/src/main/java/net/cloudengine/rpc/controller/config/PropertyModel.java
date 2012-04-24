@@ -7,11 +7,11 @@ import java.util.concurrent.ConcurrentMap;
 public class PropertyModel implements Serializable {
 	
 	private static final long serialVersionUID = 2873331085992779804L;
-	private static final ConcurrentMap<Class, Converter> converters = new ConcurrentHashMap<Class, Converter>();
+	private static final ConcurrentMap<String, Converter<?>> converters = new ConcurrentHashMap<String, Converter<?>>();
 	
 	static {
-		converters.put(Boolean.class, new BooleanConverter());
-		converters.put(Long.class, new LongConverter());
+		converters.put(Boolean.class.getName(), new BooleanConverter());
+		converters.put(Long.class.getName(), new LongConverter());
 	}
 	
 	private String name;
@@ -39,8 +39,10 @@ public class PropertyModel implements Serializable {
 		this.value = value;
 	}
 	public <T> T getValue(Class<T> type) {
-		if (converters.containsKey(type)) {
-			Converter<T> converter = converters.get(type);
+		String typeName = type.getName();
+		if (converters.containsKey(typeName)) {
+			@SuppressWarnings("unchecked")
+			Converter<T> converter = (Converter<T>) converters.get(typeName);
 			return converter.convert(getValue());
 		} else {
 			throw new IllegalArgumentException("No existe un converter para la clase: "+type.getName());
