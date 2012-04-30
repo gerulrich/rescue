@@ -20,7 +20,7 @@ public class ImgBundle {
 		ImageDescriptor r = reg.getDescriptor(fileName);
 		if (r != null)
 			return r;
-		r = ImageDescriptor.createFromURL(this.getClass().getResource("images/"+fileName));
+		r = ImageDescriptor.createFromURL(this.getClass().getResource("/images/"+fileName));
 		reg.put(fileName, r);
 
 		return r;
