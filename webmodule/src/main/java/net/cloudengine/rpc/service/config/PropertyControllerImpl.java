@@ -1,8 +1,9 @@
 package net.cloudengine.rpc.service.config;
 
-import java.util.ArrayList;
 import java.util.Collection;
 
+import net.cloudengine.mappers.DTOMapper;
+import net.cloudengine.mappers.MappersRegistry;
 import net.cloudengine.model.config.AppProperty;
 import net.cloudengine.rpc.controller.config.PropertyController;
 import net.cloudengine.rpc.controller.config.PropertyModel;
@@ -17,33 +18,33 @@ import org.springframework.stereotype.Service;
 public class PropertyControllerImpl implements PropertyController {
 
 	private ConfigurationService service;
+	private MappersRegistry mappersRegistry;
 	
 	@Autowired
 	public PropertyControllerImpl(ConfigurationService service) {
 		this.service = service;
 	}
 	
+	@Autowired
+	public void setMappersRegistry(MappersRegistry mappersRegistry) {
+		this.mappersRegistry = mappersRegistry;
+	}	
+	
 	@Override
 	public Collection<PropertyModel> getProperties() {
 		Collection<AppProperty> props = service.getAllClientProperties();
-		Collection<PropertyModel> result = new ArrayList<PropertyModel>();
-		for(AppProperty prop : props) {
-			result.add(new PropertyModel(prop.getKey(), prop.getValue()));
-		}
-		return result;
+		DTOMapper propertyMapper = mappersRegistry.getMapper(PropertyModel.class);
+		return propertyMapper.fillModels(props, PropertyModel.class);
 	}
 
 	@Override
 	public PropertyModel getProperty(String key) {
 		AppProperty property = service.getProperty(key);
 		if (property != null && property.isClientProperty()) {
-			PropertyModel model = new PropertyModel(key, property.getValue());
-			return model;
+			DTOMapper propertyMapper = mappersRegistry.getMapper(PropertyModel.class);
+			return propertyMapper.fillModel(property, PropertyModel.class);
 		} else {
 			return null;
 		}
 	}
-
-	
-
 }

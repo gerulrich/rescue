@@ -54,6 +54,14 @@
 		
 		<context:component-scan base-package="net.cloudengine.service"/>
 		<context:component-scan base-package="net.cloudengine.api"/>
-		<context:component-scan base-package="net.cloudengine.rpc"/>				
+		<context:component-scan base-package="net.cloudengine.rpc"/>
+		
+		<bean id="mappers" class="net.cloudengine.mappers.MappersRegistry">
+<!-- 			<property name="mappers"> -->
+<!-- 				<map> -->
+<!-- 					<entry></entry> -->
+<!-- 				</map> -->
+<!-- 			</property> -->
+		</bean>
 		
 </beans>

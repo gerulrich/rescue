@@ -2,6 +2,8 @@ package net.cloudengine.rpc.service.auth;
 
 import javax.servlet.http.HttpSession;
 
+import net.cloudengine.mappers.DTOMapper;
+import net.cloudengine.mappers.MappersRegistry;
 import net.cloudengine.model.auth.User;
 import net.cloudengine.rpc.controller.auth.SigninService;
 import net.cloudengine.rpc.controller.auth.UserModel;
@@ -22,12 +24,18 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 public class SigninServiceImpl implements SigninService {
 
 	private UserService service;
+	private MappersRegistry mappersRegistry;
 	
 	@Autowired
 	public void setService(UserService service) {
 		this.service = service;
 	}
-
+	
+	@Autowired
+	public void setMappersRegistry(MappersRegistry mappersRegistry) {
+		this.mappersRegistry = mappersRegistry;
+	}
+	
 	@Override
 	public String login(String username, String password) {
 		User user = service.getByUsername(username);
@@ -57,13 +65,9 @@ public class SigninServiceImpl implements SigninService {
 	    if (session != null && session.getAttribute("SPRING_SECURITY_CONTEXT") != null) {
 	    	SecurityContext sctx = (SecurityContext) session.getAttribute("SPRING_SECURITY_CONTEXT");
 	    	User user = (User) sctx.getAuthentication().getPrincipal();
-	    	
-	    	UserModel model = new UserModel();
-	    	model.setDisplayName(user.getDisplayName());
-	    	model.setUsername(user.getUsername());
-	    	
-	    	return model;
-	    	
+	    	DTOMapper userMapper = mappersRegistry.getMapper(UserModel.class);
+	    	return userMapper.fillModel(user, UserModel.class);
+
 	    }	    
 	    return null;		
 	}

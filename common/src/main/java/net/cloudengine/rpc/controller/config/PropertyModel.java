@@ -4,6 +4,10 @@ import java.io.Serializable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
+import net.cloudengine.rpc.model.DataObject;
+import net.cloudengine.rpc.model.Value;
+
+@DataObject
 public class PropertyModel implements Serializable {
 	
 	private static final long serialVersionUID = 2873331085992779804L;
@@ -14,7 +18,10 @@ public class PropertyModel implements Serializable {
 		converters.put(Long.class.getName(), new LongConverter());
 	}
 	
+	@Value("key")
 	private String name;
+	
+	@Value("value")
 	private String value;
 	
 	public PropertyModel() {

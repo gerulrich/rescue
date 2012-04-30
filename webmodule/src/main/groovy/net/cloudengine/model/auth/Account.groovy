@@ -13,6 +13,7 @@ class Account {
 	Date credentialsExpirationDate;
 	boolean enabled = true;
 	boolean locked = false;
+	String phoneNumber;
 	
 	def isAccountExpired() {
 		if (accountExpirationDate == null) {
