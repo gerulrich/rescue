@@ -123,6 +123,15 @@
 					<include>**/*.jpg</include>
 				</includes>
 			</resource>
+			<resource>
+				<directory>${basedir}/src/main/resources</directory>
+				<includes>
+					<include>**/*.xml</include>
+					<include>**/*.properties</include>
+					<include>**/*.png</include>
+					<include>**/*.jpg</include>
+				</includes>
+			</resource>			
 		</resources>
 	</build>
 
