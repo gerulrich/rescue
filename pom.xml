@@ -129,12 +129,12 @@
   <!--                             MODULOS                             -->
   <!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->  
   <modules>
-    <module>webmodule</module>
 	<module>documentacion</module>
-    <module>mapviewer</module>
     <module>common</module>
-    <module>desktop</module>
     <module>telephone</module>
+    <module>mapviewer</module>
+    <module>desktop</module>
+    <module>webmodule</module>
   </modules>
   
   <build>
