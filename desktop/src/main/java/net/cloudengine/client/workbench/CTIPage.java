@@ -62,8 +62,6 @@ public class CTIPage extends AbstractPage {
 		PhonesMonitorWidget widget = new PhonesMonitorWidget(pbxMonitor);
 		widget.createControl(extComp);
 		
-		
-		
 		queuesComp = new Composite(vsf, SWT.NONE);
 		
 		vsf.setWeights(new int[] { 20, 40, 40 });

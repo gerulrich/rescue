@@ -34,6 +34,10 @@
             			<td><label path="account.locked">Cuenta bloqueada</label></td>
                 		<td><@spring.formCheckbox  "user.account.locked" /></td>
 					</tr>
+					<tr>
+            			<td><label path="account.phoneNumber">Número de Interno</label></td>
+                		<td><@spring.formInput  "user.account.phoneNumber" /></td>
+					</tr>					
 				</table>
 			</fieldset>
 			<input type="submit" value="Guardar"/>		

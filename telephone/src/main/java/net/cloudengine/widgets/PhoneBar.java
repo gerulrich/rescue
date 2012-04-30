@@ -24,7 +24,7 @@ import com.google.inject.Inject;
 
 public class PhoneBar extends ContributionItem implements CallListener, ConnectionListener {
 	
-	private String phoneNumber = "2001";
+	private String phoneNumber = "-";
 	private Composite composite;
 	private CallsMonitor monitor;
 	private Map<Call, CallActionComposite> callsActions = new HashMap<Call, CallActionComposite>();
@@ -36,6 +36,8 @@ public class PhoneBar extends ContributionItem implements CallListener, Connecti
 	
 	private Image imgConnected = new Image(null,PhoneBar.class.getResourceAsStream("connect_yes.png"));
 	private Image imgDisconnected = new Image(null,PhoneBar.class.getResourceAsStream("connect_no.png"));
+	
+	private Boolean connected = Boolean.FALSE;
 	
 	@Inject
 	public PhoneBar(CallsMonitor monitor, Connection connection) {
@@ -69,6 +71,24 @@ public class PhoneBar extends ContributionItem implements CallListener, Connecti
 	    labelItem = new CoolItem(parent, SWT.NONE);
 	    labelItem.setControl(composite);
 	    labelItem.setPreferredSize(imgLabelStatus.getBounds().width, imgLabelStatus.getBounds().height);
+	}
+	
+	public String getPhoneNumber() {
+		return phoneNumber;
+	}
+
+	public void setPhoneNumber(String phoneNumber) {
+		this.phoneNumber = phoneNumber;
+		if (composite != null) {
+			this.composite.getDisplay().asyncExec(new Runnable() {
+				@Override
+				public void run() {
+					if (connected) {
+						onConnect();
+					}
+				}
+			});
+		}
 	}
 
 	@Override
@@ -129,6 +149,7 @@ public class PhoneBar extends ContributionItem implements CallListener, Connecti
 
 	@Override
 	public void onConnect() {
+		connected = true;
 		composite.getDisplay().asyncExec(new Runnable() {
 			@Override
 			public void run() {
@@ -140,6 +161,7 @@ public class PhoneBar extends ContributionItem implements CallListener, Connecti
 
 	@Override
 	public void onDisconnect() {
+		connected = false;
 		composite.getDisplay().asyncExec(new Runnable() {
 			@Override
 			public void run() {

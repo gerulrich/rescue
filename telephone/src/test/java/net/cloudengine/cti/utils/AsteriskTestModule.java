@@ -1,7 +1,6 @@
 package net.cloudengine.cti.utils;
 
 import java.net.InetAddress;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;

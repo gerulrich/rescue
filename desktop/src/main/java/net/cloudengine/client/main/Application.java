@@ -7,9 +7,12 @@ import net.cloudengine.client.workbench.GreenPage;
 import net.cloudengine.client.workbench.Page;
 import net.cloudengine.client.workbench.PageContainer;
 import net.cloudengine.client.workbench.TestPage;
+import net.cloudengine.rpc.controller.auth.Context;
+import net.cloudengine.rpc.controller.auth.UserModel;
 import net.cloudengine.rpc.controller.config.PropertyController;
 import net.cloudengine.widgets.PhoneBar;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.CoolBarManager;
 import org.eclipse.jface.action.IToolBarManager;
@@ -146,8 +149,11 @@ public class Application extends ApplicationWindow {
 	    		setImageDescriptor(ImgBundle.getImgBundle().getImageDescriptor("ticket.png"));
 	    	}});
 		tbm.add(tb1);
-		if (ctiEnabled) {
-			tbm.add(injector.getInstance(PhoneBar.class));
+		UserModel user = injector.getInstance(Context.class).getCurrentUser();
+		if (ctiEnabled && StringUtils.isNotBlank(user.getPhoneNumber())) {
+			PhoneBar phoneBar = injector.getInstance(PhoneBar.class);
+			phoneBar.setPhoneNumber(user.getPhoneNumber());
+			tbm.add(phoneBar);
 		}
 		
 		

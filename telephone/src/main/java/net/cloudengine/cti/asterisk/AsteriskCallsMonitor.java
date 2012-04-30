@@ -23,8 +23,6 @@ public class AsteriskCallsMonitor implements CallsMonitor {
 		this.connection = connection;
 		this.handler = new CallEventHandler();
 		this.connection.register(handler);
-//		ManagerConnection mc = this.connection.getAsteriskServer().getManagerConnection();
-//		mc.addEventListener(handler);
 	}
 	
 	@Override

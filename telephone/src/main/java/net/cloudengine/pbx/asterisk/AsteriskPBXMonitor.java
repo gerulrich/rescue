@@ -12,7 +12,6 @@ import net.cloudengine.pbx.PhoneStatusListener;
 import net.cloudengine.pbx.Status;
 
 import org.asteriskjava.live.AsteriskServer;
-import org.asteriskjava.manager.ManagerConnection;
 import org.asteriskjava.manager.action.ExtensionStateAction;
 import org.asteriskjava.manager.response.ExtensionStateResponse;
 
@@ -33,10 +32,7 @@ public class AsteriskPBXMonitor implements PBXMonitor {
 	public AsteriskPBXMonitor(Connection connection) {
 		this.connection = connection;
 		this.handler = new AsteriskEventHandler();
-		if (this.connection.isConnected()) {
-			ManagerConnection mc = this.connection.getAsteriskServer().getManagerConnection();
-			mc.addEventListener(handler);
-		}
+		this.connection.register(handler);
 		this.groups.add(AVAILABLE);
 		this.groups.add(UNAVAILABLE);
 	}
