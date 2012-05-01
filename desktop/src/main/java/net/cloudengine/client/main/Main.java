@@ -45,7 +45,7 @@ public class Main {
 		} else {
 			System.out.println("User canceled !");
 			return;
-			
 		}
+		System.exit(0);
 	}
 }
