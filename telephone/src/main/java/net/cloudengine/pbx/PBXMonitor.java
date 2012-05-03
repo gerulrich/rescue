@@ -18,5 +18,7 @@ public interface PBXMonitor {
 	Collection<PhoneExt> getAllPhoneExt();
 	
 	void addListener(PhoneStatusListener listener);
+	
+	Collection<CTIQueue> getQueues();
 
 }

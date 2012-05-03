@@ -10,6 +10,7 @@ public class AsteriskContext {
 
 	private List<AbstractAsteriskCall> calls = new ArrayList<AbstractAsteriskCall>();
 	private List<CallBuilder> builders = new ArrayList<CallBuilder>();
+	private List<AbstractAsteriskCall> queueCalls = new ArrayList<AbstractAsteriskCall>();
 	private CallEventHandler handler;
 	
 	public AsteriskContext(CallEventHandler handler) {
@@ -43,6 +44,20 @@ public class AsteriskContext {
 		}
 	}
 	
+	public void queueCall(AbstractAsteriskCall call, String queue) {
+		queueCalls.add(call);
+		for(CallListener listener : handler.getListeners()) {
+			listener.onQueueCall(call, queue);
+		}
+	}
+	
+	public void dequeueCall(AbstractAsteriskCall call, String queue) {
+		queueCalls.remove(call);
+		for(CallListener listener : handler.getListeners()) {
+			listener.onDequeueCall(call, queue);
+		}
+	}
+	
 	public void removeBuilder(CallBuilder builder) {
 		builders.remove(builder);
 	}
@@ -53,6 +68,10 @@ public class AsteriskContext {
 	
 	public CallBuilder[] getFutureCalls() {
 		return builders.toArray(new CallBuilder[0]);
+	}
+	
+	public AbstractAsteriskCall[] getQueueCalls() {
+		return queueCalls.toArray(new AbstractAsteriskCall[0]);
 	}
 	
 	public void holdCall(Call call) {

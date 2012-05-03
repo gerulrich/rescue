@@ -62,6 +62,13 @@ public class CallEventHandler implements ManagerEventListener {
 				break;
 			}
 		}
+		
+		for (AbstractAsteriskCall call : context.getQueueCalls()) {
+			processed = call.handleEvent(event, context);
+			if (processed) {
+				break;
+			}
+		}
 
 		if (!processed) {
 			processEvent(event);

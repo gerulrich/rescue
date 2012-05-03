@@ -2,6 +2,8 @@ package net.cloudengine.cti.asterisk;
 
 import org.asteriskjava.manager.event.HangupEvent;
 import org.asteriskjava.manager.event.HoldEvent;
+import org.asteriskjava.manager.event.JoinEvent;
+import org.asteriskjava.manager.event.LeaveEvent;
 import org.asteriskjava.manager.event.ManagerEvent;
 import org.asteriskjava.manager.event.MusicOnHoldEvent;
 import org.asteriskjava.manager.event.NewChannelEvent;
@@ -23,6 +25,10 @@ public abstract class EventHandlerAdapter {
 			return handle((HoldEvent)event, context);
 		} else if (event instanceof MusicOnHoldEvent) {
 			return handle((MusicOnHoldEvent)event, context);
+		} else if (event instanceof JoinEvent) {
+			return handle((JoinEvent)event, context);
+		}  else if (event instanceof LeaveEvent) {
+			return handle((LeaveEvent)event, context);
 		}
 		return false;
 	}
@@ -50,5 +56,13 @@ public abstract class EventHandlerAdapter {
 	protected boolean handle(MusicOnHoldEvent event, AsteriskContext context) {
 		return false;
 	}
+	
+	protected boolean handle(JoinEvent event, AsteriskContext context) {
+		return false;
+	}
+	
+	protected boolean handle(LeaveEvent event, AsteriskContext context) {
+		return false;
+	}	
 
 }

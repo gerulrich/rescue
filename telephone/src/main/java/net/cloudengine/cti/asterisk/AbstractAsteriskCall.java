@@ -42,7 +42,6 @@ public abstract class AbstractAsteriskCall extends EventHandlerAdapter implement
 	@Override
 	protected boolean handle(HangupEvent event, AsteriskContext context) {
 		if (event.getUniqueId().equals(this.nce.getUniqueId())) {
-			System.out.println("llamada terminada");
 			context.removeCall(this);
 			return true;
 		}
@@ -51,6 +50,7 @@ public abstract class AbstractAsteriskCall extends EventHandlerAdapter implement
 
 	@Override
 	protected boolean handle(HoldEvent event, AsteriskContext context) {
+		// FIXME
 		if (event.getUniqueId().equals(this.getUniqueId())) {
 			hold = event.isHold();
 			if (hold) {
@@ -65,6 +65,7 @@ public abstract class AbstractAsteriskCall extends EventHandlerAdapter implement
 	
 	@Override
 	protected boolean handle(MusicOnHoldEvent event, AsteriskContext context) {
+		// FIXME
 		if (event.getUniqueId().equals(this.getUniqueId())) {
 			hold = event.isStart();
 			if (hold) {

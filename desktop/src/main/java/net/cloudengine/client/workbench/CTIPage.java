@@ -4,6 +4,7 @@ import net.cloudengine.cti.CallsMonitor;
 import net.cloudengine.pbx.PBXMonitor;
 import net.cloudengine.widgets.CallWatcher;
 import net.cloudengine.widgets.PhonesMonitorWidget;
+import net.cloudengine.widgets.QueuesMonitorWidget;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
@@ -63,6 +64,10 @@ public class CTIPage extends AbstractPage {
 		widget.createControl(extComp);
 		
 		queuesComp = new Composite(vsf, SWT.NONE);
+		queuesComp.setLayout(new FillLayout());
+		
+		QueuesMonitorWidget queueWidget = new QueuesMonitorWidget(pbxMonitor, monitor);
+		queueWidget.createControl(queuesComp);
 		
 		vsf.setWeights(new int[] { 20, 40, 40 });
 	}

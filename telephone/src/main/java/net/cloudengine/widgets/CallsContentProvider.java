@@ -41,7 +41,17 @@ public class CallsContentProvider implements IStructuredContentProvider {
 			@Override
 			public void onChangeState(Call call) {
 				updateView();				
-			}			
+			}
+
+			@Override
+			public void onQueueCall(Call call, String queue) {
+				// TODO Auto-generated method stub
+			}
+
+			@Override
+			public void onDequeueCall(Call call, String queue) {
+				// TODO Auto-generated method stub
+			}
 			
 		});
 	}

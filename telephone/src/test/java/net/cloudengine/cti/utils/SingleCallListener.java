@@ -33,4 +33,14 @@ public class SingleCallListener implements CallListener {
 	public boolean isHungupCall() {
 		return hungupCall;
 	}
+
+	@Override
+	public void onQueueCall(Call call, String queue) {
+		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public void onDequeueCall(Call call, String queue) {
+		// TODO Auto-generated method stub
+	}
 }

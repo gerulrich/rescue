@@ -5,12 +5,15 @@ import java.util.LinkedList;
 import java.util.StringTokenizer;
 
 import net.cloudengine.cti.Connection;
+import net.cloudengine.pbx.CTIQueue;
 import net.cloudengine.pbx.Group;
 import net.cloudengine.pbx.PBXMonitor;
 import net.cloudengine.pbx.PhoneExt;
 import net.cloudengine.pbx.PhoneStatusListener;
 import net.cloudengine.pbx.Status;
 
+import org.asteriskjava.live.AsteriskQueue;
+import org.asteriskjava.live.AsteriskQueueMember;
 import org.asteriskjava.live.AsteriskServer;
 import org.asteriskjava.manager.action.ExtensionStateAction;
 import org.asteriskjava.manager.response.ExtensionStateResponse;
@@ -113,6 +116,22 @@ public class AsteriskPBXMonitor implements PBXMonitor {
 		}
 		
 		
+		return result;
+	}
+	
+	
+
+	@Override
+	public Collection<CTIQueue> getQueues() {
+		Collection<AsteriskQueue> queues = this.connection.getAsteriskServer().getQueues();
+		Collection<CTIQueue> result = new ArrayList<CTIQueue>();
+		for(AsteriskQueue aq : queues) {
+			CTIQueue queue = new CTIQueue(aq.getName());
+			result.add(queue);
+			for (AsteriskQueueMember member : aq.getMembers()) {
+				System.out.println(member.getLocation()+"-"+member.getMembership());
+			}
+		}		
 		return result;
 	}
 

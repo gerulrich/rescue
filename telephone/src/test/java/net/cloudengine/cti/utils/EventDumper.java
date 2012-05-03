@@ -44,7 +44,6 @@ public class EventDumper implements ManagerEventListener {
 		Injector injector = Guice.createInjector(new AsteriskModule());
 		EventDumper ed = injector.getInstance(EventDumper.class);
 		ed.connection.getAsteriskServer().getManagerConnection().addEventListener(ed);
-		
 		Thread.sleep(1000000000);
 	}
 

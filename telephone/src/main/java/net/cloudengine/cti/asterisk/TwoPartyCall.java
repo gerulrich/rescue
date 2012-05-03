@@ -13,6 +13,7 @@ public class TwoPartyCall extends AbstractAsteriskCall {
 	}
 
 	@Override
+	@SuppressWarnings("deprecation")	
 	public String getCallerId() {
 		return nse.getCallerId();
 	}

@@ -71,6 +71,10 @@ public class PhoneBar extends ContributionItem implements CallListener, Connecti
 	    labelItem = new CoolItem(parent, SWT.NONE);
 	    labelItem.setControl(composite);
 	    labelItem.setPreferredSize(imgLabelStatus.getBounds().width, imgLabelStatus.getBounds().height);
+	    
+	    if (connected) {
+	    	this.onConnect();
+	    }
 	}
 	
 	public String getPhoneNumber() {
@@ -118,6 +122,7 @@ public class PhoneBar extends ContributionItem implements CallListener, Connecti
 					composite.layout();
 				}
 		    });
+			
 			monitor.record(call);
 		}
 	}
@@ -127,8 +132,9 @@ public class PhoneBar extends ContributionItem implements CallListener, Connecti
 		if (callsActions.containsKey(call)) {
 			composite.getDisplay().asyncExec(new Runnable() {
 				@Override
-				public void run() {			
+				public void run() {
 					callsActions.get(call).dispose();
+					callsActions.remove(call);
 					composite.layout();
 				}
 			});
@@ -150,13 +156,15 @@ public class PhoneBar extends ContributionItem implements CallListener, Connecti
 	@Override
 	public void onConnect() {
 		connected = true;
-		composite.getDisplay().asyncExec(new Runnable() {
-			@Override
-			public void run() {
-				imgLabelStatus.setImage(imgConnected);
-				textLabelStatus.setText("INT: "+phoneNumber);
-			}
-		});
+		if (composite != null) {
+			composite.getDisplay().asyncExec(new Runnable() {
+				@Override
+				public void run() {
+					imgLabelStatus.setImage(imgConnected);
+					textLabelStatus.setText("INT: "+phoneNumber);
+				}
+			});
+		}
 	}
 
 	@Override
@@ -176,6 +184,18 @@ public class PhoneBar extends ContributionItem implements CallListener, Connecti
 		super.dispose();
 		imgConnected.dispose();
 		imgDisconnected.dispose();
+	}
+
+	@Override
+	public void onQueueCall(Call call, String queue) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void onDequeueCall(Call call, String queue) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

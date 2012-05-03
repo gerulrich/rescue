@@ -58,21 +58,22 @@ public class AsteriskCallsMonitor implements CallsMonitor {
 
 	@Override
 	public void record(Call call) {
-		MonitorAction monitor = new MonitorAction(call.getId(), "/var/spool/asterisk/monitor/custom-"+call.getId(), "wav", true); // FIXME, true
+		if ( call instanceof SinglePartyCall) {
+			return;
+		}
+			
+		 // FIXME, sacar directorio de la configuracion.
+		MonitorAction monitor = new MonitorAction(call.getId(), "/var/spool/asterisk/monitor/custom-"+call.getId(), "wav", true);
 
 		try {
 			this.connection.getAsteriskServer().getManagerConnection().sendAction(monitor);
 		} catch (IllegalArgumentException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IllegalStateException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (TimeoutException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		

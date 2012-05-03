@@ -47,11 +47,11 @@ public class BrowserPanel extends Composite {
 		// label_1.setBounds(204, 10, 28, 15);
 
 		label_2 = new Label(tagPane, SWT.NONE);
-		// label_2.setBounds(238, 10, 78, 15);
+		label_2.setBounds(238, 10, 78, 15);
 
 		final Label label_3 = new Label(tagPane, SWT.NONE | SWT.LEFT);
 		label_3.setText("Subject: ccc");
-		// label_3.setBounds(10, 31, 45, 15);
+		label_3.setBounds(10, 31, 45, 15);
 
 		subjectLabel = new Label(tagPane, SWT.NONE | SWT.LEFT);
 		subjectLabel.setBounds(61, 31, 138, 15);
