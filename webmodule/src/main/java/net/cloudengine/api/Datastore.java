@@ -34,5 +34,8 @@ public interface Datastore <E, PK extends Serializable> {
 	void delete(PK key);
 
 	Query<E> createQuery();
+	
+	void deleteAll();
+	
 
 }

@@ -1,46 +1,76 @@
-<@layout.main template="admin">
+<@layout.main breadcrumbs=breadcrumbs menu=menu sidebar=sidebar body=body/>
 
-	<h2>Pagina editar usuario ${user.displayName}</h2>
+<#macro breadcrumbs>
+	<li><a href="<@spring.url '/'/>">Dashboard</a></li>
+	<li><a href="<@spring.url '/admin/users'/>">Usuarios</a></li>
+	<li><a href="<@spring.url '/admin/user/${user.id}'/>">Editar ${user.displayName}</a></li>
+</#macro>
 
-	<p><a href="<@spring.url '/admin/users/'/>">Volver</a></p>
+<#macro menu>
+	<@widget.menu "admin"/>
+</#macro>
 
-	<form action="<@spring.url '/admin/user/${user.id}'/>" method="post">
-		<fieldset id="user">
-			<legend>Datos del usuario</legend>
-        	<table>
-        		<tr>
-            		<td><label path="username">Nombre de usuario</label></td>
-               		<td><@spring.formInput  "user.username" /></td>
-				</tr>
-            	<tr>
-	           		<td><label path="displayName">Nombre a visualizar</label></td>
-               		<td><@spring.formInput  "user.displayName" /></td>
-				</tr>
-            	<tr>
-	           		<td><label path="displayName">Roles</label></td>
-               		<td><@spring.formInput  "user.roles" /></td>
-				</tr>				
-			</table>
-		</fieldset>
-		
-		<fieldset id="account">
-			<legend>Detalle de la cuenta</legend>
-        		<table>
-					<tr>
-            			<td><label path="account.enabled">Habilitado</label></td>
-                		<td><@spring.formCheckbox  "user.account.enabled" /></td>
-					</tr>
-					<tr>
-            			<td><label path="account.locked">Cuenta bloqueada</label></td>
-                		<td><@spring.formCheckbox  "user.account.locked" /></td>
-					</tr>
-					<tr>
-            			<td><label path="account.phoneNumber">Número de Interno</label></td>
-                		<td><@spring.formInput  "user.account.phoneNumber" /></td>
-					</tr>					
-				</table>
-			</fieldset>
-			<input type="submit" value="Guardar"/>		
-    </form>	
-	
-</@layout.main>
+<#macro sidebar>
+	<@widget.statistics/>
+</#macro>
+
+
+<#macro body>
+		<div class="section">
+				<div class="box">
+					<div class="title">
+						Editar datos del usuario "${user.displayName}"
+						<span class="hide"></span>
+					</div>
+					<div class="content">
+						<form  action="<@spring.url '/admin/user/${user.id}'/>" method="post" class="valid">
+							<div class="row">
+								<label>Email</label>
+								<div class="right">
+									<@spring.formInput  "user.username" "class='{validate:{required:true, email:true, messages:{email:\"Ingrese una direccion de E-mail valida.\", required:\"Ingrese una dirección de E-mail\"}}}'"/>
+								</div>
+							</div>							
+							
+							<div class="row">
+								<label>Nombre a visualizar</label>
+								<div class="right"><@spring.formInput  "user.displayName" "class='{validate:{required:true, messages:{required:\"Please enter your name\"}}}'"/></div>
+							</div>
+							
+							<div class="row">
+								<label>Roles</label>
+								<div class="right"><@spring.formInput  "user.roles" "class='{validate:{required:true, messages:{required:\"Ingrese los roles del usuario\"}}}'"/></div>
+							</div>
+							
+
+							<div class="row">
+								<label></label>
+								<div class="right">
+									<@spring.formCheckbox  "user.account.enabled"/>
+									<label for="account.enabled">Habilitado</label>
+								</div>
+							</div>
+							
+							<div class="row">
+								<label></label>
+								<div class="right">
+									<@spring.formCheckbox  "user.account.locked"/>
+									<label for="account.locked">Cuenta bloqueada</label>
+								</div>
+							</div>
+							
+							<div class="row">
+								<label>Interno</label>
+								<div class="right"><@spring.formInput  "user.account.phoneNumber"/></div>
+							</div>
+							
+							<div class="row">
+								<label></label>
+								<div class="right">
+									<button type="submit" class="green"><span>Guardar</span></button>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+</#macro>

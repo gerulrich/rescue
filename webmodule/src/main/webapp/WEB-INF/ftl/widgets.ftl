@@ -1,46 +1,57 @@
 <#ftl strip_whitespace=true>
 
-<#macro userinfo>
-	<img src="<@spring.url '/avatar'/>" class="avatar" alt="" />
-	<span class="user-detail">
-		<span class="name"><@spring.message "home.welcome" /> <#if currentUser??>${currentUser.displayName}<#else>Anonimo</#if></span>
-		<span class="text">Logged as admin</span>
-		<span class="text">You have <a href="#">0 messages</a></span>
-	</span>
+<#macro welcome>
+	<@spring.message "home.welcome" /> <#if currentUser??>${currentUser.displayName}<#else>Anonimo</#if>
 </#macro>
 
-<#macro logo>
-	<a href="index.html" title="View dashboard">
-		<img src="<@spring.url '/static/images/logo_earth.png'/>" alt="" class="picture" />
-		<span class="textlogo">
-			<span class="title">CLOUDENGINE</span>
-			<span class="text">panel de control</span>
-		</span>
-	</a>
+<#macro statistics>
+<div class="box statics">
+		<div class="content">
+			<ul>
+				<li><h2>Statistics</h2></li>
+				<li>Total pages <div class="info red"><span>999</span></div></li>
+				<li>Comments <div class="info blue"><span>654</span></div></li>
+				<li>Build <div class="info green"><span>${buildNumber}</span></div></li>
+				<li>Version <div class="info black"><span>${appVersion}</span></div></li>
+			</ul>
+		</div>
+	</div>
 </#macro>
 
 <#macro menu selected="">
-<ul class="clear">
-	<li<#if (selected="dashboard")> class="active"</#if>><a href="<@spring.url '/'/>">Dashboard</a></li>
 
+<ul> 
+	<li<#if (selected="dashboard")> class="current"</#if>><a href="<@spring.url '/' />">Dashboard</a></li>
+	
 	<li>
 		<a href="#">Aplicación</a>
 		<ul>
 			<li><a href="${jnlpUrl}">Descargar</a></li>
 		</ul>
 	</li>	
-	
-	<li<#if (selected="admin")> class="active"</#if>>
-		<a href="#">Administracion</a>
+	 
+	<li<#if (selected="admin")> class="current"</#if>><a href="#">Administración</a>
 		<ul>
 			<li><a href="#">Usuarios</a>
 				<ul>
 					<li><a href="<@spring.url '/admin/user/new'/>">Nuevo...</a></li>
-					<li><a href="<@spring.url '/admin/users.html'/>">Usuarios</a></li>					
-					<li><a href="columns2.html">Cambiar contraseña</a></li>
+					<li><a href="<@spring.url '/admin/users.html'/>">Ver</a></li>
 				</ul>
 			</li>
-		</ul>				
+			<li><a href="<@spring.url '/admin/properties'/>">Configuración</a></li>
+			<li><a href="#">Mapa</a>
+				<ul>
+					
+					<li><a href="<@spring.url '/map/test.html'/>">Buscador de direcciones</a></li>
+				</ul>
+			</li>
+			<li><a href="#">Archivo</a>
+				<ul>
+					<li><a href="<@spring.url '/file/upload.html'/>">Subir archivo...</a></li>
+					<li><a href="<@spring.url '/file/list.html'/>">Lista de archivos</a></li>
+				</ul>
+			</li>
+		</ul>
 	</li>
 </ul>
 </#macro>
@@ -54,27 +65,95 @@
 	</#if>
 </#macro>
 
-<#macro css>
-<link rel="stylesheet" href="<@spring.url '/css/reset.css'/>" type="text/css"/>
-<link rel="stylesheet" href="<@spring.url '/css/screen.css'/>" type="text/css"/>
-<link rel="stylesheet" href="<@spring.url '/css/fancybox.css'/>" type="text/css"/>
-<link rel="stylesheet" href="<@spring.url '/css/jquery.wysiwyg.css'/>" type="text/css"/>
-<link rel="stylesheet" href="<@spring.url '/css/jquery.ui.css'/>" type="text/css"/>
-<link rel="stylesheet" href="<@spring.url '/css/visualize.css'/>" type="text/css"/>
-<link rel="stylesheet" href="<@spring.url '/css/visualize-light.css'/>" type="text/css"/>
-<!--[if IE 7]><link rel="stylesheet" type="text/css" href="css/ie7.css" /><![endif]-->
+<#macro showErrors element="">
+	<@spring.bind element />
+	<#if spring.status.error>
+	<div class="message red">
+		<span><b>ERROR</b>: ${spring.status.errorMessages[0]}</span>
+	</div>
+	</#if>
+</#macro>
+
+
+
+<#macro importCss>
+	<style type="text/css">
+		@import url("<@spring.url '/static/css/style.css'/>");
+		@import url("<@spring.url '/static/css/forms.css'/>");
+		@import url("<@spring.url '/static/css/forms-btn.css'/>");
+		@import url("<@spring.url '/static/css/menu.css'/>");
+		@import url('<@spring.url '/static/css/style_text.css'/>');
+		@import url("<@spring.url '/static/css/datatables.css'/>");
+		@import url("<@spring.url '/static/css/fullcalendar.css'/>");
+		@import url("<@spring.url '/static/css/pirebox.css'/>");
+		@import url("<@spring.url '/static/css/modalwindow.css'/>");
+		@import url("<@spring.url '/static/css/statics.css'/>");
+		@import url("<@spring.url '/static/css/tabs-toggle.css'/>");
+		@import url("<@spring.url '/static/css/system-message.css'/>");
+		@import url("<@spring.url '/static/css/tooltip.css'/>");
+		@import url("<@spring.url '/static/css/wizard.css'/>");
+		@import url("<@spring.url '/static/css/wysiwyg.css'/>");
+		@import url("<@spring.url '/static/css/wysiwyg.modal.css'/>");
+		@import url("<@spring.url '/static/css/wysiwyg-editor.css'/>");
+		@import url("<@spring.url '/static/css/handheld.css'/>");
+
+		#wrapper {
+			width : auto;
+			min-width : 980px;
+			max-width : 90%;
+		}
+	</style>
+	
+	<!--[if lte IE 8]><script type="text/javascript" src="<@spring.url '/static/js/excanvas.min.js'/>"></script><![endif]-->
+</#macro>
+
+<#macro importJS>
+	<script type="text/javascript" src="<@spring.url '/static/js/jquery-1.7.1.min.js'/>"></script>
+	<script type="text/javascript" src="<@spring.url '/static/js/jquery.backgroundPosition.js'/>"></script>
+	<script type="text/javascript" src="<@spring.url '/static/js/jquery.placeholder.min.js'/>"></script>
+	<script type="text/javascript" src="<@spring.url '/static/js/jquery.ui.1.8.17.js'/>"></script>
+	<script type="text/javascript" src="<@spring.url '/static/js/jquery.ui.select.js'/>"></script>
+	<script type="text/javascript" src="<@spring.url '/static/js/jquery.ui.spinner.js'/>"></script>
+	<script type="text/javascript" src="<@spring.url '/static/js/superfish.js'/>"></script>
+	<script type="text/javascript" src="<@spring.url '/static/js/supersubs.js'/>"></script>
+	<script type="text/javascript" src="<@spring.url '/static/js/jquery.datatables.js'/>"></script>
+	<script type="text/javascript" src="<@spring.url '/static/js/fullcalendar.min.js'/>"></script>
+	<script type="text/javascript" src="<@spring.url '/static/js/jquery.smartwizard-2.0.min.js'/>"></script>
+	<script type="text/javascript" src="<@spring.url '/static/js/pirobox.extended.min.js'/>"></script>
+	<script type="text/javascript" src="<@spring.url '/static/js/jquery.tipsy.js'/>"></script>
+	<script type="text/javascript" src="<@spring.url '/static/js/jquery.elastic.source.js'/>"></script>
+	<script type="text/javascript" src="<@spring.url '/static/js/jquery.jBreadCrumb.1.1.js'/>"></script>
+	<script type="text/javascript" src="<@spring.url '/static/js/jquery.customInput.js'/>"></script>
+	<script type="text/javascript" src="<@spring.url '/static/js/jquery.validate.min.js'/>"></script>
+	<script type="text/javascript" src="<@spring.url '/static/js/jquery.metadata.js'/>"></script>
+	<script type="text/javascript" src="<@spring.url '/static/js/jquery.filestyle.mini.js'/>"></script>
+	<script type="text/javascript" src="<@spring.url '/static/js/jquery.filter.input.js'/>"></script>
+	<script type="text/javascript" src="<@spring.url '/static/js/jquery.flot.js'/>"></script>
+	<script type="text/javascript" src="<@spring.url '/static/js/jquery.flot.pie.min.js'/>"></script>
+	<script type="text/javascript" src="<@spring.url '/static/js/jquery.flot.resize.min.js'/>"></script>
+	<script type="text/javascript" src="<@spring.url '/static/js/jquery.graphtable-0.2.js'/>"></script>
+	<script type="text/javascript" src="<@spring.url '/static/js/jquery.wysiwyg.js'/>"></script>
+	<script type="text/javascript" src="<@spring.url '/static/js/controls/wysiwyg.image.js'/>"></script>
+	<script type="text/javascript" src="<@spring.url '/static/js/controls/wysiwyg.link.js'/>"></script>
+	<script type="text/javascript" src="<@spring.url '/static/js/controls/wysiwyg.table.js'/>"></script>
+	<script type="text/javascript" src="<@spring.url '/static/js/plugins/wysiwyg.rmFormat.js'/>"></script>
+	<script type="text/javascript" src="<@spring.url '/static/js/costum.js'/>"></script>
 </#macro>
 
 <#macro detail url>
-<a href="<@spring.url url/>"><img src="<@spring.url '/static/images/ico_detail_16.png'/>" class="icon16 fl-space2" alt="" title="<@spring.message 'accion.show'/>" /></a>
+<a href="<@spring.url url/>"><img src="<@spring.url '/static/gfx/icons/small/document.png'/>" class="icon16 fl-space2" alt="" title="<@spring.message 'accion.show'/>" /></a>
 </#macro>
 
 <#macro edit url>
-<a href="<@spring.url url/>"><img src="<@spring.url '/static/images/ico_edit_16.png'/>" class="icon16 fl-space2" alt="" title="<@spring.message 'accion.edit'/>" /></a>
+<a href="<@spring.url url/>"><img src="<@spring.url '/static/gfx/icons/small/edit.png'/>" class="icon16 fl-space2" alt="" title="<@spring.message 'accion.edit'/>" /></a>
 </#macro>
 
 <#macro delete url>
-<a href="<@spring.url url/>"><img src="<@spring.url '/static/images/ico_delete_16.png'/>" class="icon16 fl-space2" alt="" title="<@spring.message 'accion.delete'/>" /></a>
+<a href="<@spring.url url/>"><img src="<@spring.url '/static/gfx/icons/small/trash.png'/>" class="icon16 fl-space2" alt="" title="<@spring.message 'accion.delete'/>" /></a>
+</#macro>
+
+<#macro link url image="folder.png" tooltip="">
+<a href="<@spring.url url/>"><img src="<@spring.url '/static/gfx/icons/small/${image}'/>" class="icon16 fl-space2" alt="" title="${tooltip}" /></a>
 </#macro>
 
 
@@ -87,12 +166,12 @@
 <div class="pager fr">
 	
 	<span class="nav">
-		<a href="<@spring.url '${baseUrl}/1/${pageSize}'/>" class="first" title="first page">
-			<span>First</span>
+		<a href="<@spring.url '${baseUrl}/1/${pageSize?c}'/>" class="first" title="first page">
+			<span>Primera p&aacute;gina</span>
 		</a>
 		<#if ( previousPage >= 1 ) >
-		<a href="<@spring.url '${baseUrl}/${previousPage}/${pageSize}'/>" class="previous" title="previous page">
-			<span>Previous</span>
+		<a href="<@spring.url '${baseUrl}/${previousPage?c}/${pageSize}'/>" class="previous" title="previous page">
+			<span>Anterior</span>
 		</a>
 		</#if>
 	</span>
@@ -108,19 +187,19 @@
 	</#if>		
 	<#assign seq=start..end>
 	<#list seq as x>
-		<a href="<@spring.url '${baseUrl}/${x}/${pageSize}'/>" title="page ${x}" <#if (currentPage == x)>class="active"</#if>><span>${x}</span></a>
+		<a href="<@spring.url '${baseUrl}/${x?c}/${pageSize}'/>" title="page ${x}" <#if (currentPage == x)>class="active"</#if>><span>${x}</span></a>
 	</#list>
 	</span>
 	<span class="nav">
 		
 		<#if (nextPage <= paging.totalPages) >
-		<a href="<@spring.url '${baseUrl}/${nextPage}/${pageSize}'/>" class="next" title="next page">
-			<span>Next</span>
+		<a href="<@spring.url '${baseUrl}/${nextPage?c}/${pageSize}'/>" class="next" title="next page">
+			<span>Siguiente</span>
 		</a>
 		</#if>
 		
-		<a href="<@spring.url '${baseUrl}/${totalPages}/${pageSize}'/>" class="last" title="last page">
-			<span>Last</span>
+		<a href="<@spring.url '${baseUrl}/${totalPages?c}/${pageSize}'/>" class="last" title="last page">
+			<span>Ultima p&aacute;gina</span>
 		</a>
 	</span>
 </div>

@@ -20,7 +20,7 @@
     <jdk-version>1.6</jdk-version>
     <groovy-version>1.7.5</groovy-version>
     <org.cloudfoundry-version>0.7.1</org.cloudfoundry-version>
-    <maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
+    <maven.build.timestamp.format>yyyy.MM.dd.HH.mm.ss</maven.build.timestamp.format>
     <swt-version>3.5.2</swt-version>
   	<timestamp>${maven.build.timestamp}</timestamp>
   </properties>
@@ -97,6 +97,7 @@
 				<artifactId>activation</artifactId>
 			</exclusion>
 		</exclusions>
+<!-- 		<scope>runtime</scope> -->
 	</dependency>
 	
 	<dependency>

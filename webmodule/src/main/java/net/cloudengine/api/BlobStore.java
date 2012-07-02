@@ -4,13 +4,15 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
 
+import org.bson.types.ObjectId;
+
 public interface BlobStore {
 
 	/**
 	 * Borra el archivo del BlobStore.
 	 * @param filename Nombre del archivo a borrar.
 	 */
-	void remove(String filename);
+	void remove(ObjectId id);
 	
 	/**
 	 * Verifica si un archivo ya existe en el BlobStore.
@@ -31,14 +33,14 @@ public interface BlobStore {
 	 * @param filename nombre del archivo.
 	 * @param inputStream para guardar el archivo.
 	 */
-	void storeFile(String filename, InputStream inputStream);
+	void storeFile(String filename, InputStream inputStream, String description, String type);
 	
 	/**
 	 * Obtiene un archivo del BlobStore
 	 * @param filename nombre del archivo a obtener
 	 * @param outputStream para leer el archivo.
 	 */
-	void retrieveFile(String filename, OutputStream outputStream);
+	void retrieveFile(ObjectId id, OutputStream outputStream);
 
 
 }

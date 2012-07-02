@@ -8,7 +8,6 @@ import net.cloudengine.pbx.Status;
 
 import org.asteriskjava.manager.AbstractManagerEventListener;
 import org.asteriskjava.manager.event.ExtensionStatusEvent;
-import org.asteriskjava.manager.event.HoldEvent;
 
 public class AsteriskEventHandler extends AbstractManagerEventListener {
 
@@ -22,17 +21,9 @@ public class AsteriskEventHandler extends AbstractManagerEventListener {
 		listeners.remove(listener);
 	}
 	
-	
-	@Override
-	public void handleEvent(HoldEvent event) {
-		System.out.println("Hold event, extension: "+event.getChannel());
-	}	
-	
-	
 	@Override
 	public void handleEvent(ExtensionStatusEvent event) {
 		Status status = Status.fromInt(event.getStatus());
-
 		for (PhoneStatusListener listener : listeners) {
 			listener.onStatusChange(event.getExten(), status);
 		}

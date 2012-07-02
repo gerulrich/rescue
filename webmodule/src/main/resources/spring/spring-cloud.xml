@@ -16,10 +16,16 @@
 			</constructor-arg>
 			<constructor-arg value="webadmin" />
 		</bean>
+		
+
+		
 	</beans>
 
 	<beans profile="cloud">
 		<cloud:mongo-db-factory id="mongoDbFactory" />
+		
+		<cloud:data-source id="dataSource" />
+		
 	</beans>
 
 </beans>

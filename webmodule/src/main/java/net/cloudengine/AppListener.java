@@ -60,15 +60,17 @@ public class AppListener {
 	private void loadAppConfig() {
 		List<AppProperty> properties = new ArrayList<AppProperty>();
 		properties.add(new AppProperty("jnlp.url", "http://localhost:18080/client-deploy/applications/application1.jnlp"));
+		
 		properties.add(new AppProperty("map.google.street", "http://mt1.google.com/vt/lyrs=m@139&hl=es&x=${x}&y=${y}&z=${zoom}&s=Galil"));
 		properties.add(new AppProperty("map.google.sat", "http://khm0.google.com.ar/kh/v=101&x=${x}&y=${y}&z=${zoom}&s=Galil"));
 		properties.add(new AppProperty("map.osm", "http://b.tile.openstreetmap.org/${zoom}/${x}/${y}.png"));
+		
 		properties.add(new AppProperty("asterisk.hostname", "192.168.0.104", true));
 		properties.add(new AppProperty("asterisk.manager.user", "manager", true));
 		properties.add(new AppProperty("asterisk.manager.pass", "manager", true));
 		properties.add(new AppProperty("asterisk.context", "from-internal", true));
 		properties.add(new AppProperty("asterisk.enabled", "false", true));
-		properties.add(new AppProperty("asterisk.rec.directory", "/var/spool/asterisk/monitor"));
+		properties.add(new AppProperty("asterisk.rec.directory", "/var/spool/asterisk/monitor", true));
 		
 		properties.add(new AppProperty("asterisk.ssh.user", "root"));
 		properties.add(new AppProperty("asterisk.ssh.pass", "pandora"));

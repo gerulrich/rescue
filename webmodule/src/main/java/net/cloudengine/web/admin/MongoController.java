@@ -1,7 +1,13 @@
 package net.cloudengine.web.admin;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
+
+import net.cloudengine.api.mongo.CollectionPagingResult;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,18 +40,18 @@ public class MongoController {
 		this.db = factory.getDb();
 	}
 	
+	/**
+	 * Obtiene la lista de colecciones de la base de datos de MongoDB.
+	 */
 	@RequestMapping(value="/admin/mongo/list", method = RequestMethod.GET)
 	public ModelAndView mongoCollections() {
 		ModelAndView mav = new ModelAndView();
 		
 		List<MongoCollection> collections = new ArrayList<MongoCollection>();
 		for (String colName : db.getCollectionNames()) {
-			if (colName != null && !colName.startsWith("system.")) {
+			if (colName != null && !colName.startsWith("system.") && !colName.startsWith("fs.")) {
 				DBCollection collection = db.getCollection(colName);
-//				collection.
-				
-				long count = collection.count();
-				MongoCollection mcol = new MongoCollection(colName, count);
+				MongoCollection mcol = new MongoCollection(colName, collection.getStats());
 				collections.add(mcol);
 			}
 		}
@@ -54,6 +60,9 @@ public class MongoController {
 		return mav;
 	}
 	
+	/**
+	 * Elimina la coleccion de la base de datos de MongoDB.
+	 */
 	@RequestMapping(value="/admin/mongo/drop/{collection}", method = RequestMethod.GET)
 	public ModelAndView dropCollection(@PathVariable("collection") String collection) {
 		ModelAndView mav = new ModelAndView();
@@ -69,7 +78,7 @@ public class MongoController {
 	@RequestMapping(value="/admin/mongo/show/{collection}", method = RequestMethod.GET)
 	public ModelAndView showCollection(@PathVariable("collection") String collection) {
 		ModelAndView mav = new ModelAndView();
-		mav.setViewName("redirect:/admin/mongo/show/{collection}/1/100");
+		mav.setViewName("redirect:/admin/mongo/show/{collection}/1/25");
 		return mav;
 	}
 	
@@ -83,24 +92,39 @@ public class MongoController {
 		
 		DBCollection colDB = db.getCollection(collection);
 		DBCursor cursor = colDB.find().skip((page-1)*size).limit(size);
+		long totalPages = totalPages(colDB, page, size);
 		
 		List<MongoObject> objects = new ArrayList<MongoObject>();
 		
+		Set<String> headers = new TreeSet<String>(); 
+		
 		for (DBObject object : cursor) {
+			headers.addAll(object.keySet());
 			MongoObject obj = new MongoObject();
-			obj.setValues(object.toMap());
+			Map<String,Object> values = new HashMap<String, Object>();
+			for (String key : object.keySet()) {
+				values.put(key, object.get(key));
+			}
+			obj.setValues(values);
 			objects.add(obj);
+
 		}
 		
+		headers.remove("className");
+		headers.remove("password");
+		
 		mav.addObject("collection", collection);
-		mav.addObject("objects", objects);
-		if (!objects.isEmpty()) {
-			mav.addObject("headers", objects.get(0).getPropertiesNames());
-		}
+		mav.addObject("objects", new CollectionPagingResult<MongoObject>(objects, page, size, totalPages, colDB.count()));
+		mav.addObject("headers", headers);
 		mav.setViewName("/mongo/collection");
 		return mav;
 	}
 	
-	
-
+	private long totalPages(DBCollection colDB, int page, int size) {
+		long total = colDB.count();
+		long totalPages = total / size;
+		if (total % size != 0)
+			totalPages++;
+		return totalPages;
+	}
 }

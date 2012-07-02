@@ -41,11 +41,6 @@
     		<list>
 <!--       			<bean class="org.springframework.web.servlet.view.BeanNameViewResolver"/> -->
       			
-<!--       			<bean class="net.cloudengine.groovyx.GroovyViewResolver"> -->
-<!--         			<property name="prefix" value="/WEB-INF/ftl/"/> -->
-<!--         			<property name="suffix" value=".xml"/> -->
-<!--       			</bean> -->
-      			
 				<bean class="org.springframework.web.servlet.view.freemarker.FreeMarkerViewResolver">
         			<property name="prefix" value=""/>
         			<property name="cache" value="true"/>

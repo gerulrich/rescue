@@ -9,12 +9,27 @@
 		</layout>
 	</appender>
 
+	<category name="net.cloudengine">
+		<priority value="debug"/>
+		<appender-ref ref="CONSOLE"/>
+	</category>
+
 	<category name="freemarker.cache">
 		<priority value="error"/>
 		<appender-ref ref="CONSOLE"/>
 	</category>
+	
+	<category name="freemarker.runtime">
+		<priority value="error"/>
+		<appender-ref ref="CONSOLE"/>
+	</category>	
 
 	<category name="org.springframework">
+		<priority value="error"/>
+		<appender-ref ref="CONSOLE"/>
+	</category>
+	
+		<category name="org.springframework.web">
 		<priority value="error"/>
 		<appender-ref ref="CONSOLE"/>
 	</category>
@@ -33,9 +48,9 @@
 		<priority value="error"/>
 		<appender-ref ref="CONSOLE"/>
 	</category>
-
-	<category name="net.cloudengine">
-		<priority value="debug"/>
+	
+	<category name="org.hibernate">
+		<priority value="error"/>
 		<appender-ref ref="CONSOLE"/>
 	</category>
 

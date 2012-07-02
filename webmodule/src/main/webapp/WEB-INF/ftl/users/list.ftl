@@ -1,26 +1,30 @@
-<@layout.main template="admin">			
+<@layout.main breadcrumbs=breadcrumbs menu=menu sidebar=sidebar body=body/>
 
-<!-- CONTENT BOX - DATATABLE -->
-<div class="content-box">
-	<div class="box-body">
-		<div class="box-header clear">
-			<ul class="tabs clear">
-				<!--<li><a href="#data-table">JS plugin</a></li>-->
-				<!--li><a href="#table">Table only</a></li-->
-			</ul>
-			
-			<h2>Usuarios</h2>
-		</div>
+<#macro breadcrumbs>
+	<li><a href="<@spring.url '/'/>">Dashboard</a></li>
+	<li><a href="<@spring.url '/admin/users/'/>">Usuarios</a></li>
+</#macro>
 
-		<div class="box-wrap clear">
-			<div id="table">
-				<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed in porta lectus. Maecenas dignissim enim quis ipsum mattis aliquet. Maecenas id velit et elit gravida bibendum. Duis nec rutrum lorem.</p> 
-				<table class="style1">
-					<thead>
+<#macro menu>
+	<@widget.menu "admin"/>
+</#macro>
+
+<#macro sidebar>
+	<@widget.statistics/>
+</#macro>
+
+
+<#macro body>
+	<div class="section">
+		<div class="box">
+			<div class="title">Lista de usuarios<span class="hide"></span></div>
+			<div class="content">
+				<table cellspacing="0" cellpadding="0" border="0"> 
+					<thead> 
 						<tr>
 							<th>OID</th>
 							<th>Nombre</th>
-							<th>E-mail</th>
+							<th>E-Mail</th>
 							<th>Roles</th>
 							<th>Habilitado</th>
 							<th>Acciones</th>
@@ -33,7 +37,7 @@
 							<td>${user.displayName}</td>
 							<td>${user.username}</td>
 							<td>${user.roles}</td>
-							<td><#if user.account.enabled>Yes<#else>No</#if></td>
+							<td>${user.account.enabled?string("Si", "No")}</td>
 							<td>
 								<@widget.detail "/admin/user/show/${user.id}"/>
 								<@widget.edit "/admin/user/${user.id}"/>
@@ -43,10 +47,8 @@
 						</#list>
 					</tbody>
 				</table>
-			<@widget.tablePaging users "/admin/users" />
-		</div><!-- end of box-wrap -->
-	</div> <!-- end of box-body -->
-</div> <!-- end of content-box -->			
-			    
-</div><!-- end of page -->
-</@layout.main>
+				<@widget.tablePaging users "/admin/users" />
+			</div>
+		</div>
+	</div>
+</#macro>

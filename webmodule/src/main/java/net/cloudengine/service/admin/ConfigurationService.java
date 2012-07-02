@@ -6,10 +6,12 @@ import net.cloudengine.model.config.AppProperty;
 
 public interface ConfigurationService {
 	
-	Collection<ConfigOption> getAvailableServices();
 	AppProperty getProperty(String key);
 	Collection<AppProperty> getAll();
 	Collection<AppProperty> getAllClientProperties();
+	String getVersion();
+	String getBuildNumber();
+	
 	
 
 }

@@ -22,16 +22,15 @@ public class MyFMConfigurer extends FreeMarkerConfigurer {
 		Configuration conf = super.getConfiguration();
 		conf.addAutoImport("spring", "/spring.ftl");
 		conf.addAutoImport("widget", "/widgets.ftl");
-		conf.addAutoImport("layout", "/layouts/layout.ftl");
+		conf.addAutoImport("layout", "/layouts/new_layout.ftl");
 		try {
 			conf.setSharedVariable("jnlpUrl", service.getProperty("jnlp.url").getValue());
+			conf.setSharedVariable("appVersion", service.getVersion());
+			conf.setSharedVariable("buildNumber", service.getBuildNumber());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-//		conf.setTagSyntax(Configuration.SQUARE_BRACKET_TAG_SYNTAX);
+		conf.setTemplateExceptionHandler(new MyTemplateExceptionHandler());
 		return conf;
 	}
-	
-	
-
 }

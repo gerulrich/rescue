@@ -103,5 +103,11 @@ public class MongoStore<E, PK extends Serializable> implements Datastore<E, PK> 
         	}
         }*/
 		morphia.createDatastore(factory.getDb().getMongo(), factory.getDb().getName()).save(entity);
+	}
+
+	@Override
+	public void deleteAll() {
+		morphia.createDatastore(factory.getDb().getMongo(), factory.getDb().getName()).
+			getCollection(entityClass).drop();		
 	}	
 }

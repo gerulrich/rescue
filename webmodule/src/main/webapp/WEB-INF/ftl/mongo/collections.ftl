@@ -1,25 +1,33 @@
-<@layout.main template="admin">
+<@layout.main breadcrumbs=breadcrumbs menu=menu sidebar=sidebar body=body/>
 
-<!-- CONTENT BOX - DATATABLE -->
-<div class="content-box">
-	<div class="box-body">
-		<div class="box-header clear">
-			<ul class="tabs clear">
-				<!--<li><a href="#data-table">JS plugin</a></li>-->
-				<!--li><a href="#table">Table only</a></li-->
-			</ul>
-			
-			<h2>MongoDB Collections</h2>
-		</div>
+<#macro breadcrumbs>
+	<li><a href="<@spring.url '/'/>">Dashboard</a></li>
+	<li><a href="<@spring.url '/admin/mongo/list'/>">MongoDB Collections</a></li>	
+</#macro>
 
-		<div class="box-wrap clear">
-			<div id="table">
-				<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed in porta lectus. Maecenas dignissim enim quis ipsum mattis aliquet. Maecenas id velit et elit gravida bibendum. Duis nec rutrum lorem.</p> 
-				<table class="style1">
+<#macro menu>
+	<@widget.menu "admin"/>
+</#macro>
+
+<#macro sidebar>
+	<@widget.statistics/>
+</#macro>
+
+
+<#macro body>
+	<div class="section">
+		<div class="box">
+			<div class="title">MongoDB Collections<span class="hide"></span></div>
+			<div class="content">
+				<table cellspacing="0" cellpadding="0" border="0"> 
 					<thead>
 						<tr>
 							<th>Nombre</th>
 							<th>Nro documentos</th>
+							<th>Size</th>
+							<th>Storage</th>
+							<th>Indices</th>
+							<th>Index Size</th>
 							<th>Acciones</th>
 						</tr>
 					</thead>
@@ -27,20 +35,21 @@
 						<#list collections as col>
 						<tr>
 							<td>${col.name}</td>
+							<td>${col.count}</td>
 							<td>${col.size}</td>
+							<td>${col.storage}</td>
+							<td>${col.indexes}</td>
+							<td>${col.indexSize}</td>
 							<td>
-								<@widget.detail "/admin/mongo/show/${col.name}"/>
-								<@widget.delete "/admin/mongo/drop/${col.name}"/>
+								<@widget.link "/admin/mongo/show/${col.name}" "detail.png" "Ver"/>
+								<@widget.link "/admin/mongo/drop/${col.name}" "trash_16x16.gif" "Borrar"/>
 							</td>
 						</tr>
 						</#list>
 					</tbody>
 				</table>
-			
-		</div><!-- end of box-wrap -->
-	</div> <!-- end of box-body -->
-</div> <!-- end of content-box -->			
-			    
-</div><!-- end of page -->
-</ul>
-</@layout.main>
+				
+			</div>
+		</div>
+	</div>
+</#macro>

@@ -123,6 +123,9 @@ public class AsteriskPBXMonitor implements PBXMonitor {
 
 	@Override
 	public Collection<CTIQueue> getQueues() {
+		if (!this.connection.isConnected()) {
+			return new ArrayList<CTIQueue>();
+		}
 		Collection<AsteriskQueue> queues = this.connection.getAsteriskServer().getQueues();
 		Collection<CTIQueue> result = new ArrayList<CTIQueue>();
 		for(AsteriskQueue aq : queues) {

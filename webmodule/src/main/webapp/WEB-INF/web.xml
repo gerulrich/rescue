@@ -92,4 +92,14 @@
         <exception-type>java.lang.Exception</exception-type>
         <location>/WEB-INF/jsp/errors/uncaught-error.jsp</location>
     </error-page>
+
+	<mime-mapping>
+        <extension>ttf</extension>
+        <mime-type>font/truetype</mime-type>
+    </mime-mapping>
+    <mime-mapping>
+        <extension>woff</extension>
+        <mime-type>application/x-font-woff</mime-type>
+    </mime-mapping>
+    
 </web-app>

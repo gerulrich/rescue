@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE book PUBLIC "-//OASIS//DTD DocBook XML V4.4//EN"
+"http://www.oasis-open.org/docbook/xml/4.4/docbookx.dtd">
+<book lang="es">
+  <bookinfo>
+    <title>Tutorial de git</title>
+
+    <releaseinfo><?eval ${project.version}?></releaseinfo>
+
+    <authorgroup>
+      <author>
+        <firstname>German</firstname>
+	    <surname>Ulrich</surname>
+        <affiliation>81343</affiliation>
+      </author>
+    </authorgroup>
+
+    <legalnotice>
+      <para>Copies of this document may be made for your own use and for
+      distribution to others, provided that you do not charge any fee for such
+      copies and further provided that each copy contains this Copyright
+      Notice, whether distributed in print or electronically.</para>
+    </legalnotice>
+  </bookinfo>
+  
+  <chapter id="mongo">
+	<title>Instalar MongoDB</title>
+
+	<section id="mongo.description">
+		<title>Descripción</title>
+		<para>MongoDB en una base de datos que se basa en colecciones y es libre de esquema.</para>
+		
+		<para>
+Cuando decimos que se basa en colecciones, queremos decir que los datos se agrupan en conjuntos llamados "colecciones".  Cada colección tiene un nombre único en la base de datos y puede contener un número ilimitado de documentos.  Una colección es analoga a una tabla en un RDMS, excepto que no tienen un esquema definido.</para>
+
+<para>
+Libre de esquema significa que la base de datos no tiene que saber cosa alguna sobre la estructura de los documentos que usted guarde en una colección.  De hecho, puede guardar documentos con estructuras diferentes en una misma colección si así lo desea.
+</para>
+
+<para>
+Por documento queremos decir los datos se guardan en una colección estructurada de pares clave-valor (key-value).  En la estructura las claves son cadenas (strings) y los valores pueden ser cualquiera de un conjunto rico de tipos de datos, incluyendo vectores (arrays) y documentos. Llamamos a este formato BSON, o "Binary Serialized dOcument Notation" (Notación Binaria en Serie para Documentos).
+</para>
+		
+	</section>
+  </chapter>  
+  
+</book>
