@@ -9,8 +9,7 @@
 
 		$("form").submit(function() {
 			$(".message").hide();
-			$('#boton').attr("disabled", "disabled");
-			$('#boton').removeClass("green").addClass("dummy");
+			$('#boton').hide();
 			$('#progress').progressbar({value: 0});
 			$('#progress').prev(".percent").text("0%");
 			setTimeout ( 'progress()', 500 );
@@ -29,8 +28,8 @@
 					$('#progress').progressbar({value: 100});
 					$('#progress').prev(".percent").text("100%");
 					$(".message").show();
-					$('#boton').addClass("green").removeClass("dummy");
-					$('#boton').attr("disabled", "");
+					$('#boton').show();
+					$('form').each (function() { this.reset(); });
 				} else {
 					$('#progress').progressbar({value: porcentage});
 					$('#progress').prev(".percent").text(porcentage+"%");
@@ -66,7 +65,7 @@
 	<div class="section">
 		<div class="box">
 			<div class="title">
-			Subir shapefile<span class="hide"></span>
+			Subir archivo<span class="hide"></span>
 			</div>
 			<div class="content">
 			
@@ -76,6 +75,23 @@
 						<label>Descripci&oacute;n</label>
 						<div class="right"><input type="text" name="description"></div>
 					</div>
+
+					<div class="row">
+						<label>Versi&oacute;n</label>
+						<div class="right"><input type="text" name="version"></div>
+					</div>
+					
+					<div class="row">
+						<label>Tipo</label>
+						<div class="right">
+							<select name="type">
+								<option value="shp" selected="selected">ShapeFile (comprimido en zip)</option>
+								<option value="png">PNG</option>
+								<option value="jpg">JPG</option>
+								<option value="otro">Otro</option>
+							</select>
+						</div>
+					</div>										
 					
 					<div class="row">
 						<label>Archivo a subir</label>

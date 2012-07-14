@@ -18,9 +18,21 @@
 
 	<div class="section">
 	
+		<div class="plain">
+			<h3>A tener en cuenta</h3>
+			<br/>
+			<ul class="tick">
+				<li>El archivo desde estar subido previamente desde la opci&oacute;n correspondiente.</li>
+				<li>El archivo shapefile deben estar en la projecci&oacute;n GWS84.</li>
+				<li>El archivo shapefile deber&aacute; estar comprimido en formato zip, el cual contendr&aacute;
+				el archivo .shp y el archivo .dbf, ambos con el mismo nombre (sin tener en cuenta la extensi&oacute;n).</li>
+				<li>Deber&aacute;n contar con los campos necesarios seg&uacute;n se trate de puntos de interes, calles o zonas.</li>
+			</ul>
+		</div>
+	
 		<div class="box">
 			<div class="title">
-			Subir shapefile<span class="hide"></span>
+			Cargar layer desde archivo<span class="hide"></span>
 			</div>
 			<div class="content">
 			
@@ -43,7 +55,7 @@
 							<select name="type">
 							<option value="poi">Puntos de interes</option>
 							<option value="street">Calles</option>
-							<option value="">Zonas</option>
+							<option value="zone">Zonas</option>
 							</select>
 						</div>
 					</div>

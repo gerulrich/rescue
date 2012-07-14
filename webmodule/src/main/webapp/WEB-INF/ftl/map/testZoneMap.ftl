@@ -9,8 +9,15 @@
 <script>
 
 	var map = null;
+	var geojsonLayer = null;
 	$(document).ready(function() {
 
+		$("form").submit(function() {
+			geojsonLayer.clearLayers();
+			loadZones($("#zoneName").val(), $("#zoneType").val());
+			return false;
+		});
+		
 		map = new L.Map('map_canvas');
 
 		var googleMaps = new L.TileLayer('<@spring.url '/tiles/{z}/{x}/{y}/map.google.street/'/>', {
@@ -28,44 +35,46 @@
 			"Google": googleMaps,
 			"Open Street Map": osmMap
 		};
+		
+		
+		
+		geojsonLayer = new L.GeoJSON();
+		map.addLayer(geojsonLayer);
+		
+		var overlays = {
+			"Zonas": geojsonLayer,
+		};
 
-		var layersControl = new L.Control.Layers(baseMaps);
+		var layersControl = new L.Control.Layers(baseMaps, overlays);
+	
 		map.addControl(layersControl);
+		//
 		
-		
-		$("form").submit(function() {
-			locateAddr($('#loc').val(), $('#nro').val());
-			return false;
-		});
-		
+		geojsonLayer.on("featureparse", function (e){
+			var style = {
+				weight: 2,
+            	color: "#999",
+            	opacity: 1,
+            	fillColor: "#B0DE5C",
+            	fillOpacity: 0.6            		
+			};
+			e.layer.setStyle(style);
+    		
+		});		
 	});
 	
-	function locateAddr(loc, nro) {
+	
+	function loadZones(name, type) {
+		var urlData = "<@spring.url '/zone?type='/>"+type+"&name="+name; 
 		$.ajax({
-			url: '<@spring.url '/locate?loc='/>'+loc+"&nro="+nro,
-			dataType: 'json',
-			success: function(location) {
-        		var marker = new L.Marker(new L.LatLng(location.y, location.x));
-        		map.setView(new L.LatLng(location.y, location.x), 15);
-        		marker.bindPopup(location.name);
-				map.addLayer(marker);
-        		
-        		
+			url: urlData,
+			//dataType: 'text',
+			success: function(zones) {
+        		geojsonLayer.addGeoJSON(zones);
 			}
 		});
 	}
 	
-	/*function loadData() {
-	
-		$.ajax({
-			url: '<@spring.url '/locate?loc=suip&nro=150'/>',
-			dataType: 'json',
-    		success: function(location) {
-        		var marker = new L.Marker(new L.LatLng(location.y, location.x));
-				
-		}});	
-	
-	}*/
    	
 </script>
 </#macro>
@@ -97,7 +106,7 @@
 
 		<div class="box">
 			<div class="title">
-				Busqueda por calle y altura
+				Busqueda por zones
 				<span class="hide show"></span>
 			</div>
 
@@ -105,13 +114,20 @@
 			<div class="content">
 				<form method="post">
 					<div class="row">
-						<label>Calle</label>
-						<div class="right"><input type="text" name="loc" id="loc"></div>
+						<label>Zonas</label>
+						<div class="right">
+							<select name="zoneType" id="zoneType">
+								<option value=""></option>
+							<#list zones as zone>
+								<option value="${zone}">${zone}</option>							
+							</#list>
+							</select>
+						</div>
 					</div>
 					
 					<div class="row">
-						<label>Numero</label>
-						<div class="right"><input type="text" name="nro" id="nro"></div>
+						<label>Nombre</label>
+						<div class="right"><input type="text" name="zoneName" id="zoneName"></div>
 					</div>
 					
 					<div class="row">
@@ -122,11 +138,7 @@
 					</div>
 				</form>
 			</div>
-		
 		</div>
-		
-		
 	</div>
-
 
 </#macro>

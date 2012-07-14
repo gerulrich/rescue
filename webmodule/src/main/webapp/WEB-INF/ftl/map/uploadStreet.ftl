@@ -18,13 +18,23 @@
 
 	<div class="section">
 	
+		<div class="plain">
+			<h3>Datos del archivo</h3>
+			<ul class="tick">
+				<li><b>Nombre:</b> ${file.filename}</li>
+				<li><b>Descripci&oacute;n:</b> ${file.description}</li>
+				<li><b>Versi&oacute;n:</b> ${file.version}</li>
+			</ul>
+		</div>
+	
 		<div class="box">
 			<div class="title">
-			Subir shapefile<span class="hide"></span>
+			Subir shapefile como capa de calles<span class="hide"></span>
 			</div>
 			<div class="content">
 			
 				<form method="post" class="valid">
+
 					<div class="row">
 						<label>Campo Nombre</label>
 						<div class="right">
@@ -89,7 +99,29 @@
 							</#list>
 							</select>
 						</div>
-					</div>					
+					</div>
+					
+					<div class="row">
+						<label>Vertice incial</label>
+						<div class="right">
+							<select name="vstartField">
+							<#list fields as field>
+								<option value="${field}">${field}</option>							
+							</#list>
+							</select>
+						</div>
+					</div>
+					
+					<div class="row">
+						<label>Vertice final</label>
+						<div class="right">
+							<select name="vendField">
+							<#list fields as field>
+								<option value="${field}">${field}</option>							
+							</#list>
+							</select>
+						</div>
+					</div>															
 					
 					<div class="row">
 						<label></label>

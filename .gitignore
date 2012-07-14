@@ -4,6 +4,7 @@ webmodule/release.properties
 release.properties
 pom.xml.releaseBackup
 webmodule/pom.xml.releaseBackup
+webmodule/src/main/resources/web.properties
 webmodule/target/
 utilities/target
 utilities/.settings

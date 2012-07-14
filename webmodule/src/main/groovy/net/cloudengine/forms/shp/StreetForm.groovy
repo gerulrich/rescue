@@ -14,5 +14,11 @@ class StreetForm extends POIForm {
 	
 	@NotNull
 	String toRightField;
+	
+	@NotNull
+	String vstartField;
+	
+	@NotNull
+	String vendField;
 
 }

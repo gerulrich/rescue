@@ -1,4 +1,4 @@
-package net.cloudengine.web.map;
+package net.cloudengine.service.map;
 
 public class FileUploadProgress {
 

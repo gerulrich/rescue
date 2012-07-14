@@ -6,6 +6,8 @@ import java.util.concurrent.ConcurrentMap;
 import net.cloudengine.model.map.Tile;
 import net.cloudengine.service.admin.ConfigurationService;
 import net.cloudengine.service.map.TileCache;
+import net.cloudengine.service.map.TileServer;
+import net.cloudengine.service.map.impl.KeyConfigTileServer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,7 +26,6 @@ public class MapController {
 	private static Logger logger = LoggerFactory.getLogger(MapController.class);
 	private static final String URI = "/tiles/{zoom}/{x}/{y}/{key}/";
 	
-	// zoom 16, x 22092, y 39464
 	private TileCache tileCache;
 	
 	private ConcurrentMap<String, TileServer> servers = new ConcurrentHashMap<String, TileServer>();
@@ -41,6 +42,8 @@ public class MapController {
 	@RequestMapping(value = URI, method = RequestMethod.GET)
 	public ResponseEntity<byte[]> tile(@PathVariable("zoom") int zoom, @PathVariable("x") int x, 
 			@PathVariable("y") int y, @PathVariable("key") String key) {
+
+
 		if (!servers.containsKey(key)) {
 			throw new IllegalArgumentException("La clave proporcionada no es válida: "+key);
 		}

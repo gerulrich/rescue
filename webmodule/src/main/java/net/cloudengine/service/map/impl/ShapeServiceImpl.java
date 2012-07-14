@@ -8,14 +8,18 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
 import net.cloudengine.api.BlobStore;
 import net.cloudengine.api.Datastore;
+import net.cloudengine.api.jpa.dao.StreetBlockDao;
+import net.cloudengine.api.jpa.dao.ZoneDao;
 import net.cloudengine.model.commons.FileDescriptor;
 import net.cloudengine.model.map.POI;
-import net.cloudengine.model.map.Street;
+import net.cloudengine.model.map.StreetBlock;
+import net.cloudengine.model.map.Zone;
 import net.cloudengine.service.map.ShapefileService;
 import net.cloudengine.web.map.ShapeController;
 import net.dbf.DBFReader;
@@ -43,17 +47,19 @@ public class ShapeServiceImpl implements ShapefileService {
 	
 	private BlobStore blobStore;
 	private Datastore<POI, ObjectId> poiStore;
-	private Datastore<Street, Long> streetStore;
+	private StreetBlockDao streetDao;
+	private ZoneDao zoneDao;
 	
 	
 	@Autowired
 	public ShapeServiceImpl(BlobStore blobStore,
 			@Qualifier("poiStore") Datastore<POI, ObjectId> poiStore,
-			@Qualifier("streetStore") Datastore<Street, Long> streetStore) {
+			StreetBlockDao streetDao, ZoneDao zoneDao) {
 		super();
 		this.blobStore = blobStore;
 		this.poiStore = poiStore;
-		this.streetStore = streetStore;
+		this.streetDao = streetDao;
+		this.zoneDao = zoneDao;
 	}
 	
 	public long shp2Poi(FileDescriptor descriptor, String nameField, String typeField, boolean overwrite) {
@@ -91,11 +97,13 @@ public class ShapeServiceImpl implements ShapefileService {
 	}
 	
 	@Transactional
-	public void shp2Street(FileDescriptor descriptor, String nameField, String typeField,
-			String fromLeftField, String toLeftField, String fromRightField, String toRightField) {
-		long count = 0;
+	public void shp2Street(FileDescriptor descriptor, Map<String,String> fieldNames, boolean overwrite) {
+		
 		String files[] = unzipp(descriptor);
 		String shapeFileName = findByExtension(files, "shp");
+		
+		boolean firtRecord = true;
+		
 		
 		if (shapeFileName != null) {
 		   	ShapefileReader reader = new ShapefileReader(shapeFileName.replaceAll("\\.shp", ""));
@@ -106,9 +114,22 @@ public class ShapeServiceImpl implements ShapefileService {
 		   		
 		   		// Verifico que sea de tipo polyline.
 		   		if (obj.getType() == 3) {
-//		   			Point point = obj.getPoint(0);
 		    		
-		   			Street street = new Street();
+		   			if (firtRecord && overwrite) {
+		   				streetDao.deleteAll();
+		   				firtRecord = false;
+		   			}
+		   			
+		   			String nameField = fieldNames.get(NOMBRE); 
+		   			String typeField = fieldNames.get(TIPO);
+		   			String fromLeftField = fieldNames.get(ALT_II); 
+		   			String toLeftField = fieldNames.get(ALT_IF);
+		   			String fromRightField = fieldNames.get(ALT_DI);
+		   			String toRightField = fieldNames.get(ALT_DF);
+		   			String vstart = fieldNames.get(VINICIO);
+		   			String vend = fieldNames.get(VFIN);
+		   			
+		   			StreetBlock street = new StreetBlock();
 		   			street.setName(obj.getRecord().getField(nameField).getValue());
 		   			street.setType(obj.getRecord().getField(typeField).getValue());
 		   			
@@ -118,18 +139,51 @@ public class ShapeServiceImpl implements ShapefileService {
 		   			street.setFromRight(Integer.parseInt(obj.getRecord().getField(fromRightField).getValue()));
 		   			street.setToRight(Integer.parseInt(obj.getRecord().getField(toRightField).getValue()));
 		   			
+		   			street.setVstart(Integer.parseInt(obj.getRecord().getField(vstart).getValue()));
+		   			street.setVend(Integer.parseInt(obj.getRecord().getField(vend).getValue()));
+		   			
 		   			street.setGeom(WKTUtils.toGeometry(obj));
 		   			
-		   			streetStore.save(street);
-		   			
-//		   			
-//		   			poi.setX(point.getX());
-//		   			poi.setY(point.getY());
-		    		
-//		   			poiStore.save(poi);
-		   		
-		   			count++;
+		   			streetDao.save(street);
+
 		   		}
+		   	}
+		}
+		
+		deleteFiles(files);
+		
+	}
+	
+	@Transactional
+	public void shp2Zone(FileDescriptor descriptor, String nameField, String type, boolean overwrite) {
+		
+		String files[] = unzipp(descriptor);
+		String shapeFileName = findByExtension(files, "shp");
+		
+		boolean firtRecord = true;
+		
+		if (shapeFileName != null) {
+		   	ShapefileReader reader = new ShapefileReader(shapeFileName.replaceAll("\\.shp", ""));
+		   	
+		   	while (reader.hasNext()) {
+
+		   		ShapeObject obj = reader.next();
+		   		
+		   		// Verifico que sea de tipo polygon.
+		   		if (obj.getType() == 5) {
+		    		
+		   			if (firtRecord && overwrite) {
+		   				zoneDao.deleteAll();
+		   				firtRecord = false;
+		   			}
+		   			
+		   			Zone zone = new Zone();
+		   			zone.setName(obj.getRecord().getField(nameField).getValue());
+		   			zone.setType(type);
+		   			zone.setGeom(WKTUtils.toGeometry(obj));
+		   			zoneDao.save(zone);
+		   		}
+		   		
 		   	}
 		}
 		
@@ -236,7 +290,10 @@ public class ShapeServiceImpl implements ShapefileService {
 	
 	private void deleteFiles(String files[]) {
 		for(String file : files) {
-			new File(file).delete();
+			boolean deleted = new File(file).delete();
+			if (logger.isDebugEnabled()) {
+		    	logger.debug("Borrando archivo {}, {}", file, deleted);
+		    }
 		}
 	}
 

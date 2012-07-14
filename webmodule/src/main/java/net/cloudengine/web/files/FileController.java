@@ -14,15 +14,16 @@ import javax.servlet.http.HttpSession;
 import net.cloudengine.api.BlobStore;
 import net.cloudengine.api.Datastore;
 import net.cloudengine.model.commons.FileDescriptor;
-import net.cloudengine.web.map.FileUploadProgress;
+import net.cloudengine.service.map.FileUploadProgress;
+import net.cloudengine.service.map.UploadListener;
 import net.cloudengine.web.map.MapController;
-import net.cloudengine.web.map.UploadListener;
 
 import org.apache.commons.fileupload.FileItemIterator;
 import org.apache.commons.fileupload.FileItemStream;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 import org.apache.commons.fileupload.util.Streams;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang.StringUtils;
 import org.bson.types.ObjectId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -147,7 +148,7 @@ public class FileController {
 	}
 	
 	@RequestMapping(value = "/file/upload", method = RequestMethod.POST)
-	public String create(HttpServletRequest request, final HttpSession session) {
+	public String uploadFile(HttpServletRequest request, final HttpSession session) {
 		
 		ServletFileUpload upload = new ServletFileUpload();
 		UploadListener progressListener = new UploadListener();
@@ -155,15 +156,27 @@ public class FileController {
 		upload.setProgressListener(progressListener);
 
 		String description = null;
+		String version = null;
+		String type = null;
 		try {
 			FileItemIterator iter = upload.getItemIterator(request);
 			while (iter.hasNext()) {
 				FileItemStream item = iter.next();
 				InputStream stream = item.openStream();
 				if (item.isFormField()) {
-					description = Streams.asString(stream);
+					if ("version".equals(item.getFieldName())) {
+						version = Streams.asString(stream);
+					} else if ("description".equals(item.getFieldName())) {
+						description = Streams.asString(stream);						
+					} else {
+						type = Streams.asString(stream);
+						String contentType = item.getContentType();
+						if ("other".equals(type) && StringUtils.isNotEmpty(contentType) ) {
+							type = contentType;
+						}						
+					}
 				} else {
-					blobStore.storeFile(item.getName(), stream, description, "shp");
+					blobStore.storeFile(item.getName(), stream, description, type, version);
 				}
 			}
 		} catch (Exception e) {

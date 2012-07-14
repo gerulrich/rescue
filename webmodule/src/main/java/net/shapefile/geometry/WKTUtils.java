@@ -23,7 +23,7 @@ public class WKTUtils {
 		switch (shape.getType()) {
 //			case 1: return formatPoint(shape);
 			case 3: return formatPolyline(shape);
-//			case 5: return formatPolygon(shape);
+			case 5: return formatPolygon(shape);
 //			case 8: return formatMultipoint(shape);
 			default: throw new IllegalArgumentException("Tipo no implementado por el momento");
 		}
@@ -34,7 +34,7 @@ public class WKTUtils {
 		switch (shape.getType()) {
 			case 1: return formatPoint(shape);
 			case 3: return formatPolylineAsText(shape);
-			case 5: return formatPolygon(shape);
+			case 5: return formatPolygonString(shape);
 			case 8: return formatMultipoint(shape);
 			default: throw new IllegalArgumentException("Tipo no implementado por el momento");
 		}
@@ -68,7 +68,7 @@ public class WKTUtils {
 		return new WKTWriter().write(geom);
 	}
 	
-	private static String formatPolygon(ShapeObject shape) {
+	private static String formatPolygonString(ShapeObject shape) {
 		
 		GeometryFactory factory = new GeometryFactory();
 		LinearRing rings[] = new LinearRing[shape.getPartCount()];
@@ -112,5 +112,20 @@ public class WKTUtils {
 			return multi;
 		}
 	}
+	
+	private static Geometry formatPolygon(ShapeObject shape) {
+		
+		GeometryFactory factory = new GeometryFactory();
+		LinearRing rings[] = new LinearRing[shape.getPartCount()];
+		for (int i = 0; i < rings.length; i++) {
+			rings[i] = factory.createLinearRing(points2Coords(shape.getPoints(i+1)));
+		}
+		Polygon polygon = null;
+		if (rings.length > 1)
+			polygon = factory.createPolygon(rings[0], Arrays.copyOfRange(rings, 1, rings.length-1));
+		else
+			polygon = factory.createPolygon(rings[0], new LinearRing[0]);
+		return polygon;
+	}	
 
 }

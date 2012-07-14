@@ -29,7 +29,7 @@
 	
 		<div class="box">
 			<div class="title">
-			Subir shapefile como capa de Puntos de Inter&eacute;s<span class="hide"></span>
+			Subir shapefile como capa de zonas<span class="hide"></span>
 			</div>
 			<div class="content">
 			
@@ -46,13 +46,9 @@
 					</div>
 					
 					<div class="row">
-						<label>Campo Tipo</label>
+						<label>Tipo</label>
 						<div class="right">
-							<select name="typeField">
-							<#list fields as field>
-								<option value="${field}">${field}</option>							
-							</#list>
-							</select>
+							<input type="type" name="type"/>
 						</div>
 					</div>
 					

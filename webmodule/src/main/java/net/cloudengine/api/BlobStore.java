@@ -33,7 +33,7 @@ public interface BlobStore {
 	 * @param filename nombre del archivo.
 	 * @param inputStream para guardar el archivo.
 	 */
-	void storeFile(String filename, InputStream inputStream, String description, String type);
+	void storeFile(String filename, InputStream inputStream, String description, String type, String version);
 	
 	/**
 	 * Obtiene un archivo del BlobStore

@@ -43,7 +43,7 @@ public class ShapefileReader {
 	private ShapeObject shapeobject = null;
 	
 	private DBFReader dbf;
-
+	
 	public ShapefileReader(String s) {
 
 		try {
@@ -131,6 +131,7 @@ public class ShapefileReader {
 		try {
 			shpDataIs.close();
 			shpInputStream.close();
+			dbf.close();
 		} catch (IOException e) {
 			logger.error("Error al cerrar los archivos", e);
 		}

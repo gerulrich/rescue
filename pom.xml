@@ -19,7 +19,7 @@
     <spring.version>3.1.0.M2</spring.version>
     <jdk-version>1.6</jdk-version>
     <groovy-version>1.7.5</groovy-version>
-    <org.cloudfoundry-version>0.7.1</org.cloudfoundry-version>
+    <org.cloudfoundry-version>0.8.1</org.cloudfoundry-version>
     <maven.build.timestamp.format>yyyy.MM.dd.HH.mm.ss</maven.build.timestamp.format>
     <swt-version>3.5.2</swt-version>
   	<timestamp>${maven.build.timestamp}</timestamp>

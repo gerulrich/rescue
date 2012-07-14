@@ -1,10 +1,11 @@
-package net.cloudengine.service.map;
+package net.cloudengine.service.map.impl;
 
 import javax.annotation.Resource;
 
 import net.cloudengine.api.Datastore;
 import net.cloudengine.api.Query;
 import net.cloudengine.model.map.Tile;
+import net.cloudengine.service.map.TileCache;
 
 import org.bson.types.ObjectId;
 import org.springframework.stereotype.Service;

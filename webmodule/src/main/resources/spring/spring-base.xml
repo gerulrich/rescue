@@ -21,7 +21,7 @@
 		
 		<bean id="morphia" class="com.google.code.morphia.Morphia"/>
 		<bean id="mongoWrapper" class="net.cloudengine.web.MongoDBWrapper">
-<!-- 			<constructor-arg ref="mongoDbFactory"></constructor-arg> -->
+			<constructor-arg ref="mongoDbFactory"></constructor-arg>
 		</bean>
 	
 		<bean id="userStore" class="net.cloudengine.api.mongo.MongoStore">
@@ -58,10 +58,6 @@
 			<constructor-arg ref="mongoWrapper"></constructor-arg>
 			<constructor-arg type="java.lang.Class" value="net.cloudengine.model.map.POI"/>
 			<constructor-arg ref="morphia"></constructor-arg>
-		</bean>
-		
-		<bean id="streetStore" class="net.cloudengine.api.jpa.JPADatastore">
-			<constructor-arg type="java.lang.Class" value="net.cloudengine.model.map.Street"/>
 		</bean>
 		
 		<bean id="blobStore" class="net.cloudengine.api.mongo.MongoBlobStore" />
@@ -122,18 +118,6 @@
     </bean>
     
 	<!-- enable the configuration of transactional behavior based on annotations -->
-    <tx:annotation-driven transaction-manager="transactionManager" />
-    
-	<bean id="dataSource" class="org.apache.commons.dbcp.BasicDataSource" destroy-method="close" lazy-init="false">
-		<property name="driverClassName" value="${jdbc.driver}" />
-        <property name="url" value="${jdbc.url}" />
-        <property name="username" value="${jdbc.username}" />
-        <property name="password" value="${jdbc.password}" />
-        <property name="initialSize"><value>10</value></property>
-        <property name="maxActive"><value>20</value></property>
-        <property name="maxIdle"><value>10</value></property>
-        <property name="minIdle"><value>10</value></property>
-        <property name="defaultAutoCommit"><value>false</value></property>
-	</bean>
-	
+    <tx:annotation-driven transaction-manager="transactionManager" />    
+
 </beans>

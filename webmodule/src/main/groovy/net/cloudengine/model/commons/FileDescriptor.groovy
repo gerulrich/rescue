@@ -14,6 +14,7 @@ class FileDescriptor {
 	String filename;
 	String type;
 	String description;
+	String version;
 	Date date;
 	long size;
 	

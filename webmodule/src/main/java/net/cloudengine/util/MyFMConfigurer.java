@@ -1,4 +1,4 @@
-package net.cloudengine.freemarker;
+package net.cloudengine.util;
 
 import net.cloudengine.service.admin.ConfigurationService;
 
@@ -27,6 +27,9 @@ public class MyFMConfigurer extends FreeMarkerConfigurer {
 			conf.setSharedVariable("jnlpUrl", service.getProperty("jnlp.url").getValue());
 			conf.setSharedVariable("appVersion", service.getVersion());
 			conf.setSharedVariable("buildNumber", service.getBuildNumber());
+			conf.setSharedVariable("osName", System.getProperty("os.name"));
+			conf.setSharedVariable("osName", System.getProperty("os.name"));
+			conf.setSharedVariable("javaVersion", System.getProperty("java.version"));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

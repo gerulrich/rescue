@@ -25,7 +25,9 @@
 							<th>Nombre</th>
 							<th>Descripci&oacute;n</th>
 							<th>Tama&ntilde;o</th>
+							<th>Fecha</th>
 							<th>Tipo</th>
+							<th>Versi&oacute;n</th>
 							<th>Acciones</th>
 						</tr>
 					</thead>
@@ -35,12 +37,12 @@
 							<td>${file.filename}</td>
 							<td>${file.description}</td>
 							<td>${file.sizeReadable}</td>
+							<td>${file.date?datetime}</td>
 							<td>${file.type}</td>
+							<td>${file.version!""}</td>
 							<td>
 								<@widget.link "/file/download/${file.id}" "download.png" "Descargar"/>
 								<@widget.link "/file/delete/${file.id}" "trash_16x16.gif" "Borrar"/>
-								<@widget.link "/admin/shp/${file.id}"/>
-								
 							</td>
 						</tr>
 						</#list>

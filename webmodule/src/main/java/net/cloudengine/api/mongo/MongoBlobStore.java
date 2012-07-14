@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import net.cloudengine.api.BlobStore;
@@ -13,7 +14,7 @@ import net.cloudengine.web.MongoDBWrapper;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.data.document.mongodb.SimpleMongoDbFactory;
+import org.springframework.data.mongodb.core.SimpleMongoDbFactory;
 
 import com.mongodb.DBCursor;
 import com.mongodb.gridfs.GridFS;
@@ -55,7 +56,7 @@ public class MongoBlobStore implements BlobStore {
 	}
 
 	@Override
-	public void storeFile(String filename, InputStream inputStream, String description, String type) {
+	public void storeFile(String filename, InputStream inputStream, String description, String type, String version) {
 	    GridFSInputFile inputFile = gridfs.createFile(inputStream);
 	    inputFile.setContentType(type);
 	    inputFile.setFilename(filename);
@@ -69,6 +70,8 @@ public class MongoBlobStore implements BlobStore {
 	    	fileUploaded.setDescription(description);
 	    	fileUploaded.setFileId(inputFile.getId().toString());
 	    	fileUploaded.setSize(inputFile.getLength());
+	    	fileUploaded.setDate(new Date());
+	    	fileUploaded.setVersion(version);
 	    	fileStore.save(fileUploaded);
 	    	
 	    	

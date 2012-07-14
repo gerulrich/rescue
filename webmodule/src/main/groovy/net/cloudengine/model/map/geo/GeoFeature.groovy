@@ -1,0 +1,32 @@
+package net.cloudengine.model.map.geo
+
+import com.vividsolutions.jts.geom.Coordinate;
+import com.vividsolutions.jts.geom.Geometry;
+
+class GeoFeature {
+	
+	String type = "Feature";
+	GeoData geometry;
+//	Map<String,String> properties;
+	
+	GeoFeature(Feature feature) {
+		
+		Geometry g = feature.getGeom();
+
+		Object coordinates;
+		if ("Polygon".equals(feature.getGeomType())) {
+			Coordinate[] coords = feature.getGeom().getCoordinates();
+			coordinates = new double[1][coords.length+1][2];
+			
+			coords.eachWithIndex { c, idx ->
+				coordinates[0][idx][0] = c.x;
+				coordinates[0][idx][1] = c.y;
+			}
+			coordinates[0][coords.length][0] = coords[0].x;
+			coordinates[0][coords.length][1] = coords[0].y;
+			geometry = new GeoData(feature.getGeomType(), coordinates);
+		} else {
+			throw new IllegalArgumentException("Tipo de geometria no implementado");
+		}
+	}
+}

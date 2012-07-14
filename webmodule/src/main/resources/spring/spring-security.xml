@@ -35,7 +35,7 @@
         
     </http>
     
-    <beans:bean id="userSessionFilter" class="net.cloudengine.web.servlet.UserSessionFilter"/>
+    <beans:bean id="userSessionFilter" class="net.cloudengine.util.UserSessionFilter"/>
 
     <authentication-manager>
         <authentication-provider user-service-ref="userDetailsService">

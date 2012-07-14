@@ -1,4 +1,4 @@
-package net.cloudengine.web.map;
+package net.cloudengine.service.map.impl;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -10,6 +10,8 @@ import java.net.URL;
 import net.cloudengine.model.config.AppProperty;
 import net.cloudengine.model.map.Tile;
 import net.cloudengine.service.admin.ConfigurationService;
+import net.cloudengine.service.map.TileServer;
+import net.cloudengine.web.map.MapController;
 
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;

@@ -8,9 +8,9 @@
 <div class="box statics">
 		<div class="content">
 			<ul>
-				<li><h2>Statistics</h2></li>
-				<li>Total pages <div class="info red"><span>999</span></div></li>
-				<li>Comments <div class="info blue"><span>654</span></div></li>
+				<li><h2>Informaci&oacute;n</h2></li>
+				<li>SO: <div class="info red"><span>${osName!"-"}</span></div></li>
+				<li>JVM: <div class="info blue"><span>${javaVersion!"-"}</span></div></li>
 				<li>Build <div class="info green"><span>${buildNumber}</span></div></li>
 				<li>Version <div class="info black"><span>${appVersion}</span></div></li>
 			</ul>
@@ -41,8 +41,9 @@
 			<li><a href="<@spring.url '/admin/properties'/>">Configuración</a></li>
 			<li><a href="#">Mapa</a>
 				<ul>
-					
 					<li><a href="<@spring.url '/map/test.html'/>">Buscador de direcciones</a></li>
+					<li><a href="<@spring.url '/map/zone/test.html'/>">Mapa de zonas</a></li>
+					<li><a href="<@spring.url '/shp/upload'/>">Cargar capa desde archivo...</a></li>
 				</ul>
 			</li>
 			<li><a href="#">Archivo</a>

@@ -1,6 +1,7 @@
 package net.cloudengine.api.jpa;
 
 import java.io.Serializable;
+import java.util.List;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -77,7 +78,13 @@ public class JPADatastore<E, PK extends Serializable> implements
 
 	@Override
 	public void deleteAll() {
-		// TODO Auto-generated method stub
+		javax.persistence.Query query = this.entityManager.createQuery("delete from "+persistentClass.getSimpleName());
+		query.executeUpdate();
+	}
+	
+	@SuppressWarnings("unchecked")
+	protected <T> List<T> cast(List<?> list, Class<T> clazz) {
+		return (List<T>) list;
 	}
 
 }

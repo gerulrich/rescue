@@ -8,7 +8,7 @@ import net.cloudengine.api.Query;
 import net.cloudengine.web.MongoDBWrapper;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.document.mongodb.SimpleMongoDbFactory;
+import org.springframework.data.mongodb.core.SimpleMongoDbFactory;
 
 import com.google.code.morphia.Morphia;
 

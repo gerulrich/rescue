@@ -1,4 +1,4 @@
-package net.cloudengine.web.servlet;
+package net.cloudengine.util;
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

@@ -1,4 +1,4 @@
-package net.cloudengine.web.servlet;
+package net.cloudengine.util;
 
 import org.springframework.core.MethodParameter;
 import org.springframework.security.core.context.SecurityContextHolder;
