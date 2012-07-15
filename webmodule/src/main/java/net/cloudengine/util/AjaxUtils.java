@@ -1,14 +1,16 @@
 package net.cloudengine.util;
 
-import org.springframework.web.context.request.WebRequest;
+import javax.servlet.http.HttpServletRequest;
 
 public final class AjaxUtils {
 
-	public static boolean isAjaxRequest(WebRequest webRequest) {
-		String requestedWith = webRequest.getHeader("X-Requested-With");
+	public static boolean isAjaxRequest(HttpServletRequest request) {
+		String requestedWith = request.getHeader("X-Requested-With");
 		return requestedWith != null ? "XMLHttpRequest".equals(requestedWith) : false;
 	}
 
-	private AjaxUtils() {}
+	private AjaxUtils() {
+		
+	}
 
 }

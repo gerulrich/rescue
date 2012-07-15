@@ -32,6 +32,7 @@
         <remember-me key="rescuemeApp" services-ref="rememberMeServices"/>
         
         <custom-filter ref="userSessionFilter" position="LAST"/>
+        <custom-filter after="REMEMBER_ME_FILTER" ref="expiredSessionFilter" />
         
     </http>
     
@@ -45,11 +46,11 @@
     
     <beans:bean id="userDetailsService" class="net.cloudengine.service.auth.UserDetailsServiceImpl"/>
 
-    
-    
 	<beans:bean id="persistentTokenRepository" class="net.cloudengine.service.auth.MongoTokenRepositoryImpl">
 		<beans:constructor-arg ref="tokenStore"></beans:constructor-arg>
 	</beans:bean>
+
+	<beans:bean id="expiredSessionFilter" class="net.cloudengine.util.ExpiredSessionFilter"/>
 
 	<beans:bean id="rememberMeServices" class="org.springframework.security.web.authentication.rememberme.PersistentTokenBasedRememberMeServices">
         <beans:property name="userDetailsService" ref="userDetailsService" />

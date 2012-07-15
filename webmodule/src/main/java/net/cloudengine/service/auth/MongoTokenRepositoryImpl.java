@@ -23,7 +23,6 @@ public class MongoTokenRepositoryImpl implements PersistentTokenRepository {
 	Datastore<MongoRememberMeToken, ObjectId> datastore;
 	
 	public MongoTokenRepositoryImpl(Datastore<MongoRememberMeToken, ObjectId> datastore) {
-//		datastore = new ServiceLookup().createDatastore(MongoRememberMeToken.class, ObjectId.class);
 		this.datastore = datastore;
 	}
 	

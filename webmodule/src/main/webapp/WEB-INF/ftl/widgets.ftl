@@ -138,7 +138,7 @@
 	<script type="text/javascript" src="<@spring.url '/static/js/controls/wysiwyg.link.js'/>"></script>
 	<script type="text/javascript" src="<@spring.url '/static/js/controls/wysiwyg.table.js'/>"></script>
 	<script type="text/javascript" src="<@spring.url '/static/js/plugins/wysiwyg.rmFormat.js'/>"></script>
-	<script type="text/javascript" src="<@spring.url '/static/js/costum.js'/>"></script>
+	<script type="text/javascript" src="<@spring.url '/static/js/costum.js?version=01'/>"></script>
 </#macro>
 
 <#macro detail url>

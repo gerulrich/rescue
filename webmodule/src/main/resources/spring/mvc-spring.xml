@@ -25,9 +25,7 @@
     <!-- interceptors para los web controllers -->
     <mvc:interceptors>
 		<bean class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor"/>
-    </mvc:interceptors>
-    
-    <bean class="org.springframework.aop.aspectj.annotation.AnnotationAwareAspectJAutoProxyCreator" />
+	</mvc:interceptors>
     
 	<bean class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
   		<property name="mediaTypes">
@@ -87,5 +85,5 @@
     
     </bean>
     
-	<bean id="pepe" class="net.cloudengine.web.HessianServiceExporterPostProcessor" />
+	<bean id="serviceExporter" class="net.cloudengine.web.HessianServiceExporterPostProcessor" />
 </beans>

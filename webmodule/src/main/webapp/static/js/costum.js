@@ -698,5 +698,27 @@ $(document).ready(function(){
             previousPoint = null;
         }
     });
+    
+    
+	jQuery.ajaxSetup({
+//		beforeSend: function(xhrobj) {
+//			xhrobj.setRequestHeader("ajaxrequest", "true");
+//		},
+		error: function(datos) {
+			
+			switch (datos.status) {
+		   	case 403:
+		   		 window.location = $(location).attr('href');
+		      	 break;
+		   	case 200:
+					return;
+			case 0:
+		      	 $("#msg").html("Se produjo un error");
+		      	 break;
+		   	default:
+		      	 alert("otro error:"+datos.status);
+			}
+		}
+	});
 	
 });
