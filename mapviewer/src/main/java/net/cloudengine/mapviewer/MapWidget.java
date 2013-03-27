@@ -1,212 +1,173 @@
 package net.cloudengine.mapviewer;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
-import net.cloudengine.mapviewer.layers.BasicLayer;
-import net.cloudengine.mapviewer.layers.DebugTileLayer;
-import net.cloudengine.mapviewer.layers.MapLayer;
+import net.cloudengine.mapviewer.layers.BaseTileLayer;
 import net.cloudengine.mapviewer.tiles.TileCache;
 import net.cloudengine.mapviewer.tiles.TileServer;
-import net.cloudengine.mapviewer.tiles.TileServerType;
+import net.cloudengine.mapviewer.tools.AbstractTool;
+import net.cloudengine.mapviewer.util.MapConstants;
+import net.cloudengine.mapviewer.util.MapUtil;
+import net.cloudengine.mapviewer.util.PointD;
+import net.cloudengine.mapviewer.util.Stats;
 import net.sf.swtgraph.layeredcanvas.ICanvasLayer;
-import net.sf.swtgraph.layeredcanvas.ISelectableLayer;
 import net.sf.swtgraph.layeredcanvas.LayeredCanvas;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
-import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.events.MouseListener;
-import org.eclipse.swt.events.MouseMoveListener;
-import org.eclipse.swt.events.MouseTrackListener;
-import org.eclipse.swt.events.MouseWheelListener;
-import org.eclipse.swt.graphics.Cursor;
-import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Composite;
 
 public class MapWidget extends LayeredCanvas {
     
-	private Cursor openHand;
-	private Cursor closedHand;
-	
-	public static final class PointD {
-        public double x, y;
-        public PointD(double x, double y) {
-            this.x = x;
-            this.y = y;
-        }
-    }
-    
-    public static class Stats {
-        public int tileCount;
-        public long dt;
-        private Stats() {
-            reset();
-        }
-        private void reset() {
-            tileCount = 0;
-            dt = 0;
-        }
-    }
-    
-    private class MapMouseListener implements MouseListener, MouseWheelListener, MouseMoveListener, MouseTrackListener {
-        private Point mouseCoords = new Point(0, 0);
-        private Point downCoords;
-        private Point downPosition;
-        
-        public void mouseEnter(MouseEvent e) {
-            MapWidget.this.forceFocus();
-        }
-        
-        public void mouseExit(MouseEvent e) {
-        }
+	private MapWidgetContext context;
+	private Point mouseCoords = new Point(0, 0);
+    public void setMouseCoords(Point mouseCoords) {
+		Point oldValue = this.mouseCoords; 
+    	this.mouseCoords = mouseCoords;
+    	pcs.firePropertyChange("mouseCoords", oldValue, this.mouseCoords);
+	}
 
-        public void mouseHover(MouseEvent e) {
-        	
-        }
-        
-        public void mouseDoubleClick(MouseEvent e) {
-            if (e.button == 1) 
-                zoomIn(new Point(mouseCoords.x, mouseCoords.y));
-            else if (e.button == 3)
-                zoomOut(new Point(mouseCoords.x, mouseCoords.y));
-        }
-        public void mouseDown(MouseEvent e) {
-        	MapWidget.this.setCursor(closedHand);
-        	
-        	if (e.button == 1 && (e.stateMask & SWT.CTRL) != 0) {
-                setCenterPosition(getCursorPosition());
-                redraw();
-            }
-            if (e.button == 1) {
-                downCoords = new Point(e.x, e.y);
-                downPosition = getMapPosition();
-            }
-            
-            if (e.button == 1 && (e.stateMask & SWT.SHIFT) != 0 ) {
-            	System.out.println("Click");
-            	try {
-                	Point p = new Point(mouseCoords.x, mouseCoords.y);
-                	for(ICanvasLayer layer:  MapWidget.this.getLayers()) {
-                		if (layer instanceof ISelectableLayer) {
-                			
-                			((ISelectableLayer)layer).selectObjects(p.x, p.y);
-                		}
-                	}
-                	MapWidget.this.redraw();
-                } catch (Exception ex) {
-                	ex.printStackTrace();
-                }
-            }
-            
-        }
-        public void mouseUp(MouseEvent e) {
-        	MapWidget.this.setCursor(openHand);
-            if (e.count == 1) {
-                handleDrag(e);
-            }
-            downCoords = null;
-            downPosition = null;
-        }
-        
-        public void mouseMove(MouseEvent e) {
-            handlePosition(e);
-            handleDrag(e);
-        }
-        public void mouseScrolled(MouseEvent e) {
-            if (e.count == 3)
-                zoomIn(new Point(mouseCoords.x, mouseCoords.y));
-            else if (e.count == -3)
-                zoomOut(new Point(mouseCoords.x, mouseCoords.y));
-        }
-        
-        private void handlePosition(MouseEvent e) {
-            mouseCoords = new Point(e.x, e.y);
-        }
-
-        private void handleDrag(MouseEvent e) {
-            if (downCoords != null) {
-                int tx = downCoords.x - e.x;
-                int ty = downCoords.y - e.y;
-                setMapPosition(downPosition.x + tx, downPosition.y + ty);
-                MapWidget.this.redraw();
-            }
-        }
-    }
-    
-    /* constants ... */
-    // FIXME la url base de la aplicacion la tiene que sacar por configuracion.
-    public static final TileServer[] TILESERVERS = {
-    	new TileServer("http://localhost:8080/webmodule/tiles", 18, TileServerType.GOOGLEMAPS),
-    	new TileServer("http://localhost:8080/webmodule/tiles", 18, TileServerType.GOOGLESAT),
-    	new TileServer("http://localhost:8080/webmodule/tiles", 18, TileServerType.OPENSTREET),
-    	new TileServer("http://mt1.google.com/vt/lyrs=m@139&hl=es", 18, TileServerType.GOOGLEMAPS_DIRECT)    	
-    };
- 
-    /* basically not be changed */
-    private static final int TILE_SIZE = 256;
-    public static final int CACHE_SIZE = 256;
-    public static final int IMAGEFETCHER_THREADS = 4;
-    
-    private PropertyChangeSupport pcs = new PropertyChangeSupport(this);
+	private PropertyChangeSupport pcs = new PropertyChangeSupport(this);
     private Point mapSize = new Point(0, 0);
     public Point mapPosition = new Point(0, 0);
     private int zoom;
     private AtomicLong zoomStamp = new AtomicLong();
 
-    private TileServer tileServer = TILESERVERS[0];
     private TileCache cache = new TileCache();
     private Stats stats = new Stats();
-    private MapMouseListener mouseListener = new MapMouseListener();
+//    private MapMouseListener mouseListener;
     
-    public MapWidget(Composite parent, int style) {
-        this(parent, style, new Point(354083, 631905), 12);
+    private List<TileServer> baseTileServers = new ArrayList<TileServer>();
+    private List<TileServer> overlayTileServers = new ArrayList<TileServer>();
+    private TileServer currentTileServer = null;
+    
+    private List<AbstractTool> tools = new ArrayList<AbstractTool>();
+    
+    //-- Metodos nuevos --
+    
+    public void repaintMap() {
+    	this.getDisplay().asyncExec(new Runnable() {
+
+			@Override
+			public void run() {
+				MapWidget.this.redraw();
+			}
+    	});
     }
     
-    public MapWidget(Composite parent, int style, Point mapPosition, int zoom) {
+    public <T extends AbstractTool> T getTool(Class<T> clazz) {
+    	T tool = null;
+    	for(AbstractTool t : tools) {
+    		if (clazz.equals(t.getClass())) {
+    			tool = (T)t;
+    			break;
+    		}
+    	}
+    	return tool;
+    }
+    
+    public <T extends ICanvasLayer> T getLayer(Class<T> clazz) {
+    	T layer = null;
+    	for(ICanvasLayer l : context.getlayers()) {
+    		if (clazz.equals(l.getClass())) {
+    			layer = (T)l;
+    			break;
+    		}
+    	}
+    	return layer;
+    }
+
+    
+    
+    public void addTileServer(TileServer tileServer, boolean base) {
+    	if (base) {
+    		baseTileServers.add(tileServer);
+    		if (currentTileServer == null) {
+    			currentTileServer = tileServer;
+    		}
+    	} else {
+    		overlayTileServers.add(tileServer);
+    	}
+    }
+    
+    public List<TileServer> getBaseTileServers() {
+    	return baseTileServers;
+    }
+    
+    public void addTool(AbstractTool tool) {
+    	this.tools.add(tool);
+    }
+    
+    //----------------------------
+    
+    
+    public MapWidget(Composite parent, int style, MapWidgetContext context) {
+        this(parent, style, new Point(354083, 631905), 12, context);
+    }
+    
+    public MapWidget(Composite parent, int style, Point mapPosition, int zoom, MapWidgetContext context) {
         super(parent, SWT.DOUBLE_BUFFERED | style);
+        this.context = context;
+        context.setMap(this);
         
+        baseTileServers.addAll(context.getBaseTileServers());
+        currentTileServer =baseTileServers.get(0);
         
-    	ImageData openHandimageData = new ImageData(MapWidget.class.getResourceAsStream("open_hand.ico"));
-    	ImageData closedHandimageData = new ImageData(MapWidget.class.getResourceAsStream("closed_hand.ico"));
-    	
-    	openHand = new Cursor(this.getDisplay(), openHandimageData, 0, 0);
-    	closedHand = new Cursor(this.getDisplay(), closedHandimageData, 0, 0);
-    	this.setCursor(openHand);
-        
-//         FIXME sacar del argumento del constructor
-//        mapPosition.x = MapWidget.lon2position(-58.43422, zoom);
-//        mapPosition.y = MapWidget.lat2position(-34.60778, zoom);
+//        mouseListener = new MapMouseListener(context, new ZoomTool(context));
         
         addDisposeListener(new DisposeListener() {
             public void widgetDisposed(DisposeEvent e) {
                MapWidget.this.widgetDisposed(e);
             }
         });
-//        addPaintListener(new PaintListener() {
-//            public void paintControl(PaintEvent e) {
-//                MapWidget.this.paintControl(e);
-//            }
-//        });
+
+//        addMouseListener(mouseListener);
+//        addMouseMoveListener(mouseListener);
+//        addMouseWheelListener(mouseListener);
+//        addMouseTrackListener(mouseListener);
         
-        addMouseListener(mouseListener);
-        addMouseMoveListener(mouseListener);
-        addMouseWheelListener(mouseListener);
-        addMouseTrackListener(mouseListener);
-        // TODO: check tileservers
+//        this.addTool(new ZoomTool(context));
+//        for(AbstractTool tool : this.tools) {
+//        	tool.registerListeners(this);
+//        }
+          for(AbstractTool tool : context.getTools()) {
+        	  addTool(tool);
+          }
         
-      this.addLayer(new MapLayer(this));
-      this.addLayer(new DebugTileLayer(this));
-      this.addLayer(new BasicLayer(this));
+        this.addLayer(new BaseTileLayer(this));
+        for(ICanvasLayer layer : context.getlayers()) {
+        	this.addLayer(layer);
+        }      
       
-      setZoom(zoom);
-//    setMapPosition(mapPosition);
-    setCenterPosition(mapPosition);
-    this.redraw();
+        setZoom(zoom);
+//        setMapPosition(mapPosition);
+        setCenterPosition(mapPosition);
+        this.redraw();
       
     }
+    
+    public TileCache getCache() {
+        return cache;
+    }
+    
+    public TileServer getTileServer() {
+        return currentTileServer;
+    }
+    
+    public void setCurrentTileServer(TileServer tileServer) {
+        this.currentTileServer = tileServer;
+        redraw();
+    }
+    
+    public Stats getStats() {
+        return stats;
+    }    
+    
     
     protected void widgetDisposed(DisposeEvent e) {
         // TODO dispose de los layers
@@ -226,23 +187,6 @@ public class MapWidget extends LayeredCanvas {
     
     public void removePropertyChangeListener(String propertyName, PropertyChangeListener listener) {
         pcs.removePropertyChangeListener(propertyName, listener);
-    }
-    
-    public TileCache getCache() {
-        return cache;
-    }
-    
-    public TileServer getTileServer() {
-        return tileServer;
-    }
-    
-    public void setTileServer(TileServer tileServer) {
-        this.tileServer = tileServer;
-        redraw();
-    }
-    
-    public Stats getStats() {
-        return stats;
     }
     
     public Point getMapPosition() {
@@ -293,8 +237,8 @@ public class MapWidget extends LayeredCanvas {
 //        }
         int oldZoom = this.zoom;
         this.zoom = Math.min(getTileServer().getMaxZoom(), zoom);
-        mapSize.x = getXMax();
-        mapSize.y = getYMax();
+        mapSize.x = MapUtil.getXMax(zoom);
+        mapSize.y = MapUtil.getYMax(zoom);
         pcs.firePropertyChange("zoom", oldZoom, zoom);
     }
 
@@ -320,45 +264,21 @@ public class MapWidget extends LayeredCanvas {
         redraw();
     }
 
-    /**
-     * Calcula la cantidad de tiles en el sentido x que tiene el mapa
-     * @return
-     */
-    public int getXTileCount() {
-        return (1 << zoom);
-    }
-
-    /**
-     * Calcula la cantidad de tiles en el sentido y que tiene el mapa
-     * @return
-     */
-    public int getYTileCount() {
-        return (1 << zoom);
-    }
-
-    /**
-     * Calcula la cantidad de pixels en el sentido x que tiene el mapa
-     * @return
-     */
-    public int getXMax() {
-        return TILE_SIZE * getXTileCount();
-    }
-
-    /**
-     * Calcula la cantidad de pixels en el sentido x que tiene el mapa
-     * @return
-     */
-    public int getYMax() {
-        return TILE_SIZE * getYTileCount();
-    }
-
     
-    public Point getCursorPosition() {
-        return new Point(mapPosition.x + mouseListener.mouseCoords.x, mapPosition.y + mouseListener.mouseCoords.y);
+    public MapWidgetContext getContext() {
+		return context;
+	}
+
+	public Point getCursorPosition() {
+        return new Point(
+        		mapPosition.x + mouseCoords.x, 
+        		mapPosition.y + mouseCoords.y);
     }
 
     public Point getTile(Point position) {
-        return new Point((int) Math.floor(((double) position.x) / TILE_SIZE),(int) Math.floor(((double) position.y) / TILE_SIZE));
+        return new Point(
+        		(int) Math.floor(((double) position.x) / MapConstants.TILE_SIZE),
+        		(int) Math.floor(((double) position.y) / MapConstants.TILE_SIZE));
     }
 
     public Point getCenterPosition() {
@@ -373,19 +293,19 @@ public class MapWidget extends LayeredCanvas {
 
     public PointD getLongitudeLatitude(Point position) {
         return new PointD(
-                position2lon(position.x, getZoom()),
-                position2lat(position.y, getZoom()));
+                MapUtil.position2lon(position.x, getZoom()),
+                MapUtil.position2lat(position.y, getZoom()));
     }
     
     public Point computePosition(double x1, double y1) {
-        int x = lon2position(x1, getZoom());
-        int y = lat2position(y1, getZoom());
+        int x = MapUtil.lon2position(x1, getZoom());
+        int y = MapUtil.lat2position(y1, getZoom());
         return new Point(x, y);
     }
 
     public Point computePosition(PointD coords) {
-        int x = lon2position(coords.x, getZoom());
-        int y = lat2position(coords.y, getZoom());
+        int x = MapUtil.lon2position(coords.x, getZoom());
+        int y = MapUtil.lat2position(coords.y, getZoom());
         return new Point(x, y);
     }
     
@@ -400,41 +320,9 @@ public class MapWidget extends LayeredCanvas {
         return n;
     }
 
-    public static double position2lon(int x, int z) {
-        double xmax = TILE_SIZE * (1 << z);
-        return x / xmax * 360.0 - 180;
-    }
-
-    public static double position2lat(int y, int z) {
-        double ymax = TILE_SIZE * (1 << z);
-        return Math.toDegrees(Math.atan(Math.sinh(Math.PI - (2.0 * Math.PI * y) / ymax)));
-    }
-
-    public static double tile2lon(int x, int z) {
-        return x / Math.pow(2.0, z) * 360.0 - 180;
-    }
-
-    public static double tile2lat(int y, int z) {
-        return Math.toDegrees(Math.atan(Math.sinh(Math.PI - (2.0 * Math.PI * y) / Math.pow(2.0, z))));
-    }
-
-    public static int lon2position(double lon, int z) {
-        double xmax = TILE_SIZE * (1 << z);
-        return (int) Math.floor((lon + 180) / 360 * xmax);
-    }
-
-    public static int lat2position(double lat, int z) {
-        double ymax = TILE_SIZE * (1 << z);
-        return (int) Math.floor((1 - Math.log(Math.tan(Math.toRadians(lat)) + 1 / Math.cos(Math.toRadians(lat))) / Math.PI) / 2 * ymax);
-    }
-
     public static String getTileNumber(TileServer tileServer, double lat, double lon, int zoom) {
         int xtile = (int) Math.floor((lon + 180) / 360 * (1 << zoom));
         int ytile = (int) Math.floor((1 - Math.log(Math.tan(Math.toRadians(lat)) + 1 / Math.cos(Math.toRadians(lat))) / Math.PI) / 2 * (1 << zoom));
         return tileServer.getType().getTileString(tileServer.getURL(), xtile, ytile, zoom);
-    }
-    
-    public TileServer[] getServers() {
-    	return TILESERVERS;
-    }
+    }    
 }

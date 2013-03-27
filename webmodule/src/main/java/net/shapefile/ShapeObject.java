@@ -14,21 +14,21 @@ public class ShapeObject {
 	public static final int POLYGON = 5;
 	public static final int MULTIPOINT = 8;
 
-	private ArrayList<Point> points = new ArrayList<Point>();
-	private ArrayList<Integer> parts = new ArrayList<Integer>();
+	private List<Point> points = new ArrayList<Point>();
+	private List<Integer> parts = new ArrayList<Integer>();
 	private Record record;
 	private BoundingBox boundingBox = new BoundingBox();
 	private int type;
 
 	public ShapeObject() {
 		this.type = 0;
-		this.parts.add(new Integer(0));
+		this.parts.add(0);
 	}
 
 	public ShapeObject(int type) {
 		this.type = type;
 		if (this.type != 1)
-			this.parts.add(new Integer(0));
+			this.parts.add(0);
 	}
 
 	public void addPoint(Point point) {
@@ -43,7 +43,7 @@ public class ShapeObject {
 		return (Point) this.points.get(index);
 	}
 
-	public ArrayList<Point> getPoints() {
+	public List<Point> getPoints() {
 		return this.points;
 	}
 
@@ -53,7 +53,7 @@ public class ShapeObject {
 
 	public void addPart(int paramInt) {
 		if (paramInt != 0)
-			this.parts.add(new Integer(paramInt));
+			this.parts.add(Integer.valueOf(paramInt));
 	}
 
 	public void removePart(int paramInt) {
@@ -69,7 +69,7 @@ public class ShapeObject {
 		this.parts = new ArrayList<Integer>(paramCollection);
 	}
 
-	public ArrayList<Integer> getParts() {
+	public List<Integer> getParts() {
 		return this.parts;
 	}
 

@@ -82,7 +82,12 @@
 			<groupId>net.rescueapp</groupId>
 			<artifactId>telephone</artifactId>
 			<version>${project.version}</version>
-		</dependency>		
+		</dependency>
+		<dependency>
+			<groupId>net.rescueapp</groupId>
+			<artifactId>mapviewer</artifactId>
+			<version>${project.version}</version>
+		</dependency>				
 		<dependency>
 			<groupId>com.google.code.guice</groupId>
 			<artifactId>guice</artifactId>

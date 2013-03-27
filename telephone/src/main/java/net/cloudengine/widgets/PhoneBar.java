@@ -3,11 +3,14 @@ package net.cloudengine.widgets;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.cloudengine.cti.Call;
-import net.cloudengine.cti.CallListener;
-import net.cloudengine.cti.CallsMonitor;
-import net.cloudengine.cti.Connection;
-import net.cloudengine.cti.ConnectionListener;
+import net.cloudengine.new_.cti.EventListener;
+import net.cloudengine.new_.cti.EventProvider;
+import net.cloudengine.new_.cti.model.Call;
+import net.cloudengine.new_.cti.model.Extension;
+import net.cloudengine.new_.cti.model.QEntry;
+import net.cloudengine.new_.cti.model.QMember;
+import net.cloudengine.new_.cti.model.Queue;
+import net.cloudengine.util.GuiUtil;
 
 import org.eclipse.jface.action.ContributionItem;
 import org.eclipse.swt.SWT;
@@ -20,13 +23,10 @@ import org.eclipse.swt.widgets.CoolItem;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 
-import com.google.inject.Inject;
-
-public class PhoneBar extends ContributionItem implements CallListener, ConnectionListener {
+public class PhoneBar extends ContributionItem implements EventListener {
 	
 	private String phoneNumber = "-";
 	private Composite composite;
-	private CallsMonitor monitor;
 	private Map<Call, CallActionComposite> callsActions = new HashMap<Call, CallActionComposite>();
 	
 	private Label imgLabelStatus;
@@ -34,16 +34,14 @@ public class PhoneBar extends ContributionItem implements CallListener, Connecti
 	
 	private CoolItem labelItem;
 	
-	private Image imgConnected = new Image(null,PhoneBar.class.getResourceAsStream("connect_yes.png"));
-	private Image imgDisconnected = new Image(null,PhoneBar.class.getResourceAsStream("connect_no.png"));
-	
+	private Image imgConnected = GuiUtil.getImage("connected.png");
+	private Image imgDisconnected = GuiUtil.getImage("disconnect.png");
 	private Boolean connected = Boolean.FALSE;
+	private EventProvider provider;
 	
-	@Inject
-	public PhoneBar(CallsMonitor monitor, Connection connection) {
-		monitor.addListener(this);
-		this.monitor = monitor;
-		connection.register(this);
+	public PhoneBar(EventProvider provider) {
+		this.provider = provider;
+		this.provider.addListener(this);
 	}
 	
 	@Override
@@ -72,7 +70,7 @@ public class PhoneBar extends ContributionItem implements CallListener, Connecti
 	    labelItem.setControl(composite);
 	    labelItem.setPreferredSize(imgLabelStatus.getBounds().width, imgLabelStatus.getBounds().height);
 	    
-	    if (connected) {
+	    if (connected) { // TODO
 	    	this.onConnect();
 	    }
 	}
@@ -112,47 +110,12 @@ public class PhoneBar extends ContributionItem implements CallListener, Connecti
 	}
 
 	@Override
-	public void onNewCall(final Call call) {
-		if (call.getCalledId().equals(phoneNumber) || call.getCallerId().equals(phoneNumber)) {
-			composite.getDisplay().asyncExec(new Runnable() {
-				@Override
-				public void run() {
-					CallActionComposite llamadaComposite = new CallActionComposite(call, phoneNumber, monitor, composite, SWT.NONE);
-					callsActions.put(call, llamadaComposite);
-					composite.layout();
-				}
-		    });
-			
-			monitor.record(call);
-		}
+	public void dispose() {
+		super.dispose();
+		imgConnected.dispose();
+		imgDisconnected.dispose();
 	}
-
-	@Override
-	public void onCallFinish(final Call call) {
-		if (callsActions.containsKey(call)) {
-			composite.getDisplay().asyncExec(new Runnable() {
-				@Override
-				public void run() {
-					callsActions.get(call).dispose();
-					callsActions.remove(call);
-					composite.layout();
-				}
-			});
-		}
-	}
-
-	@Override
-	public void onChangeState(Call call) {
-		if (callsActions.containsKey(call)) {
-			CallActionComposite ca = callsActions.get(call);
-			if (call.isHold()) {
-				ca.holdButton.setText("Recuep.");
-			} else {
-				ca.holdButton.setText("Espera");
-			}
-		}
-	}
-
+	
 	@Override
 	public void onConnect() {
 		connected = true;
@@ -173,29 +136,71 @@ public class PhoneBar extends ContributionItem implements CallListener, Connecti
 		composite.getDisplay().asyncExec(new Runnable() {
 			@Override
 			public void run() {
-				imgLabelStatus.setImage(imgConnected);
+				imgLabelStatus.setImage(imgDisconnected);
 				textLabelStatus.setText("Desconectado");
+				
+				for (CallActionComposite comp : callsActions.values() ) {
+					comp.dispose();
+				}
+				composite.layout();
+				callsActions.clear();
 			}
 		});
 	}
 
 	@Override
-	public void dispose() {
-		super.dispose();
-		imgConnected.dispose();
-		imgDisconnected.dispose();
+	public void extensionChanged(Extension extension) { }
+
+	@Override
+	public void queueAdded(Queue queue) { }
+
+	@Override
+	public void queueMemberAdded(String queue, QMember member) { }
+
+	@Override
+	public void queueMemberRemoved(String queue, QMember member) { }
+
+	@Override
+	public void queueEntryAdded(String queue, QEntry entry) { }
+
+	@Override
+	public void newCall(final Call call) {
+		if (call.getCalledId().equals(phoneNumber) || call.getCallerId().equals(phoneNumber)) {
+			composite.getDisplay().asyncExec(new Runnable() {
+				@Override
+				public void run() {
+					CallActionComposite llamadaComposite = new CallActionComposite(call, phoneNumber, provider,composite, SWT.NONE);
+					callsActions.put(call, llamadaComposite);
+					composite.layout();
+				}
+		    });
+			provider.record(call);
+		}
 	}
 
 	@Override
-	public void onQueueCall(Call call, String queue) {
-		// TODO Auto-generated method stub
-		
+	public void hangupCall(final Call call) {
+		if (callsActions.containsKey(call)) {
+			composite.getDisplay().asyncExec(new Runnable() {
+				@Override
+				public void run() {
+					callsActions.get(call).dispose();
+					callsActions.remove(call);
+					composite.layout();
+				}
+			});
+		}
 	}
 
 	@Override
-	public void onDequeueCall(Call call, String queue) {
-		// TODO Auto-generated method stub
+	public void extensionAdded(Extension extension) { }
+
+	@Override
+	public void queueEntryRemoved(String queue, QEntry entry) { }
+
+	@Override
+	public void changeCall(Call call) {
 		
-	}
+	}	
 
 }

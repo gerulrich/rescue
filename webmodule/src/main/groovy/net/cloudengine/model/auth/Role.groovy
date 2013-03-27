@@ -1,15 +1,28 @@
 package net.cloudengine.model.auth
 
-import org.springframework.security.core.GrantedAuthority;
+import javax.validation.constraints.NotNull
+import javax.validation.constraints.Pattern
 
-class Role implements GrantedAuthority {
+import org.bson.types.ObjectId
 
-	Long id;
+import com.google.code.morphia.annotations.Entity
+import com.google.code.morphia.annotations.Id
+import com.google.code.morphia.annotations.Reference
+
+@Entity(value="role", noClassnameStored=true)
+class Role {
+
+	@Id ObjectId id;
+	
+	@NotNull
+	@Pattern(regexp=".+")
 	String name;
+	
+	@NotNull
+	@Pattern(regexp=".+")
 	String description;
 	
-	@Override
-	public String getAuthority() {
-		return name;
-	}	
+	@Reference
+	List<Permission> permissions;
+	
 }

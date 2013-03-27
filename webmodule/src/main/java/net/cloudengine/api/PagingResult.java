@@ -1,6 +1,6 @@
 package net.cloudengine.api;
 
-import java.util.Collection;
+import java.util.List;
 
 public interface PagingResult<E> {
 	
@@ -34,7 +34,15 @@ public interface PagingResult<E> {
 	 * página actual.
 	 * @return
 	 */
-	Collection<E> getList();
+	List<E> getList();
+	
+	/***
+	 * Retorna la lista con todos los resultados, no solo los 
+	 * de la página actual. Es recomendable su uso solo 
+	 * para conjuntos de resultados pequeños.
+	 * @return
+	 */
+	List<E> getCompleteList();
 	
 	
 }

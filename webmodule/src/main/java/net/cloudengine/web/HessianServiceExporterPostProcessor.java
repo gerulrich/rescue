@@ -4,7 +4,8 @@ import java.util.Map;
 
 import net.cloudengine.util.ExternalService;
 
-import org.springframework.beans.BeansException;
+import org.springframework.aop.framework.Advised;
+import org.springframework.aop.support.AopUtils;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
@@ -21,17 +22,45 @@ import org.springframework.stereotype.Service;
 public class HessianServiceExporterPostProcessor implements BeanFactoryPostProcessor {
 
 	private boolean isExternalService(Object bean) {
-		return bean.getClass().getAnnotation(Service.class) != null && bean.getClass().getAnnotation(ExternalService.class) != null;
+		Object realObject = null;
+		
+		if (AopUtils.isJdkDynamicProxy(bean)) {
+		    try {
+				realObject = ((Advised)bean).getTargetSource().getTarget();
+			} catch (Exception e) {
+				realObject = bean;
+			}
+		} else {
+			realObject = bean;
+		}
+		
+		return realObject.getClass().getAnnotation(Service.class) != null && realObject.getClass().getAnnotation(ExternalService.class) != null;
+	}
+	
+	private ExternalService getAnnotation(Object bean) {
+		Object realObject = null;
+		
+		if (AopUtils.isJdkDynamicProxy(bean)) {
+		    try {
+				realObject = ((Advised)bean).getTargetSource().getTarget();
+			} catch (Exception e) {
+				realObject = bean;
+			}
+		} else {
+			realObject = bean;
+		}
+		return realObject.getClass().getAnnotation(ExternalService.class);
 	}
 	
 	@Override
-	public void postProcessBeanFactory(ConfigurableListableBeanFactory factory) throws BeansException {
+	public void postProcessBeanFactory(ConfigurableListableBeanFactory factory) {
 		Map<String, Object> beans = ((ConfigurableListableBeanFactory)factory.getParentBeanFactory()).getBeansWithAnnotation(ExternalService.class);		
 		
 		 for (String beanName : beans.keySet()) {
 			 Object bean = beans.get(beanName);
+			 
 			 if (isExternalService(bean)) {
-				 ExternalService annotation = bean.getClass().getAnnotation(ExternalService.class);
+				 ExternalService annotation = getAnnotation(bean);
 				 Class<?> exportedInterface = annotation.exportedInterface();
 				 BeanDefinitionRegistry registry = ((BeanDefinitionRegistry ) factory);
 				 GenericBeanDefinition beanDefinition = new GenericBeanDefinition();

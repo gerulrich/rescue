@@ -1,31 +1,42 @@
 package net.cloudengine.widgets;
 
-import net.cloudengine.cti.CallsMonitor;
+import net.cloudengine.new_.cti.EventProvider;
 
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.TableColumn;
 
-import com.google.inject.Inject;
+//import com.google.inject.Inject;
 
 public class CallWatcher {
 	
-	private CallsMonitor monitor;
+	private EventProvider provider;
 	
-	@Inject
-	public CallWatcher(CallsMonitor monitor) {
-		this.monitor = monitor;
+//	@Inject
+	public CallWatcher(EventProvider provider) {
+		this.provider = provider;
 	}
 	
 	
 	public Control createControl(Composite parent) {
+		Composite wrap = new Composite(parent, SWT.NONE);
+		GridLayout layout = new GridLayout(1, false);
+		layout.marginWidth = layout.marginHeight = 0;
+		layout.horizontalSpacing = layout.verticalSpacing = 0;
+		wrap.setLayout(layout);
 		
-		final TableViewer v = new TableViewer(parent, SWT.BORDER | SWT.FULL_SELECTION);
+		TitleControl title = new TitleControl(wrap);
+		title.setText("Llamadas en curso");
+		title.setLayoutData(new GridData(GridData.FILL, GridData.BEGINNING, true, false));
+		
+		final TableViewer v = new TableViewer(wrap, SWT.BORDER | SWT.FULL_SELECTION);
+		v.getTable().setLayoutData(new GridData(GridData.FILL_BOTH));
 		v.setLabelProvider(new CallLabelProvider());
-		v.setContentProvider(new CallsContentProvider(monitor, v));
+		v.setContentProvider(new CallsContentProvider(provider, v));
 		
 		TableColumn column = new TableColumn(v.getTable(),SWT.NONE);
 		column.setWidth(80);
@@ -50,27 +61,5 @@ public class CallWatcher {
 		v.getTable().getDisplay().timerExec(1000, new ViewUpdater(v));
 		
 		return parent;
-	}
-	
-	class ViewUpdater implements Runnable {
-
-		private TableViewer tv;
-		
-		public ViewUpdater(TableViewer tv) {
-			this.tv = tv;
-		}
-		
-		@Override
-		public void run() {
-			Display display = this.tv.getTable().getDisplay();
-			display.syncExec (new Runnable () {
-				public void run () {
-					tv.refresh();
-				}
-			});
-			display.timerExec(1000, this);
-		}
-		
-	}
-
+	}	
 }

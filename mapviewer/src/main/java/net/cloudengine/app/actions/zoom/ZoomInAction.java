@@ -1,6 +1,6 @@
 package net.cloudengine.app.actions.zoom;
 
-import net.cloudengine.app.Application;
+import net.cloudengine.app.MapApplication;
 
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -8,9 +8,9 @@ import org.eclipse.swt.graphics.Point;
 
 public class ZoomInAction extends Action {
 	
-	private Application app;
+	private MapApplication app;
 	
-	public ZoomInAction(Application app) {
+	public ZoomInAction(MapApplication app) {
 		super("Acercar zoom", ImageDescriptor.createFromURL(ZoomInAction.class.getResource("zoom_in.png")));
 		this.app = app;
 	}

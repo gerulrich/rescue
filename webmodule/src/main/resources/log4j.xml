@@ -29,8 +29,8 @@
 		<appender-ref ref="CONSOLE"/>
 	</category>
 	
-		<category name="org.springframework.web">
-		<priority value="error"/>
+	<category name="org.springframework.web">
+		<priority value="info"/>
 		<appender-ref ref="CONSOLE"/>
 	</category>
 
@@ -53,5 +53,10 @@
 		<priority value="error"/>
 		<appender-ref ref="CONSOLE"/>
 	</category>
+	
+	<category name="org.hibernatespatial">
+		<priority value="error"/>
+		<appender-ref ref="CONSOLE"/>
+	</category>	
 
 </log4j:configuration>

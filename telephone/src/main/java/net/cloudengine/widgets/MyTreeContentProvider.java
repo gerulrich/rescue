@@ -3,12 +3,10 @@ package net.cloudengine.widgets;
 import java.util.Map;
 import java.util.TreeMap;
 
-import net.cloudengine.pbx.Group;
-import net.cloudengine.pbx.PBXMonitor;
-import net.cloudengine.pbx.PhoneExt;
-import net.cloudengine.pbx.PhoneStatusListener;
-import net.cloudengine.pbx.Status;
-import net.cloudengine.pbx.asterisk.AsteriskPBXMonitor;
+import net.cloudengine.new_.cti.EventListener;
+import net.cloudengine.new_.cti.EventProvider;
+import net.cloudengine.new_.cti.model.Extension;
+import net.cloudengine.new_.cti.model.Status;
 
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.TreeViewer;
@@ -17,113 +15,100 @@ import org.eclipse.swt.widgets.Display;
 
 public class MyTreeContentProvider implements ITreeContentProvider {
 
-	private Map<String, PhoneExt> conectedPhones = new TreeMap<String, PhoneExt>();
-	private Map<String, PhoneExt> disconectedPhones = new TreeMap<String, PhoneExt>();
+	private static final String CONECTADOS = "Conectados";
+	private static final String DESCONECTADOS = "Desconectados";
+	
+	private Map<String, Extension> connected = new TreeMap<String, Extension>();
+	private Map<String, Extension> disconnected = new TreeMap<String, Extension>();
 
 	private TreeViewer tree;
-	private PBXMonitor monitor;
-
-	public MyTreeContentProvider(TreeViewer tree, PBXMonitor monitor) {
+	private EventProvider provider;
+	private EventListener listener;
+	
+	public MyTreeContentProvider(TreeViewer tree, EventProvider provider) {
 		this.tree = tree;
-		this.monitor = monitor;
-
-		for (PhoneExt phone : monitor.getAllPhoneExt()) {
-			if (phone.getStatus().equals(Status.UNAVAILABLE)) {
-				disconectedPhones.put(phone.getNumber(), phone);
-			} else {
-				conectedPhones.put(phone.getNumber(), phone);
-			}
-		}
-
-		this.monitor.addListener(new PhoneStatusListener() {
+		this.provider = provider;
+		this.listener = new EventListenerAdapter() {
+			
 			@Override
-			public void onStatusChange(String extension, Status newStatus) {
-
-				boolean available = conectedPhones.containsKey(extension);
-
-				boolean cambio_de_grupo = (Status.UNAVAILABLE.equals(newStatus) && available)
-						|| (!Status.UNAVAILABLE.equals(newStatus) && !available);
-
-				if (cambio_de_grupo) {
-
-					if (available) {
-						PhoneExt phone = conectedPhones.get(extension);
-						phone.setStatus(newStatus);
-						conectedPhones.remove(extension);
-						disconectedPhones.put(extension, phone);
-						updateView();
-					} else {
-						PhoneExt phone = disconectedPhones.get(extension);
-						phone.setStatus(newStatus);
-						disconectedPhones.remove(extension);
-						conectedPhones.put(extension, phone);
-						updateView();
-					}
-					
+			public void extensionChanged(Extension extension) {
+				connected.remove(extension.getNumber());
+				disconnected.remove(extension.getNumber());
+				if (Status.UNAVAILABLE.equals(extension.getStatus())) {
+					disconnected.put(extension.getNumber(), extension);
 				} else {
-					
-					if (available) {
-						PhoneExt phone = conectedPhones.get(extension);
-						phone.setStatus(newStatus);
-						updateView();
-					} else {
-						PhoneExt phone = disconectedPhones.get(extension);
-						phone.setStatus(newStatus);
-						updateView();
-					}
+					connected.put(extension.getNumber(), extension);
 				}
+				updateView();
 			}
-		});
+			
+			@Override
+			public void extensionAdded(Extension extension) {
+				Status status = extension.getStatus();
+				if (Status.UNAVAILABLE.equals(status)) {
+					disconnected.put(extension.getNumber(), extension);
+				} else {
+					connected.put(extension.getNumber(), extension);
+				}
+				updateView();
+			}
+			
+			@Override
+			public void onDisconnect() {
+				connected.clear();
+				disconnected.clear();
+				updateView();
+			}			
+		};
+		this.provider.addListener(listener);
 	}
 	
 	private void updateView() {
-		for (final Group g : this.monitor.getGroups()) {
-			Display display = this.tree.getTree().getDisplay();
-			display.syncExec (new Runnable () {
-				public void run () {
-					MyTreeContentProvider.this.tree.refresh(g);
-				}
-			});
-		}
-		this.tree.expandAll();
+		Display display = this.tree.getTree().getDisplay();
+		display.syncExec (new Runnable () {
+			public void run () {
+				MyTreeContentProvider.this.tree.refresh();
+				MyTreeContentProvider.this.tree.expandAll();
+			}
+		});
 	}
 
 	@Override
 	public Object[] getElements(Object inputElement) {
-		return monitor.getGroups().toArray();
+		return new String[] { CONECTADOS, DESCONECTADOS };
 	}
 
 	@Override
 	public void dispose() {
-		// TODO Auto-generated method stub
+		this.provider.removeListener(listener);
+		this.connected.clear();
+		this.disconnected.clear();
 	}
 
 	@Override
-	public void inputChanged(Viewer arg0, Object arg1, Object arg2) {
-		// TODO Auto-generated method stub
+	public void inputChanged(Viewer arg0, Object arg1, Object arg2) { 
+		
 	}
 	
-	private Object[] toArray(Map<String,PhoneExt>  map) {
-		
+	private Object[] toArray(Map<String,Extension>  map) {
 		Object o[] = new Object[map.size()];
 		int i = 0;
 		for (String key : map.keySet()) {
 			o[i] = map.get(key);
 			i++;
 		}
-				
 		return o;
 
 	}
 
 	@Override
 	public Object[] getChildren(Object element) {
-		if (element instanceof Group) {
-			Group g = (Group) element;
-			if (Status.UNAVAILABLE.equals(g.getStatus())) {
-				return toArray(disconectedPhones);
+		if (element instanceof String) {
+			String group = (String)element;
+			if (CONECTADOS.equals(group)) {
+				return toArray(connected);
 			} else {
-				return toArray(conectedPhones);
+				return toArray(disconnected);
 			}
 		}
 		throw new IllegalArgumentException("Solo los grupos pueden tener sub elementos");
@@ -131,12 +116,12 @@ public class MyTreeContentProvider implements ITreeContentProvider {
 
 	@Override
 	public Object getParent(Object element) {
-		if (element instanceof PhoneExt) {
-			PhoneExt phone = (PhoneExt) element;
-			if (phone.getStatus().equals(Status.UNAVAILABLE)) {
-				return AsteriskPBXMonitor.UNAVAILABLE;
+		if (element instanceof Extension) {
+			Extension ext = (Extension) element;
+			if (Status.UNAVAILABLE.equals(ext.getStatus())) {
+				return DESCONECTADOS;
 			} else {
-				return AsteriskPBXMonitor.AVAILABLE;
+				return CONECTADOS;
 			}
 		}
 		return null;
@@ -144,7 +129,7 @@ public class MyTreeContentProvider implements ITreeContentProvider {
 
 	@Override
 	public boolean hasChildren(Object element) {
-		if (element instanceof Group)
+		if (element instanceof String)
 			return true;
 		return false;
 	}

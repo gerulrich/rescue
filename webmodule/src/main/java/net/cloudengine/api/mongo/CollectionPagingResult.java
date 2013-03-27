@@ -1,18 +1,18 @@
 package net.cloudengine.api.mongo;
 
-import java.util.Collection;
+import java.util.List;
 
 import net.cloudengine.api.PagingResult;
 
 public class CollectionPagingResult<E> implements PagingResult<E> {
 
-	private Collection<E> result;
+	private List<E> result;
 	private int pageNumber;
 	private int pageSize;
 	private long totalPages;
 	private long totalSize;
 	
-	public CollectionPagingResult(Collection<E> result, int pageNumber, int pageSize, long totalPages, long totalSize) {
+	public CollectionPagingResult(List<E> result, int pageNumber, int pageSize, long totalPages, long totalSize) {
 		this.result = result;
 		this.pageNumber = pageNumber;
 		this.pageSize = pageSize;
@@ -41,8 +41,13 @@ public class CollectionPagingResult<E> implements PagingResult<E> {
 	}
 
 	@Override
-	public Collection<E> getList() {
+	public List<E> getList() {
 		return result;
+	}
+
+	@Override
+	public List<E> getCompleteList() {
+		throw new RuntimeException("Método ni implementado, por favor utilice getList() en su lugar");
 	}
 
 }

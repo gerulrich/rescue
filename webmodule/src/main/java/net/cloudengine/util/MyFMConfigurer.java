@@ -22,6 +22,8 @@ public class MyFMConfigurer extends FreeMarkerConfigurer {
 		Configuration conf = super.getConfiguration();
 		conf.addAutoImport("spring", "/spring.ftl");
 		conf.addAutoImport("widget", "/widgets.ftl");
+		conf.addAutoImport("form", "/form.ftl");
+		conf.addAutoImport("page", "/page.ftl");
 		conf.addAutoImport("layout", "/layouts/new_layout.ftl");
 		try {
 			conf.setSharedVariable("jnlpUrl", service.getProperty("jnlp.url").getValue());
@@ -30,6 +32,7 @@ public class MyFMConfigurer extends FreeMarkerConfigurer {
 			conf.setSharedVariable("osName", System.getProperty("os.name"));
 			conf.setSharedVariable("osName", System.getProperty("os.name"));
 			conf.setSharedVariable("javaVersion", System.getProperty("java.version"));
+			conf.setSharedVariable("userUtil", UserUtil.getInstance());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

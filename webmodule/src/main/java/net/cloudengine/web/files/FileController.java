@@ -14,8 +14,6 @@ import javax.servlet.http.HttpSession;
 import net.cloudengine.api.BlobStore;
 import net.cloudengine.api.Datastore;
 import net.cloudengine.model.commons.FileDescriptor;
-import net.cloudengine.service.map.FileUploadProgress;
-import net.cloudengine.service.map.UploadListener;
 import net.cloudengine.web.map.MapController;
 
 import org.apache.commons.fileupload.FileItemIterator;
@@ -38,6 +36,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 
 @Controller
+@RequestMapping("/file")
 public class FileController {
 
 	private static Logger logger = LoggerFactory.getLogger(MapController.class);
@@ -58,7 +57,7 @@ public class FileController {
 	 * @param response
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/file/download/{id}", method = RequestMethod.GET)
+	@RequestMapping(value = "download/{id}", method = RequestMethod.GET)
 	public void downloadFile(@PathVariable("id") ObjectId id, HttpServletResponse response) throws Exception {
 		
 		FileDescriptor fileDescriptor = dataStore.get(id);
@@ -102,7 +101,7 @@ public class FileController {
 	 * @param id
 	 * @return
 	 */
-	@RequestMapping(value = "/file/delete/{id}", method = RequestMethod.GET)
+	@RequestMapping(value = "delete/{id}", method = RequestMethod.GET)
 	public ModelAndView removeFile(@PathVariable("id") ObjectId id) {
 		ModelAndView mav = new ModelAndView();
 
@@ -127,7 +126,7 @@ public class FileController {
 	 * @param session
 	 * @return
 	 */
-	@RequestMapping(value = "/file/uploadstatus/", method = RequestMethod.GET)
+	@RequestMapping(value = "uploadstatus/", method = RequestMethod.GET)
 	public @ResponseBody FileUploadProgress progress(HttpSession session) {
 		long read = 0L;
 		long total = 0L;
@@ -142,13 +141,13 @@ public class FileController {
 		return new FileUploadProgress(read, total);
 	}
 	
-	@RequestMapping(value = "/file/upload", method = RequestMethod.GET)
+	@RequestMapping(value = "upload", method = RequestMethod.GET)
 	public ModelAndView submitForm() {
-		return new ModelAndView("/file/uploadForm");
+		return new ModelAndView("/crud/file/uploadForm");
 	}
 	
-	@RequestMapping(value = "/file/upload", method = RequestMethod.POST)
-	public String uploadFile(HttpServletRequest request, final HttpSession session) {
+	@RequestMapping(value = "upload", method = RequestMethod.POST)
+	public String uploadFile(HttpServletRequest request, HttpSession session) {
 		
 		ServletFileUpload upload = new ServletFileUpload();
 		UploadListener progressListener = new UploadListener();
@@ -185,18 +184,18 @@ public class FileController {
 		return "redirect:/file/upload";
 	}
 	
-	@RequestMapping(value = "/file/list", method = RequestMethod.GET)
+	@RequestMapping(value = "list", method = RequestMethod.GET)
 	public ModelAndView list() {
 		ModelAndView mav = new ModelAndView();
 		mav.setViewName("redirect:/file/list/1/10");
 		return mav;
 	}
 	
-	@RequestMapping(value = "/file/list/{page}/{size}", method = RequestMethod.GET)
+	@RequestMapping(value = "list/{page}/{size}", method = RequestMethod.GET)
 	public ModelAndView list(@PathVariable("page") int page, @PathVariable("size") int size) {
 		ModelAndView mav = new ModelAndView();
 		mav.addObject("files", dataStore.list(page, size));
-		mav.setViewName("/file/list");
+		mav.setViewName("crud/file/list");
 		return mav;
 	}
 	

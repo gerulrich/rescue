@@ -18,7 +18,7 @@ public class Main {
 		Injector injector = Guice.createInjector(GuiceModule.BASE);
 		SigninService signin = injector.getInstance(SigninService.class);
 		
-		/*Display display = */new Display();
+		Display display = new Display();
 
 		final LoginDialog dialog = new LoginDialog();
 		dialog.setDisplayRememberPassword(false);
@@ -30,8 +30,7 @@ public class Main {
 
 		final boolean result = dialog.open();
 		if (result) {
-		    System.out.println("Login confirmed : " + dialog.getLogin());
-		    
+			display.dispose();
 		    Application app = new Application();
 		    app.setPropertyController(injector.getInstance(PropertyController.class));
 			app.setBlockOnOpen(true);
@@ -41,11 +40,10 @@ public class Main {
 		    Display.getCurrent().dispose();
 		    signin.logout(null);
 		    
-		    
 		} else {
-			System.out.println("User canceled !");
 			return;
 		}
+		display.dispose();
 		System.exit(0);
 	}
 }

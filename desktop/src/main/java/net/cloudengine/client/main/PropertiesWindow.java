@@ -66,7 +66,7 @@ public class PropertiesWindow extends ApplicationWindow {
 		// Create the combo to hold the team names
 
 		// Create the table viewer to display the players
-		tv = new TableViewer(composite);
+		tv = new TableViewer(composite, SWT.FULL_SELECTION);
 
 		// Set the content and label providers
 		tv.setContentProvider(new MyContentProvider(properties));

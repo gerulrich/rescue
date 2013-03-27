@@ -3,7 +3,7 @@ package net.cloudengine.widgets;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
-import net.cloudengine.cti.Call;
+import net.cloudengine.new_.cti.model.Call;
 
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
@@ -63,7 +63,7 @@ public class CallLabelProvider extends LabelProvider implements ITableLabelProvi
 				} else {
 					return "Activa";
 				}
-			case 3: return callTime(call.creationDate());
+			case 3: return callTime(call.getCreationDate());
 		}
 		return null;
 	}

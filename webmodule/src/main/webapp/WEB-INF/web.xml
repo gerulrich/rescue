@@ -17,6 +17,10 @@
 		<param-value>classpath:spring/spring-cloud.xml,classpath:spring/spring-security.xml,classpath:spring/spring-base.xml</param-value>
 	</context-param>
 
+	<filter>
+		<filter-name>OpenSessionInViewFilter</filter-name>
+		<filter-class>org.springframework.orm.jpa.support.OpenEntityManagerInViewFilter</filter-class>
+	</filter>
 	<!-- Enables Spring Security -->
 	<filter>
 		<filter-name>springSecurityFilterChain</filter-name>
@@ -46,6 +50,11 @@
 			<param-value>UTF-8</param-value>
 		</init-param>
 	</filter>
+
+	<filter-mapping>
+		<filter-name>OpenSessionInViewFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
 
 	<filter-mapping>
 		<filter-name>springSecurityFilterChain</filter-name>

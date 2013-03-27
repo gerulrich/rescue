@@ -2,7 +2,6 @@ package net.cloudengine.api;
 
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.List;
 
 import org.bson.types.ObjectId;
 
@@ -20,13 +19,6 @@ public interface BlobStore {
 	 * @return true si el archivo existe, falso en caso contrario.
 	 */
 	boolean exists(String filename);
-	
-	/**
-	 * 
-	 * @return
-	 */
-	List<String> list();
-	
 	
 	/**
 	 * Almacena un nuevo archivo en el BlobStore.

@@ -42,6 +42,10 @@ public class PageContainer extends Composite {
     public void setPages(Page... pages) {
         this.pages.clear();
         this.pages.addAll(Arrays.asList(pages));
+        for (Page page : pages) {
+        	page.getControl(this, content);
+        }
+        
     }
     
     public Page[] getPages() {

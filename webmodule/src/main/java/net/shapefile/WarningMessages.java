@@ -1,12 +1,13 @@
 package net.shapefile;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class WarningMessages {
 	
-	private ArrayList<String> messages = new ArrayList<String>();
+	private List<String> messages = new ArrayList<String>();
 
-	public ArrayList<String> getMessages() {
+	public List<String> getMessages() {
 		return messages;
 	}
 

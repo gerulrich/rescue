@@ -21,13 +21,23 @@
 	<http security="none" pattern="/static/**"/>
 	<http security="none" pattern="/cloud/**"/>
 	<http security="none" pattern="/account/signin.html"/>
+	<http security="none" pattern="/account/mtoken**"/>
+	<http security="none" pattern="/account/msignin**"/>
 	
 
    <http use-expressions="true">
-    	<intercept-url pattern="/admin/**" access="hasRole('ADMIN')"/>
+   		<intercept-url pattern="/resource/**" access="hasRole('RESOURCE')"/>
+    	<intercept-url pattern="/role/**" access="hasRole('USER_MANAG')"/>
+    	<intercept-url pattern="/user/**" access="hasRole('USER_MANAG')"/>
+    	<intercept-url pattern="/config/**" access="hasRole('CONFIG')"/>
+    	<intercept-url pattern="/mongo/**" access="hasRole('MONGO_CONSOLE')"/>
+    	<intercept-url pattern="/sql/**" access="hasRole('SQL_CONSOLE')"/>
+    	<intercept-url pattern="/shp/**" access="hasRole('GEO_MANAGER')"/>
+    	<intercept-url pattern="/file/**" access="hasRole('FILE_UPLOAD')"/>
+    	
     	<!--  Para todas las otras url se debe estar autenticado. -->
         <intercept-url pattern="/**" access="isAuthenticated()" />
-		<form-login login-page="/account/signin.html" authentication-failure-url="/account/signin.html"/>
+		<form-login login-page="/account/signin.html" authentication-failure-url="/account/signin.html" />
 		<logout />
         <remember-me key="rescuemeApp" services-ref="rememberMeServices"/>
         

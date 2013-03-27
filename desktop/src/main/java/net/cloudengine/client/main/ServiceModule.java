@@ -8,6 +8,8 @@ import net.cloudengine.rpc.controller.auth.Context;
 import net.cloudengine.rpc.controller.auth.SigninService;
 import net.cloudengine.rpc.controller.config.ContextImpl;
 import net.cloudengine.rpc.controller.config.PropertyController;
+import net.cloudengine.rpc.controller.geo.ZoneController;
+import net.cloudengine.rpc.controller.resource.ResourceController;
 
 import com.caucho.hessian.client.MyHessianProxyFactory;
 import com.caucho.services.client.ServiceProxyFactory;
@@ -30,6 +32,8 @@ public class ServiceModule extends AbstractModule {
 			bind(ServiceProxyFactory.class).toInstance(factory);
 			bindService(baseUrl, SigninService.class, factory);
 			bindService(baseUrl, PropertyController.class, factory);
+			bindService(baseUrl, ResourceController.class, factory);
+			bindService(baseUrl, ZoneController.class, factory);
 			
 		} catch (Exception e) {
 			e.printStackTrace();

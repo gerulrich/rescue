@@ -3,6 +3,7 @@ package net.cloudengine.web.map;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 import net.cloudengine.api.Datastore;
@@ -12,6 +13,9 @@ import net.cloudengine.forms.shp.StreetForm;
 import net.cloudengine.forms.shp.ZoneForm;
 import net.cloudengine.model.commons.FileDescriptor;
 import net.cloudengine.service.map.ShapefileService;
+import net.cloudengine.web.ajax.ResponseStatus;
+import net.cloudengine.web.files.FileUploadProgress;
+import net.cloudengine.web.files.UploadListener;
 
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,12 +26,13 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
 @Controller
+@RequestMapping("/shp")
 public class ShapeController {
 	
-
 	private Datastore<FileDescriptor, ObjectId> fileStore;
 	private ShapefileService shapeService;
 	
@@ -38,7 +43,7 @@ public class ShapeController {
 		this.shapeService = shapeService;
 	}
 
-	@RequestMapping(value = "/shp/upload", method = RequestMethod.GET)
+	@RequestMapping(value = "upload", method = RequestMethod.GET)
 	public ModelAndView submitForm() {
 		ModelAndView mav = new ModelAndView();
 		mav.addObject("files", fileStore.createQuery().field("type").eq("shp").list());
@@ -46,13 +51,13 @@ public class ShapeController {
 		return mav;
 	}
 	
-	@RequestMapping(value = "/shp/upload", method = RequestMethod.POST)
+	@RequestMapping(value = "upload", method = RequestMethod.POST)
 	public ModelAndView submitForm(@Valid @ModelAttribute("form") FileSelectForm form, BindingResult result) {
 		
 		ModelAndView mav = new ModelAndView();
 		
 		if (result.hasErrors()) {
-			mav.setViewName("/shp/upload");
+			mav.setViewName("upload");
 			return mav; 
 		}
 		
@@ -73,7 +78,7 @@ public class ShapeController {
 		
 	}
 	
-	@RequestMapping(value = "/shp/upload/poi/{id}", method = RequestMethod.GET)
+	@RequestMapping(value = "upload/poi/{id}", method = RequestMethod.GET)
 	public ModelAndView submitFormPOI(@PathVariable("id") ObjectId id) {
 		ModelAndView mav = new ModelAndView();
 		FileDescriptor descriptor = fileStore.get(id);
@@ -84,29 +89,38 @@ public class ShapeController {
 		return mav;
 	}
 	
-	@RequestMapping(value = "/shp/upload/poi/{id}", method = RequestMethod.POST)
-	public ModelAndView submitFormPOI(@PathVariable("id") ObjectId id, @Valid POIForm form, BindingResult result) {
-		ModelAndView mav = new ModelAndView();
+	@RequestMapping(value = "upload/poi/{id}", method = RequestMethod.POST)
+	public @ResponseBody ResponseStatus submitFormPOI(
+				@PathVariable("id") ObjectId id, 
+				@Valid POIForm form, 
+				BindingResult result,
+				HttpSession session) {
 		
+		ResponseStatus response = new ResponseStatus();
 		if (result.hasErrors()) {
-			mav.setViewName("/map/uploadPOI");
-			return mav;
+			response.setCode(-1);
+			response.setData("Compruebe el formulario e intente nuevamente");
+			return response;
 		}
 		
 		try {
+			UploadListener progressListener = new UploadListener();
+			session.setAttribute("PROGRESO", progressListener);
 			
 			FileDescriptor descriptor = fileStore.get(id);
-			shapeService.shp2Poi(descriptor, form.getNameField(), form.getTypeField(), form.getOverwrite());
+			long count = shapeService.shp2Poi(descriptor, form.getNameField(), form.getTypeField(), form.getOverwrite(), progressListener);
 			
+			response.setCode(0);
+			response.setData(String.valueOf(count));
 		} catch (Exception e) {
-
+			response.setCode(-1);
+			response.setData("Se produjo un error inesperado");
 		}
 		
-		mav.setViewName("redirect:/admin/mongo/show/poi");
-		return mav;
+		return response;
 	}
 	
-	@RequestMapping(value = "/shp/upload/street/{id}", method = RequestMethod.GET)
+	@RequestMapping(value = "upload/street/{id}", method = RequestMethod.GET)
 	public ModelAndView submitFormStreet(@PathVariable("id") ObjectId id) {
 		ModelAndView mav = new ModelAndView();
 		FileDescriptor descriptor = fileStore.get(id);
@@ -117,13 +131,16 @@ public class ShapeController {
 		return mav;
 	}
 	
-	@RequestMapping(value = "/shp/upload/street/{id}", method = RequestMethod.POST)
-	public ModelAndView submitFormStreet(@PathVariable("id") ObjectId id, @Valid StreetForm form, BindingResult result) {
-		ModelAndView mav = new ModelAndView();
+	@RequestMapping(value = "upload/street/{id}", method = RequestMethod.POST)
+	public @ResponseBody ResponseStatus submitFormStreet(
+			@PathVariable("id") ObjectId id, 
+			@Valid StreetForm form, BindingResult result,
+			HttpSession session) {
 		
+		ResponseStatus response = new ResponseStatus();
 		if (result.hasErrors()) {
-			mav.setViewName("/map/uploadStreet");
-			return mav;
+			response.setCode(-1);
+			response.setData("Compruebe el formulario e intente nuevamente");
 		}
 		
 		try {
@@ -140,20 +157,48 @@ public class ShapeController {
 			fieldNames.put(ShapefileService.VINICIO, form.getVstartField());
 			fieldNames.put(ShapefileService.VFIN, form.getVendField());
 			
-			shapeService.shp2Street(descriptor, fieldNames, form.getOverwrite());
+			UploadListener progressListener = new UploadListener();
+			session.setAttribute("PROGRESO", progressListener);
+			
+			long count = shapeService.shp2Street(descriptor, fieldNames, form.getOverwrite(), progressListener);
+			
+			response.setCode(0);
+			response.setData(String.valueOf(count));
 			
 		} catch (Exception e) {
 			e.printStackTrace();
+			response.setCode(-1);
+			response.setData("Se produjo un error inesperado.");
 		}
 		
-		mav.setViewName("redirect:/admin/mongo/show/poi");
-		return mav;
+		return response;
 	}
 	
 	
+	/**
+	 * Calcula el progreso del archivo que se esta subioendo.
+	 * @param key
+	 * @param session
+	 * @return
+	 */
+	@RequestMapping(value = "processstatus/", method = RequestMethod.GET)
+	public @ResponseBody FileUploadProgress progress(HttpSession session) {
+		long read = 0L;
+		long total = 100L;
+		UploadListener progressListener = (UploadListener) session.getAttribute("PROGRESO");
+		if (progressListener != null && progressListener.getItem() > 0) {
+			read = progressListener.getBytesRead();
+			total = progressListener.getContentLength();
+			if (read == total) {
+				session.removeAttribute("PROGRESO");
+			}
+		}
+		return new FileUploadProgress(read, total);
+	}
 	
-	@RequestMapping(value = "/shp/upload/zone/{id}", method = RequestMethod.GET)
-	public ModelAndView submitFormZone(@PathVariable("id") ObjectId id) {
+	
+	@RequestMapping(value = "upload/zone/{id}", method = RequestMethod.GET)
+	public ModelAndView seputFormZone(@PathVariable("id") ObjectId id) {
 		ModelAndView mav = new ModelAndView();
 		FileDescriptor descriptor = fileStore.get(id);
 		String fields[] = shapeService.readFileFields(descriptor);
@@ -163,28 +208,35 @@ public class ShapeController {
 		return mav;
 	}
 	
-	@RequestMapping(value = "/shp/upload/zone/{id}", method = RequestMethod.POST)
-	public ModelAndView submitFormZone(@PathVariable("id") ObjectId id, @Valid ZoneForm form, BindingResult result) {
-		ModelAndView mav = new ModelAndView();
-		
+	@RequestMapping(value = "upload/zone/{id}", method = RequestMethod.POST)
+	public @ResponseBody ResponseStatus submitFormZone(
+			@PathVariable("id") ObjectId id, 
+			@Valid ZoneForm form, 
+			BindingResult result,
+			HttpSession session) {
+				
+		ResponseStatus response = new ResponseStatus();
 		if (result.hasErrors()) {
-			mav.setViewName("/map/uploadZone");
-			return mav;
+			response.setCode(-1);
+			response.setData("Compruebe el formulario e intente nuevamente");
+			return response;
 		}
+		
+		UploadListener progressListener = new UploadListener();
+		session.setAttribute("PROGRESO", progressListener);
 		
 		try {
-			
 			FileDescriptor descriptor = fileStore.get(id);
-			shapeService.shp2Zone(descriptor, form.getNameField(), form.getType(), form.getOverwrite());
-			
+			long count = shapeService.shp2Zone(descriptor, form.getNameField(), form.getType(), form.getOverwrite(), progressListener);
+			response.setCode(0);
+			response.setData(String.valueOf(count));
 		} catch (Exception e) {
 			e.printStackTrace();
+			response.setCode(-1);
+			response.setData("Se produjo un error inesperado");
 		}
 		
-		mav.setViewName("redirect:/admin/mongo/show/poi");
-		return mav;
+		return response;
 	}
-	
-	
 		
 }

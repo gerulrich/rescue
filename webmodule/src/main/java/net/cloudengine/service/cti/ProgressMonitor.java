@@ -3,8 +3,9 @@ package net.cloudengine.service.cti;
 import com.jcraft.jsch.SftpProgressMonitor;
 
 public class ProgressMonitor implements SftpProgressMonitor {
-	long count = 0L;
-	long max = 0L;
+	
+	private long count = 0L;
+	private long max = 0L;
 	private long percent = -1L;
 	private boolean end = false;
 

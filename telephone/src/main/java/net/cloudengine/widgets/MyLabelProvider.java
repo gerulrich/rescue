@@ -1,8 +1,8 @@
 package net.cloudengine.widgets;
 
-import net.cloudengine.pbx.Group;
-import net.cloudengine.pbx.PhoneExt;
-import net.cloudengine.pbx.Status;
+import net.cloudengine.new_.cti.model.Extension;
+import net.cloudengine.new_.cti.model.Status;
+import net.cloudengine.util.GuiUtil;
 
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
@@ -10,69 +10,61 @@ import org.eclipse.swt.graphics.Image;
 
 public class MyLabelProvider implements ILabelProvider {
 
-	Image online;
-	Image busy;
-	Image offline;
-	Image groupOnline;
-	Image groupOffline;
+	private Image online;
+	private Image busy;
+	private Image offline;
+	private Image groupOnline;
+	private Image groupOffline;
 	
 	public MyLabelProvider() {
-		try {
-			online = new Image(null,MyLabelProvider.class.getResourceAsStream("status.png"));
-			busy = new Image(null,MyLabelProvider.class.getResourceAsStream("busy.png"));
-			offline = new Image(null,MyLabelProvider.class.getResourceAsStream("offline.png"));
-			groupOnline = new Image(null,MyLabelProvider.class.getResourceAsStream("network-online.png"));
-			groupOffline = new Image(null,MyLabelProvider.class.getResourceAsStream("network-offline.png"));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-	
-	@Override
-	public void addListener(ILabelProviderListener arg0) {
-		// TODO Auto-generated method stub
-	}
+		online = GuiUtil.getImage("status.png");
+		busy = GuiUtil.getImage("busy.png");
+		offline = GuiUtil.getImage("offline.png");
+		groupOnline = GuiUtil.getImage("network-online.png");
+		groupOffline = GuiUtil.getImage("network-offline.png");
+	}	
 
 	@Override
 	public void dispose() {
-		busy.dispose();
-		offline.dispose();
-		groupOnline.dispose();
-		groupOffline.dispose();
+//		busy.dispose();
+//		offline.dispose();
+//		groupOnline.dispose();
+//		groupOffline.dispose();
 	}
 
 	@Override
-	public boolean isLabelProperty(Object arg0, String arg1) {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean isLabelProperty(Object arg0, String arg1) { 
+		return false; 
 	}
 
 	@Override
-	public void removeListener(ILabelProviderListener arg0) {
-		// TODO Auto-generated method stub
-
+	public void addListener(ILabelProviderListener arg0) {
+	}
+	
+	@Override
+	public void removeListener(ILabelProviderListener arg0) { 
 	}
 
 	@Override
 	public Image getImage(Object element) {
-		if (element instanceof PhoneExt) {
-			PhoneExt phone = (PhoneExt) element;
-			if (phone.getStatus().equals(Status.UNAVAILABLE))
+		if (element instanceof Extension) {
+			Extension ext = (Extension) element;
+			if (ext.getStatus().equals(Status.UNAVAILABLE))
 				return offline;
 			else {
 				
-				if (phone.getStatus().equals(Status.INUSE)) {
+				if (ext.getStatus().equals(Status.INUSE)) {
 					return busy;
 				} else {
 					return online;
 				}
 			}
-		} else if (element instanceof Group) {
-			Group group = (Group) element;
-			if (Status.UNAVAILABLE.equals(group.getStatus())) {
-				return groupOffline;
-			} else {
+		} else if (element instanceof String) {
+			String group = (String) element;
+			if ("Conectados".endsWith(group)) { // FIXME sacar la constante
 				return groupOnline;
+			} else {
+				return groupOffline;
 			}
 		}
 		return null;
@@ -80,27 +72,22 @@ public class MyLabelProvider implements ILabelProvider {
 
 	@Override
 	public String getText(Object element) {
-		if (element instanceof Group) {
-			return getText((Group)element);
-		} else if (element instanceof PhoneExt) {
-			return getText((PhoneExt)element);
+		if (element instanceof String) {
+			return element.toString();
+		} else if (element instanceof Extension) {
+			return getText((Extension)element);
 		}
 		return null;
 	}
 	
-	private String getText(Group group) {
-		return group.getName();
-	}
-	
-	private String getText(PhoneExt phone) {
+	private String getText(Extension extension) {
 		String additinalInfo = null;
-		switch (phone.getStatus()) {
+		switch (extension.getStatus()) {
 			case RINGING: additinalInfo = "Sonando"; break;
 		}
 		if (additinalInfo != null)
-			return phone.getNumber()+" ("+phone.getType()+")"+" - "+additinalInfo;
+			return extension.getNumber()+" ("+extension.getType()+")"+" - "+additinalInfo;
 		else
-			return phone.getNumber()+" ("+phone.getType()+")";
+			return extension.getNumber()+" ("+extension.getType()+")";
 	}
-
 }

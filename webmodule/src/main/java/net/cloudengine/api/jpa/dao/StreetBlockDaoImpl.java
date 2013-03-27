@@ -22,7 +22,7 @@ public class StreetBlockDaoImpl extends JPADatastore<StreetBlock, Long> implemen
 		StreetBlock street = null;
 		
 		try {
-			Query query = this.entityManager.createNativeQuery(
+			Query query = getEntityManager().createNativeQuery(
 					"SELECT id, name, type, from_left, to_left, from_right, to_right, " +
 					"vstart, vend, geom "+
 					"FROM tp_street_block " +
@@ -49,7 +49,7 @@ public class StreetBlockDaoImpl extends JPADatastore<StreetBlock, Long> implemen
 		StreetIntersection intersection = null;
 		
 		try {
-			Query query = this.entityManager.createNativeQuery(
+			Query query = getEntityManager().createNativeQuery(
 					"SELECT s1.name AS name1, s1.geom AS geom1," +
 					"s2.name AS name2, s2.geom AS geom2 " +
 					"FROM tp_street_block AS s1 " +

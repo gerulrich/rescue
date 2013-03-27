@@ -1,12 +1,17 @@
 package net.cloudengine.client.main;
 
+import net.cloudengine.app.MapApplication;
 import net.cloudengine.client.resources.ImgBundle;
+import net.cloudengine.client.service.Configuration;
 import net.cloudengine.client.workbench.BluePage;
 import net.cloudengine.client.workbench.CTIPage;
 import net.cloudengine.client.workbench.GreenPage;
 import net.cloudengine.client.workbench.Page;
 import net.cloudengine.client.workbench.PageContainer;
 import net.cloudengine.client.workbench.TestPage;
+import net.cloudengine.client.xmap.MapMain;
+import net.cloudengine.new_.cti.TAPIDriver;
+import net.cloudengine.new_.cti.asterisk.AsteriskTAPIDriver;
 import net.cloudengine.rpc.controller.auth.Context;
 import net.cloudengine.rpc.controller.auth.UserModel;
 import net.cloudengine.rpc.controller.config.PropertyController;
@@ -38,15 +43,17 @@ public class Application extends ApplicationWindow {
 
 	private PropertyController prop;
 	public PageContainer pageContainer; // FIXME
-	private Injector injector = Guice.createInjector(GuiceModule.BASE, GuiceModule.ASTERISK);
+	private Injector injector = Guice.createInjector(GuiceModule.BASE /*, GuiceModule.ASTERISK*/);
 	
 	private boolean ctiEnabled = false;
+	private TAPIDriver driver;
+	private MapApplication mapApplication;
+	
 	
 	public Application() {
 		super(null);
 		addMenuBar();
 		addStatusLine();
-		
 	}
 	
 	public void setPropertyController(PropertyController prop) {
@@ -119,14 +126,21 @@ public class Application extends ApplicationWindow {
 		ToolBarManager tbm2 = createPerspectiveToolBarManager();
 		tbm2.createControl(perspectiveBannerComp);
 
-		
-		
-		
-		Page ctiPage = ctiEnabled ? injector.getInstance(CTIPage.class) : new BluePage();
+		Page ctiPage = null;
+		if (ctiEnabled && driver != null) {
+			ctiPage = new CTIPage(driver.createEventProvider());
+		} else {
+			ctiPage = new BluePage();
+		}
+//		ctiEnabled ? injector.getInstance(CTIPage.class) : new BluePage();
 		
 		pageContainer = new PageContainer(mainComp, SWT.NONE);
 		pageContainer.setPages(injector.getInstance(TestPage.class), new GreenPage(), ctiPage);
 		pageContainer.showPage(0);
+		
+		if (driver != null) {
+			driver.init();
+		}
 		
 		return parentComp;
 	}
@@ -148,11 +162,37 @@ public class Application extends ApplicationWindow {
 	    	{
 	    		setImageDescriptor(ImgBundle.getImgBundle().getImageDescriptor("ticket.png"));
 	    	}});
+	    
+	    tb1.add(new Action() {
+	    	{
+	    		setImageDescriptor(ImgBundle.getImgBundle().getImageDescriptor("compass.png"));
+	    	}
+
+			@Override
+			public void run() {
+				//FIXME
+				if (mapApplication != null) {
+					
+				} else {
+					String baseUrl = injector.getInstance(Configuration.class).getBaseUrl();
+					mapApplication = new MapMain(injector, baseUrl+"/tiles");
+					mapApplication.setBlockOnOpen(false);
+					int returnStatus = mapApplication.open();
+				}
+			}
+	    });
+	    
+	    
 		tbm.add(tb1);
 		UserModel user = injector.getInstance(Context.class).getCurrentUser();
-		if (ctiEnabled && StringUtils.isNotBlank(user.getPhoneNumber())) {
-			PhoneBar phoneBar = injector.getInstance(PhoneBar.class);
-			phoneBar.setPhoneNumber(user.getPhoneNumber());
+		if (ctiEnabled && StringUtils.isNotBlank(user.getAgentNumber())) {
+			String hostname = prop.getProperty("asterisk.hostname").getValue();
+			String username = prop.getProperty("asterisk.manager.user").getValue();
+			String password = prop.getProperty("asterisk.manager.pass").getValue();
+			
+			driver = new AsteriskTAPIDriver(hostname, username, password);
+			PhoneBar phoneBar = new PhoneBar(driver.createEventProvider());
+			phoneBar.setPhoneNumber(user.getAgentNumber());
 			tbm.add(phoneBar);
 		}
 		

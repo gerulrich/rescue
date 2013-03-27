@@ -3,9 +3,7 @@ package net.cloudengine.api.mongo;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 import net.cloudengine.api.BlobStore;
 import net.cloudengine.model.commons.FileDescriptor;
@@ -16,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.mongodb.core.SimpleMongoDbFactory;
 
-import com.mongodb.DBCursor;
 import com.mongodb.gridfs.GridFS;
 import com.mongodb.gridfs.GridFSDBFile;
 import com.mongodb.gridfs.GridFSInputFile;
@@ -43,16 +40,6 @@ public class MongoBlobStore implements BlobStore {
 	@Override
 	public boolean exists(String filename) {
 		return gridfs.findOne(filename) != null;
-	}
-
-	@Override
-	public List<String> list() {
-		List<String> fileList = new ArrayList<String>();
-		DBCursor cursor = gridfs.getFileList();
-		while (cursor.hasNext()) {
-			// TODO
-		}
-		return fileList;
 	}
 
 	@Override

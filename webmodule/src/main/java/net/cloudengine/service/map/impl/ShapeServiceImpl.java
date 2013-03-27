@@ -30,6 +30,7 @@ import net.shapefile.ShapeObject;
 import net.shapefile.ShapefileReader;
 import net.shapefile.geometry.WKTUtils;
 
+import org.apache.commons.fileupload.ProgressListener;
 import org.apache.commons.io.IOUtils;
 import org.bson.types.ObjectId;
 import org.slf4j.Logger;
@@ -43,7 +44,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class ShapeServiceImpl implements ShapefileService {
 
 	private static Logger logger = LoggerFactory.getLogger(ShapeController.class);
-	private final int BUFFER = 4096;
+	private static final int BUFFER = 4096;
 	
 	private BlobStore blobStore;
 	private Datastore<POI, ObjectId> poiStore;
@@ -62,7 +63,7 @@ public class ShapeServiceImpl implements ShapefileService {
 		this.zoneDao = zoneDao;
 	}
 	
-	public long shp2Poi(FileDescriptor descriptor, String nameField, String typeField, boolean overwrite) {
+	public long shp2Poi(FileDescriptor descriptor, String nameField, String typeField, boolean overwrite, ProgressListener listener) {
 		long count = 0;
 		String files[] = unzipp(descriptor);
 		String shapeFileName = findByExtension(files, "shp");
@@ -87,6 +88,10 @@ public class ShapeServiceImpl implements ShapefileService {
 		    		
 		   		poiStore.save(poi);
 		   		
+		   		if (listener != null) {
+	   				listener.update(reader.getBytesReaded(), reader.getFileLenght(), 1);
+	   			}
+		   		
 		   		count++;
 		   	}
 		}
@@ -97,8 +102,8 @@ public class ShapeServiceImpl implements ShapefileService {
 	}
 	
 	@Transactional
-	public void shp2Street(FileDescriptor descriptor, Map<String,String> fieldNames, boolean overwrite) {
-		
+	public long shp2Street(FileDescriptor descriptor, Map<String,String> fieldNames, boolean overwrite, ProgressListener listener) {
+		long count = 0;
 		String files[] = unzipp(descriptor);
 		String shapeFileName = findByExtension(files, "shp");
 		
@@ -145,18 +150,21 @@ public class ShapeServiceImpl implements ShapefileService {
 		   			street.setGeom(WKTUtils.toGeometry(obj));
 		   			
 		   			streetDao.save(street);
-
+		   			count++;
+		   			if (listener != null) {
+		   				listener.update(reader.getBytesReaded(), reader.getFileLenght(), 1);
+		   			}
 		   		}
 		   	}
 		}
 		
 		deleteFiles(files);
-		
+		return count;
 	}
 	
 	@Transactional
-	public void shp2Zone(FileDescriptor descriptor, String nameField, String type, boolean overwrite) {
-		
+	public long shp2Zone(FileDescriptor descriptor, String nameField, String type, boolean overwrite, ProgressListener listener) {
+		long count = 0;
 		String files[] = unzipp(descriptor);
 		String shapeFileName = findByExtension(files, "shp");
 		
@@ -182,12 +190,18 @@ public class ShapeServiceImpl implements ShapefileService {
 		   			zone.setType(type);
 		   			zone.setGeom(WKTUtils.toGeometry(obj));
 		   			zoneDao.save(zone);
+		   			
+		   			if (listener != null) {
+		   				listener.update(reader.getBytesReaded(), reader.getFileLenght(), 1);
+		   			}
+		   			count++;
 		   		}
 		   		
 		   	}
 		}
 		
 		deleteFiles(files);
+		return count;
 		
 	}
 	

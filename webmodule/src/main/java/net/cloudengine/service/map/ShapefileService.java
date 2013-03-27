@@ -2,6 +2,8 @@ package net.cloudengine.service.map;
 
 import java.util.Map;
 
+import org.apache.commons.fileupload.ProgressListener;
+
 import net.cloudengine.model.commons.FileDescriptor;
 
 public interface ShapefileService {
@@ -21,27 +23,30 @@ public interface ShapefileService {
 	 * @param descriptor 
 	 * @param nameField campo del shapefile que contiene el nombre
 	 * @param typeField campo del shapefile que contiene el tipo
-	 * @return
+	 * @param listener indicar de progreso del proceso de carga. 
+	 * @return cantidad de objetos geo-espaciales cargados. 
 	 */
-	public long shp2Poi(FileDescriptor descriptor, String nameField, String typeField, boolean overwrite);
+	public long shp2Poi(FileDescriptor descriptor, String nameField, String typeField, boolean overwrite, ProgressListener listener);
 	
 	/**
 	 * Carga un shapefile de puntos como puntos de interes.
 	 * @param descriptor 
 	 * @param fieldNames Map con los nombres
 	 * @param typeField campo del shapefile que contiene el tipo
-	 * @return
+	 * @param listener indicar de progreso del proceso de carga. 
+	 * @return cantidad de objetos geo-espaciales cargados.
 	 */
-	public void shp2Street(FileDescriptor descriptor, Map<String,String> fieldNames, boolean overwrite);
+	public long shp2Street(FileDescriptor descriptor, Map<String,String> fieldNames, boolean overwrite, ProgressListener listener);
 
 	/**
 	 * Carga un shapefile de puntos como puntos de interes.
 	 * @param descriptor 
 	 * @param fieldNames Map con los nombres
 	 * @param typeField campo del shapefile que contiene el tipo
-	 * @return
+	 * @param listener indicar de progreso del proceso de carga.
+	 * @return cantidad de objetos geo-espaciales cargados.
 	 */
-	public void shp2Zone(FileDescriptor descriptor, String nameField, String type, boolean overwrite);
+	public long shp2Zone(FileDescriptor descriptor, String nameField, String type, boolean overwrite, ProgressListener listener);
 	
 	/**
 	 * Lee los nombres de los campos asociados al shapefile

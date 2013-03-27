@@ -2,6 +2,7 @@ package net.cloudengine.client.ui;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 
@@ -18,17 +19,15 @@ public class MethodExecutor<T> implements Runnable {
 		super();
 		this.proxy = proxy;
 		this.method = method;
-		this.args = args;
+		if (args != null) {
+			this.args = Arrays.copyOf(args, args.length);
+		}
 		this.callback = callback;
 		this.monitor = monitor;
 	}
 	
 	public MethodExecutor(Object proxy, Method method, Object[] args, Callback callback) {
-		super();
-		this.proxy = proxy;
-		this.method = method;
-		this.args = args;
-		this.callback = callback;
+		this(proxy, method, args, callback, null);
 	}
 	
 	@Override

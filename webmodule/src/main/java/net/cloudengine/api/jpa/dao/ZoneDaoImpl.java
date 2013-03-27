@@ -33,7 +33,7 @@ public class ZoneDaoImpl extends JPADatastore<Zone, Long> implements ZoneDao {
 
 	@Override
 	public List<String> getZonesType() {
-		Query query = this.entityManager.createNativeQuery(
+		Query query = getEntityManager().createNativeQuery(
 			"SELECT distinct type " +
 			"FROM tp_zone "
 		);

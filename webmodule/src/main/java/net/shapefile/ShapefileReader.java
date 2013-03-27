@@ -6,6 +6,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import net.dbf.DBFReader;
 
@@ -32,9 +33,11 @@ public class ShapefileReader {
 	
 	private static final String[] SHAPEFILE_TYPES = {"Null Shape", "Point", "", "PolyLine", "", "Polygon", "", "", "MultiPoint"};
 
-	protected BoundingBox boundingBox = null;
+	private BoundingBox boundingBox = null;
 	private int type;
-	private ArrayList<String> messages = new ArrayList<String>();
+	private int fileLenght;
+	private int bytesReaded;
+	private List<String> messages = new ArrayList<String>();
 	
 	private FileInputStream shpInputStream = null;
 	private DataInputStream shpDataIs = null;
@@ -67,7 +70,8 @@ public class ShapefileReader {
 			throw new InvalidFileException(fileCode + " is not a valid file code.");
 		
 		shpDataIs.skipBytes(20); // Bytes not used
-		shpDataIs.skipBytes(4); // File length
+//		shpDataIs.skipBytes(4); // File length
+		fileLenght = shpDataIs.readInt()*2;
 		
 		int fileVersion = swapBytes(shpDataIs.readInt());
 		if (fileVersion != SHAPE_FILE_VERSION)
@@ -81,6 +85,8 @@ public class ShapefileReader {
 		
 		boundingBox = readBoundingBox(shpDataIs);		
 		shpDataIs.skip(32L); // Bytes not used
+		
+		bytesReaded = 100;
 	}
 	
 	public boolean hasNext() {
@@ -109,6 +115,8 @@ public class ShapefileReader {
 			
 			if (eofReached) {
 				closeAllFiles();
+				System.out.println("Tamaño: "+fileLenght);
+				System.out.println("Leido: "+bytesReaded);
 			} else {
 				try {
 					shapeobject.setRecord(dbf.next());
@@ -180,7 +188,7 @@ public class ShapefileReader {
 			
 			int numParts = swapBytes(datainputstream.readInt());
 			int numPoints = swapBytes(datainputstream.readInt());
-			
+
 			// read parts
 			for (int i = 0; i < numParts; i++) {
 				int part = swapBytes(datainputstream.readInt());
@@ -193,7 +201,8 @@ public class ShapefileReader {
 				point.setX(swapBytes(datainputstream.readDouble()));
 				point.setY(swapBytes(datainputstream.readDouble()));
 				shapeobject.addPoint(point);
-			}	
+			}
+			
 			
 			return shapeobject;
 
@@ -240,6 +249,8 @@ public class ShapefileReader {
 		int recordNumber = datainputstream.readInt();
 		int contentLength = datainputstream.readInt();
 		int shapeType = swapBytes(datainputstream.readInt());
+		
+		bytesReaded+=(4+contentLength)*2;
 		
 		if (logger.isDebugEnabled()) {
 			logger.debug("Shape object header, Record Number: {}, Content Length: {}, Type: {}", 
@@ -302,6 +313,14 @@ public class ShapefileReader {
 
 	public int getType() {
 		return type;
+	}
+	
+	public int getFileLenght() {
+		return fileLenght;
+	}
+
+	public int getBytesReaded() {
+		return bytesReaded;
 	}
 
 	public BoundingBox getBoundingBox() {
@@ -378,7 +397,7 @@ public class ShapefileReader {
 		return l1;
 	}
 
-	public ArrayList<String> getWarningMessages() {
+	public List<String> getWarningMessages() {
 		return messages;
 	}
 

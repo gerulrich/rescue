@@ -35,9 +35,7 @@ public class MapSeeder {
 //
 					byte[] data = new byte[16384];
 //
-					while ((is.read(data, 0, data.length)) != -1) {
-//
-					}
+					while ((is.read(data, 0, data.length)) != -1);
 					contador++;
 				}
 				

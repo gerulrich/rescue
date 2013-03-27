@@ -1,8 +1,12 @@
-<@layout.main breadcrumbs=breadcrumbs menu=menu sidebar=sidebar body=body/>
+<@layout.main breadcrumbs=breadcrumbs menu=menu sidebar=sidebar body=body script=script/>
 
 <#macro breadcrumbs>
 	<li><a href="<@spring.url '/'/>">Dashboard</a></li>
+	<li><a href="<@spring.url '/shp/upload'/>">Cargar capa desde archivo</a></li>
+	<li>Calles</li>
 </#macro>
+
+
 
 <#macro menu>
 	<@widget.menu "admin"/>
@@ -12,135 +16,143 @@
 	<@widget.statistics/>
 </#macro>
 
+<#macro script>
+<script>
+
+	$(document).ready(function() {
+	
+		//$(".message").hide();
+    			
+		$("#target").validate({
+			meta: "validate",
+			submitHandler: function(form) {
+				d = "";
+				try { d = $('form').serialize(); } catch(e){};
+				$.ajax({
+            		type: 'POST',
+            		url: '<@spring.url '/shp/upload/street/${file.id}'/>',
+            		dataType: 'json',
+            		data: d,
+            		success: function(data) {
+                		$("#waitmessage").hide();
+                		if (data.code == 0) {
+                			$("#okmessage").html("<span>La capa se ha cargado correctamente con "+data.data+" registros</span>");
+                			$("#okmessage").show();
+                		} else {
+                			$("#errormessage").html("<span>"+data.data+"</span>");
+                			$("#errormessage").show();
+                		}
+                		$('#boton').show();
+            		}
+        		});
+        		$("#waitmessage").show();
+				$("#okmessage").hide();
+				$('#boton').hide();        		
+				setTimeout ( 'progress()', 500 );
+			}
+		});
+    			    			
+	});
+
+    function progress() {
+    	$.ajax({
+			url: '<@spring.url '/shp/processstatus/'/>',
+			dataType: 'json',
+    		success: function(data) {
+    			if (data.total == 0) {
+    				data.total = 100;
+    			}
+        		var porcentage = Math.floor(100 * parseInt(data.uploaded) / parseInt(data.total));
+				if ( porcentage == 100 ) {
+					$('#progress').progressbar({value: 100});
+					$('#progress').prev(".percent").text("100%");
+					//$(".message").show();
+					//$('#boton').show();
+					$('form').each (function() { this.reset(); });
+				} else {
+					$('#progress').progressbar({value: porcentage});
+					$('#progress').prev(".percent").text(porcentage+"%");
+					setTimeout ( 'progress()', 500 );
+				}
+			}
+		});
+	}
+   	
+</script>
+</#macro>
+
 
 <#macro body>
 
-
-	<div class="section">
-	
-		<div class="plain">
-			<h3>Datos del archivo</h3>
-			<ul class="tick">
-				<li><b>Nombre:</b> ${file.filename}</li>
-				<li><b>Descripci&oacute;n:</b> ${file.description}</li>
-				<li><b>Versi&oacute;n:</b> ${file.version}</li>
-			</ul>
-		</div>
-	
-		<div class="box">
-			<div class="title">
-			Subir shapefile como capa de calles<span class="hide"></span>
-			</div>
-			<div class="content">
-			
-				<form method="post" class="valid">
-
-					<div class="row">
-						<label>Campo Nombre</label>
-						<div class="right">
-							<select name="nameField">
-							<#list fields as field>
-								<option value="${field}">${field}</option>							
-							</#list>
-							</select>
-						</div>
-					</div>
+	<@page.section>
+		
+		<@page.half>
+			<@page.box title="Subir shapefile como capa de calles">
+				<div id="okmessage" class="message inner green" style="display:none"></div>
+				<div id="errormessage" class="message inner red" style="display:none"></div>
+				<div id="waitmessage" class="message inner blue" style="display:none">
+					<span>Procesando datos. Por favor espere...</span>
+				</div>
+				
+				<form id="target" method="post">
+					<@form.row label="Campo Nombre">
+						<@form.simpleSelect name="nameField" list=fields/> 
+					</@form.row>
 					
-					<div class="row">
-						<label>Campo Tipo</label>
-						<div class="right">
-							<select name="typeField">
-							<#list fields as field>
-								<option value="${field}">${field}</option>							
-							</#list>
-							</select>
-						</div>
-					</div>
+					<@form.row label="Campo Tipo">
+						<@form.simpleSelect name="typeField" list=fields/>
+					</@form.row>
 					
-					<div class="row">
-						<label>Altura izquierda inicio</label>
-						<div class="right">
-							<select name="fromLeftField">
-							<#list fields as field>
-								<option value="${field}">${field}</option>							
-							</#list>
-							</select>
-						</div>
-					</div>
+					<@form.row label="Altura izquierda inicio">
+						<@form.simpleSelect name="fromLeftField" list=fields/>
+					</@form.row>
 					
-					<div class="row">
-						<label>Altura izquierda fin</label>
-						<div class="right">
-							<select name="toLeftField">
-							<#list fields as field>
-								<option value="${field}">${field}</option>							
-							</#list>
-							</select>
-						</div>
-					</div>
+					<@form.row label="Altura izquierda fin">
+						<@form.simpleSelect name="toLeftField" list=fields/>
+					</@form.row>
 					
-					<div class="row">
-						<label>Altura derecha inicio</label>
-						<div class="right">
-							<select name="fromRightField">
-							<#list fields as field>
-								<option value="${field}">${field}</option>							
-							</#list>
-							</select>
-						</div>
-					</div>
+					<@form.row label="Altura derecha inicio">
+						<@form.simpleSelect name="fromRightField" list=fields/>
+					</@form.row>
 					
-					<div class="row">
-						<label>Altura derecha fin</label>
-						<div class="right">
-							<select name="toRightField">
-							<#list fields as field>
-								<option value="${field}">${field}</option>							
-							</#list>
-							</select>
-						</div>
-					</div>
+					<@form.row label="Altura derecha fin">
+						<@form.simpleSelect name="toRightField" list=fields/>
+					</@form.row>
 					
-					<div class="row">
-						<label>Vertice incial</label>
-						<div class="right">
-							<select name="vstartField">
-							<#list fields as field>
-								<option value="${field}">${field}</option>							
-							</#list>
-							</select>
-						</div>
-					</div>
+					<@form.row label="Vertice inicial">
+						<@form.simpleSelect name="vstartField" list=fields/>
+					</@form.row>
 					
-					<div class="row">
-						<label>Vertice final</label>
-						<div class="right">
-							<select name="vendField">
-							<#list fields as field>
-								<option value="${field}">${field}</option>							
-							</#list>
-							</select>
-						</div>
-					</div>															
+					<@form.row label="Vertice final">
+						<@form.simpleSelect name="vendField" list=fields/>
+					</@form.row>
 					
-					<div class="row">
-						<label></label>
-							<div class="right">
-							<input type="checkbox" id="append" name="overwrite"/>
-							<label for="append">Sobreescribir datos</label>
-						</div>
-					</div>
-					
+					<@form.row label="">
+						<input type="checkbox" id="append" name="overwrite"/>
+						<label for="append">Sobreescribir datos</label>
+					</@form.row>
 						
-					<div class="row">
-						<label></label>
-						<div class="right">
-							<button id="boton" type="submit" class="green"><span>Siguiente</span></button>
-						</div>
-					</div>
+					<@form.submit>Finalizar</@form.submit>
 				</form>
-			</div>
-		</div>
-	</div>
-
+			</@page.box>
+		</@page.half>
+	
+		<@page.half>
+			<@page.box title="Informaci&oacute;n del archivo">
+				<ul class="comments">
+					<li><b>Nombre:</b> ${file.filename}</li>
+					<li><b>Descripci&oacute;n:</b> ${file.description}</li>
+					<li><b>Versi&oacute;n:</b> ${file.version}</li>
+					<li><b>Tama&ntilde;o:</b> ${file.sizeReadable}</li>
+					<li><b>Fecha:</b> ${file.date?datetime}</li>
+					<li>
+						<div class="right">
+							<span class="percent"></span>
+							<div id="progress" class="progressbar-count" value="0%"></div>
+						</div>
+					</li>
+				</ul>			
+			</@page.box>
+		</@page.half>
+	</@page.section>
 </#macro>

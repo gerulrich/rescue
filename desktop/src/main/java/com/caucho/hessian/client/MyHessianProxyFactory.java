@@ -10,6 +10,7 @@ import com.caucho.hessian.io.HessianRemoteObject;
 public class MyHessianProxyFactory extends HessianProxyFactory {
 	
 	private static String sessionId;
+	private static String rememberMe;
 	
 	public static String getSessionId() {
 		return sessionId;
@@ -17,6 +18,14 @@ public class MyHessianProxyFactory extends HessianProxyFactory {
 
 	public static void setSessionId(String sessionId) {
 		MyHessianProxyFactory.sessionId = sessionId;
+	}
+	
+	public static String getRememberMe() {
+		return rememberMe;
+	}
+
+	public static void setRememberMe(String rememberMe) {
+		MyHessianProxyFactory.rememberMe = rememberMe;
 	}
 
 	public Object create(Class<?> api, URL url, ClassLoader loader) {

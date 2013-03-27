@@ -9,5 +9,7 @@ package net.sf.swtgraph.layeredcanvas;
 public interface ISelectable {
 	
 	void setSelected(boolean selected);
+	double getLon();
+	double getLat();
 
 }

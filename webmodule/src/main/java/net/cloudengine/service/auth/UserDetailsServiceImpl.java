@@ -1,5 +1,8 @@
 package net.cloudengine.service.auth;
 
+import java.util.List;
+
+import net.cloudengine.model.auth.Permission;
 import net.cloudengine.model.auth.User;
 import net.cloudengine.util.Assert;
 
@@ -10,7 +13,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 public class UserDetailsServiceImpl implements UserDetailsService {
 	
-	UserService userService;
+	private UserService userService;
 	
 	@Autowired
 	public UserDetailsServiceImpl(UserService userService) {
@@ -26,6 +29,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 			if (ud == null) {
 				throw new UsernameNotFoundException("No matching account");
 			}
+			List<Permission> permissions = userService.getPermissionForUser(ud);
+			ud.setPermissions(permissions);
 			return ud;
 		} catch (UsernameNotFoundException e) {
 			throw e;

@@ -12,6 +12,11 @@ import javax.jnlp.BasicService;
 import javax.jnlp.ServiceManager;
 import javax.jnlp.UnavailableServiceException;
 
+import net.cloudengine.mapviewer.pages.InfoPage;
+import net.cloudengine.mapviewer.pages.PageContainer;
+import net.cloudengine.mapviewer.pages.ResultsPage;
+import net.cloudengine.mapviewer.pages.SearchPage;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.ControlAdapter;
@@ -45,13 +50,13 @@ public class MapBrowser extends Composite {
         sashForm.setLayout(new FillLayout());
 
         pageContainer = new PageContainer(sashForm, SWT.NONE);
-        mapWidget = new MapWidget(sashForm, SWT.NONE);
+        mapWidget = new MapWidget(sashForm, SWT.NONE, new MapWidgetContext());
         
         sashForm.setWeights(new int[] { 100, 200 });
          
         searchPage = new SearchPage(null);
         resultsPage = new ResultsPage(this);
-        infoPage = new InfoPage(this);
+//        infoPage = new InfoPage(this);
         pageContainer.setPages(searchPage, resultsPage, infoPage);
         pageContainer.showPage(0);
         

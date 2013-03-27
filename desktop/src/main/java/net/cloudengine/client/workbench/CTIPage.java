@@ -1,10 +1,10 @@
 package net.cloudengine.client.workbench;
 
-import net.cloudengine.cti.CallsMonitor;
-import net.cloudengine.pbx.PBXMonitor;
+import net.cloudengine.new_.cti.EventProvider;
 import net.cloudengine.widgets.CallWatcher;
 import net.cloudengine.widgets.PhonesMonitorWidget;
-import net.cloudengine.widgets.QueuesMonitorWidget;
+import net.cloudengine.widgets.QueuesEntryWidget;
+import net.cloudengine.widgets.QueuesMemberWidget;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
@@ -14,24 +14,18 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 
-import com.google.inject.Inject;
-
 public class CTIPage extends AbstractPage {
 	
 	private Composite extComp;
 	private Composite callsComp;
-	private Composite queuesComp;
-	
-	
-	private CallsMonitor monitor;
-	private PBXMonitor pbxMonitor;
+	private Composite queuesEntryComp;
+	private Composite queuesMemberComp;
 	
 	private CallWatcher callWatcher;
+	private EventProvider provider;
 	
-	@Inject
-	public CTIPage(CallsMonitor monitor, PBXMonitor pbxMonitor) {
-		this.monitor = monitor;
-		this.pbxMonitor = pbxMonitor;
+	public CTIPage(EventProvider provider) {
+		this.provider = provider;
 	}
 
 	@Override
@@ -57,19 +51,28 @@ public class CTIPage extends AbstractPage {
 		callsComp = new Composite(vsf, SWT.NONE);
 		callsComp.setLayout(new FillLayout());
 		
-		callWatcher = new CallWatcher(monitor);
+		callWatcher = new CallWatcher(provider);
 		callWatcher.createControl(callsComp);
 		
-		PhonesMonitorWidget widget = new PhonesMonitorWidget(pbxMonitor);
+		PhonesMonitorWidget widget = new PhonesMonitorWidget(provider);
 		widget.createControl(extComp);
 		
-		queuesComp = new Composite(vsf, SWT.NONE);
-		queuesComp.setLayout(new FillLayout());
+		SashForm vsfQueues = new SashForm(vsf, SWT.VERTICAL | SWT.SMOOTH);
 		
-		QueuesMonitorWidget queueWidget = new QueuesMonitorWidget(pbxMonitor, monitor);
-		queueWidget.createControl(queuesComp);
+		queuesEntryComp = new Composite(vsfQueues, SWT.NONE);
+		queuesEntryComp.setLayout(new FillLayout());
+		
+		QueuesEntryWidget queueWidget = new QueuesEntryWidget(provider);
+		queueWidget.createControl(queuesEntryComp);
+		
+		queuesMemberComp = new Composite(vsfQueues, SWT.NONE);
+		queuesMemberComp.setLayout(new FillLayout());
+		
+		QueuesMemberWidget queueMemberWidget = new QueuesMemberWidget(provider);
+		queueMemberWidget.createControl(queuesMemberComp);
 		
 		vsf.setWeights(new int[] { 20, 40, 40 });
+		vsfQueues.setWeights(new int[] { 50, 50 });
 	}
 	
 	
@@ -77,7 +80,5 @@ public class CTIPage extends AbstractPage {
 	protected void widgetDisposed(DisposeEvent e) {
 
 	}
-
-
 
 }

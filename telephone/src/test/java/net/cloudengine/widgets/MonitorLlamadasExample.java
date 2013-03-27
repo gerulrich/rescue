@@ -1,15 +1,12 @@
 package net.cloudengine.widgets;
 
-import net.cloudengine.pbx.asterisk.AsteriskModule;
+import net.cloudengine.new_.cti.asterisk.AsteriskTAPIDriver;
 
 import org.eclipse.jface.window.ApplicationWindow;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
-
-import com.google.inject.Guice;
-import com.google.inject.Injector;
 
 public class MonitorLlamadasExample extends ApplicationWindow {
 
@@ -27,8 +24,8 @@ public class MonitorLlamadasExample extends ApplicationWindow {
 	}
 
 	protected Control createContents(Composite parent) {
-		Injector injector = Guice.createInjector(new AsteriskModule());
-		CallWatcher widget = injector.getInstance(CallWatcher.class);
+		AsteriskTAPIDriver driver = new AsteriskTAPIDriver("192.168.0.104", "manager", "manager");
+		CallWatcher widget = new CallWatcher(driver.createEventProvider());
 		Control control = widget.createControl(parent);
 		return control;
 	}

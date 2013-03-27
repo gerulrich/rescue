@@ -1,6 +1,7 @@
 package net.cloudengine.api;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * Generic DAO (Data Access Object) with common methods to CRUD POJOs.
@@ -14,6 +15,9 @@ import java.io.Serializable;
  */
 public interface Datastore <E, PK extends Serializable> {
 
+	public static final int FIRST_PAGE = 1;
+	public static final int PAGE_SIZE = 10;
+	
 	/**
      * Generic method to get an object based on class and identifier. 
      * An Runtime Exception is thrown if nothing is found.
@@ -25,6 +29,8 @@ public interface Datastore <E, PK extends Serializable> {
 
 	void save(E entity);
 
+	List<E> getAll();
+	
 	PagingResult<E> list();
 
 	PagingResult<E> list(int page, int size);

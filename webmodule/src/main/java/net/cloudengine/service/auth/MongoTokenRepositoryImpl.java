@@ -20,7 +20,7 @@ public class MongoTokenRepositoryImpl implements PersistentTokenRepository {
 
 	private static final Logger logger = LoggerFactory.getLogger(MongoTokenRepositoryImpl.class);
 	
-	Datastore<MongoRememberMeToken, ObjectId> datastore;
+	private Datastore<MongoRememberMeToken, ObjectId> datastore;
 	
 	public MongoTokenRepositoryImpl(Datastore<MongoRememberMeToken, ObjectId> datastore) {
 		this.datastore = datastore;

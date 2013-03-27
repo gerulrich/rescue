@@ -3,13 +3,14 @@ package net.dbf;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 
 import net.shapefile.InvalidDescriptorNameException;
 import net.shapefile.InvalidFieldNameException;
 
 public class Record
 {
-  private ArrayList<RecordField> fields = new ArrayList<RecordField>();
+  private List<RecordField> fields = new ArrayList<RecordField>();
 
   public Record() {
   }
@@ -80,7 +81,7 @@ public class Record
     return (RecordField)fields.get(paramInt);
   }
 
-  public ArrayList<RecordField> getFields() {
+  public List<RecordField> getFields() {
     return fields;
   }
 

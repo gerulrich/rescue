@@ -1,8 +1,12 @@
 package net.cloudengine.api.jpa;
 
-import java.util.Collection;
+import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 
 import net.cloudengine.api.PagingResult;
 import net.cloudengine.util.Assert;
@@ -40,8 +44,8 @@ public final class JPAPagingResult<E> implements PagingResult<E> {
 	public long getPageSize() {
 		// FIXME fijarse en el caso de que es la ultima página puede tener
 		// menos resultados que el máximo por página.
-//		if ( (pageNumber+1) == getTotalPages())
-//			return getTotalSize();
+		if ( (pageNumber+1) == getTotalPages())
+			return getTotalSize();
 		return pageSize;
 	}
 	
@@ -58,18 +62,47 @@ public final class JPAPagingResult<E> implements PagingResult<E> {
 	@Override
 	public long getTotalSize() {
 		if (this.totalSize < 0) {
+			this.totalSize = 0; 
 			
-			this.totalSize = 0; // FIXME
-			
-//			this.totalSize = datastore.getCount(entityClass);
+			// TODO calcular tamaño de la tabla.
+			CriteriaBuilder cb = em.getCriteriaBuilder();
+			CriteriaQuery<Long> cq = cb.createQuery(Long.class);
+			cq.select(cb.count(cq.from(entityClass)));
+			TypedQuery<Long> query = em.createQuery(cq);
+			this.totalSize = query.getSingleResult();
 		}
 		return this.totalSize;
 	}
 
 	@Override
-	public Collection<E> getList() {
-//		return datastore.find(entityClass).offset(startIndex).limit(pageSize).asList();
-		return null;
+	public List<E> getList() {
+
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<E> q = cb.createQuery(entityClass);
+		Root<E> c = q.from(entityClass);
+		q.select(c);
+		
+		TypedQuery<E> query = em.createQuery(q);
+		query.setFirstResult(startIndex);
+		query.setMaxResults(pageSize);
+		
+		List<E> results = query.getResultList();
+		
+		return results;
 	}
+
+	@Override
+	public List<E> getCompleteList() {
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<E> q = cb.createQuery(entityClass);
+		Root<E> c = q.from(entityClass);
+		q.select(c);
+		
+		TypedQuery<E> query = em.createQuery(q);
+		List<E> results = query.getResultList();
+		return results;
+	}
+	
+	
 
 }

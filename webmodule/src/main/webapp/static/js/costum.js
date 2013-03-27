@@ -1,4 +1,34 @@
-$(document).ready(function(){ 
+$(document).ready(function() { 
+	
+	$("#pageSizeList").change(function() {
+    	window.location = $(this).val();
+	});
+	
+ jQuery('a.deletion').click(function(event) {
+    event.preventDefault()
+    var url = $(this).attr('href');
+    
+    
+	$('<div class="dialog"></div>').appendTo('body')
+		.html('<div><p>Est\u00E1 por eliminar un registro de forma permanente. \u00BFDesea continuar?</p></div>')
+		.dialog({
+			modal: true, title: 'CONFIRMAR OPERACI\u00D3N', zIndex: 10000, autoOpen: true,
+			width: '250px', resizable: false,
+			buttons: {
+				Aceptar: function () {
+					window.location = url;
+					$(this).dialog("close");
+				},
+				Cancelar: function () {
+					$(this).dialog("close");
+				}
+		},
+		close: function (event, ui) {
+			$(this).remove();
+		}
+	});
+    
+  });
 	
 	$(function() {
 		if (window.innerWidth < 850 && window.innerHeight < 850) {} else {
@@ -19,14 +49,14 @@ $(document).ready(function(){
 			$("#right").animate({marginLeft:"250px"}, 500);
 			$("#wrapper, #container").animate({backgroundPosition:"0 0"}, 500);
 			$(".hide-btn.top, .hide-btn.center, .hide-btn.bottom").animate({left: "223px"}, 500, function() { $(window).trigger("resize");});
-			$(this).attr("original-title", "Close sidebar");
+			$(this).attr("original-title", "Cerrar barra lateral");
 		}
 		else{
 			$("#left").animate({width:"0px"}, 500);
 			$("#right").animate({marginLeft:"20px"}, 500);
 			$("#wrapper, #container").animate({backgroundPosition:"-230px 0px"}, 500);
 			$(".hide-btn.top, .hide-btn.center, .hide-btn.bottom").animate({left: "-7px"}, 500, function() { $(window).trigger("resize");});
-			$(this).attr("original-title", "Open sidebar");
+			$(this).attr("original-title", "Mostrar barra lateral");
 		}
 	});
 	
@@ -363,7 +393,7 @@ $(document).ready(function(){
 	$('input[placeholder], textarea[placeholder]').placeholder();
 	
 	// SELECTBOXES
-	$(function() {
+	/*$(function() {
 		$('.dataTables_length input, select').not("select.multiple").selectmenu({
 			style: 'dropdown',
 			transferClasses: true,
@@ -372,7 +402,7 @@ $(document).ready(function(){
 				$(".valid").validate().element(this);
 			}
 		});
-	});
+	});*/
 	
 	// RADIOBUTTONS & CHECKBOXES
 	$("input[type=radio], input[type=checkbox]").each(function() {
@@ -390,7 +420,7 @@ $(document).ready(function(){
 	
 	// DATEPICKER
 	$(".datepicker").datepicker({
-		dateFormat: 'mm.dd.yy'
+		dateFormat: 'dd/mm/yy'
 	});
 	
 	// WYSIWYG EDITOR
@@ -699,16 +729,15 @@ $(document).ready(function(){
         }
     });
     
-    
 	jQuery.ajaxSetup({
-//		beforeSend: function(xhrobj) {
-//			xhrobj.setRequestHeader("ajaxrequest", "true");
-//		},
+		beforeSend: function(xhrobj) {
+			xhrobj.setRequestHeader("ajaxrequest", "true");
+		},
 		error: function(datos) {
 			
 			switch (datos.status) {
 		   	case 403:
-		   		 window.location = $(location).attr('href');
+		   		 window.location = "google.com";
 		      	 break;
 		   	case 200:
 					return;

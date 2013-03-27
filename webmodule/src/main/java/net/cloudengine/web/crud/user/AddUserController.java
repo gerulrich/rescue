@@ -1,14 +1,13 @@
 package net.cloudengine.web.crud.user;
 
-import javax.annotation.Resource;
 import javax.validation.Valid;
 
-import net.cloudengine.api.Datastore;
-import net.cloudengine.forms.NewUser;
+import net.cloudengine.forms.PasswordForm;
 import net.cloudengine.model.auth.User;
-import net.cloudengine.util.Cipher;
+import net.cloudengine.service.auth.UserService;
 
 import org.bson.types.ObjectId;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
@@ -21,11 +20,12 @@ import org.springframework.web.servlet.ModelAndView;
 @Controller
 public class AddUserController {
 	
-	private Datastore<User,ObjectId> datastore; 
+	private UserService service;
 	
-	@Resource(name="userStore")
-	public void setDatastore(Datastore<User, ObjectId> datastore) {
-		this.datastore = datastore;
+	@Autowired
+	public AddUserController(UserService service) {
+		super();
+		this.service = service;
 	}
 
 	@InitBinder
@@ -34,33 +34,35 @@ public class AddUserController {
 	}
 	
 	@ModelAttribute("user")
-	public NewUser getUser() {
-		return new NewUser();
+	public User getUser() {
+		return new User();
 	}
 	
-	@RequestMapping(value = "/admin/user/new", method = RequestMethod.GET)
+	@ModelAttribute("passwordForm")
+	public PasswordForm getPasswordForm() {
+		return new PasswordForm();
+	}
+	
+	@RequestMapping(value = "/user/new", method = RequestMethod.GET)
 	public ModelAndView setupForm() {
-		return new ModelAndView("/users/newform");
+		return new ModelAndView("/crud/user/form");
 	}
 	
-	@RequestMapping(value = "/admin/user/new", method = RequestMethod.POST)
-	public ModelAndView submitForm(@Valid @ModelAttribute("user") NewUser newUser, BindingResult result) {
-		
+	@RequestMapping(value = "/user/new", method = RequestMethod.POST)
+	public ModelAndView submitForm(
+		@Valid @ModelAttribute("user") User user,
+		BindingResult result1,
+		@Valid @ModelAttribute("passwordForm") PasswordForm passwordForm,
+		BindingResult result2) {
+
 		ModelAndView mav = new ModelAndView();
-		
-		if (result.hasErrors()) {
-			mav.setViewName("/users/newform");
+
+		if (result1.hasErrors() || result2.hasErrors()) {
+			mav.setViewName("/crud/user/form");
 		} else {
-			User user = new User();
-			user.setDisplayName(newUser.getDisplayName());
-			user.setUsername(newUser.getEmail());
-			user.setPassword(new Cipher().encrypt(newUser.getPassword()));
-			user.setRoles(newUser.getRoles());
-			datastore.save(user);
-			mav.setViewName("redirect:/admin/user/show/" + user.getId());
+			ObjectId id = service.addUser(user, passwordForm.getPassword());
+			mav.setViewName("redirect:/user/show/" + id);
 		}
 		return mav;		
-		
 	}
-	
 }

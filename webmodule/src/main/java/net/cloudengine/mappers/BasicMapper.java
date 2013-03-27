@@ -62,7 +62,8 @@ public class BasicMapper implements DTOMapper {
 				}				
 				
 				// Es una propiedad simple, la seteo directamente.
-				if (value == null || value.getClass().getName().startsWith("java.lang")) {
+				if (value == null || value.getClass().getName().startsWith("java.lang")
+					|| byte[].class.getName().equals(value.getClass().getName())) {
 					
 					PropertyUtils.setProperty(target, propertyName, value);
 					

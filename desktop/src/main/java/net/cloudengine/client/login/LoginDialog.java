@@ -316,9 +316,13 @@ public class LoginDialog {
 					LoginDialog.this.verifier.authenticate(LoginDialog.this.login, LoginDialog.this.password);
 					LoginDialog.this.returnedValue = true;
 					LoginDialog.this.shell.dispose();
+					
+				} catch (final AuthenticationException e) {
+					//FIXME mostrar el error
+					MessageDialog.openError(LoginDialog.this.shell, "Error", e.getMessage());
 				} catch (final Exception e) {
 					//FIXME mostrar el error
-					MessageDialog.openError(LoginDialog.this.shell, "Error", "Usuario o contraseña incorrecta");
+					MessageDialog.openError(LoginDialog.this.shell, "Error", e.getMessage());
 				}
 			}
 		});

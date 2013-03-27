@@ -25,6 +25,7 @@
     <!-- interceptors para los web controllers -->
     <mvc:interceptors>
 		<bean class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor"/>
+		<bean class="net.cloudengine.web.statistics.RequestInterceptor"/>
 	</mvc:interceptors>
     
 	<bean class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">

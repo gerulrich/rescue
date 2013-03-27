@@ -1,11 +1,12 @@
 package net.cloudengine.web.crud.user;
 
-import javax.annotation.Resource;
+import javax.validation.Valid;
 
-import net.cloudengine.api.Datastore;
 import net.cloudengine.model.auth.User;
+import net.cloudengine.service.auth.UserService;
 
 import org.bson.types.ObjectId;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
@@ -19,12 +20,13 @@ import org.springframework.web.servlet.ModelAndView;
 @Controller
 public class EditUserController {
 	
-	private static final String URI = "/admin/user/{id}";
-	private Datastore<User,ObjectId> datastore; 
+	private static final String URI = "/user/{id}";
+	private UserService service; 
 	
-	@Resource(name="userStore")
-	public void setDatastore(Datastore<User, ObjectId> datastore) {
-		this.datastore = datastore;
+	@Autowired
+	public EditUserController(UserService service) {
+		super();
+		this.service = service;
 	}
 
 	@InitBinder
@@ -34,18 +36,18 @@ public class EditUserController {
 	
 	@ModelAttribute("user")
 	public User getUser(@PathVariable("id") ObjectId id) {
-		return datastore.get(id);
+		return service.get(id);
 	}
 	
 	@RequestMapping(value = URI, method = RequestMethod.GET)
 	public ModelAndView setupForm(@PathVariable("id") ObjectId id) {
-		return new ModelAndView("/users/editform");
+		return new ModelAndView("/crud/user/form");
 	}
 	
 	@RequestMapping(value = URI, method = RequestMethod.POST)
-	public ModelAndView submit(@ModelAttribute("user") User user, BindingResult result) {
-		datastore.update(user);
-		return new ModelAndView("redirect:/admin/user/show/" + user.getId());
+	public ModelAndView submit(@Valid @ModelAttribute("user") User user, BindingResult result) {
+		service.updateUser(user);
+		return new ModelAndView("redirect:/user/show/" + user.getId());
 	}
 
 }

@@ -182,7 +182,11 @@
 			<artifactId>commons-fileupload</artifactId>
 			<version>1.2.2</version>
 		</dependency>
-			
+		<dependency>
+    		<groupId>commons-codec</groupId>
+    		<artifactId>commons-codec</artifactId>
+    		<version>1.7</version>
+		</dependency>		
 		<dependency>
 			<groupId>org.codehaus.groovy</groupId>
 			<artifactId>groovy-all</artifactId>
@@ -203,6 +207,11 @@
 			<artifactId>validation-api</artifactId>
 			<version>1.0.0.GA</version>
 		</dependency>
+    	<dependency>
+	    	<groupId>javax.mail</groupId>
+	    	<artifactId>mail</artifactId>
+	    	<version>1.4.3</version>
+    	</dependency>		
 		<dependency>
 			<groupId>com.caucho</groupId>
 			<artifactId>hessian</artifactId>
@@ -223,6 +232,45 @@
 			<artifactId>common</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>net.sf.jasperreports</groupId>
+			<artifactId>jasperreports</artifactId>
+			<version>4.0.0</version>
+			<exclusions>
+				<exclusion>
+					<artifactId>bcmail-jdk14</artifactId>
+					<groupId>org.bouncycastle</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>bcprov-jdk14</artifactId>
+					<groupId>bouncycastle</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>bcprov-jdk14</artifactId>
+					<groupId>org.bouncycastle</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>bcmail-jdk14</artifactId>
+					<groupId>bouncycastle</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>bctsp-jdk14</artifactId>
+					<groupId>org.bouncycastle</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>commons-beanutils</artifactId>
+					<groupId>commons-beanutils</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>commons-collections</artifactId>
+					<groupId>commons-collections</groupId>
+				</exclusion>
+				<exclusion>
+					<artifactId>commons-logging</artifactId>
+					<groupId>commons-logging</groupId>
+				</exclusion>
+			</exclusions>
+		</dependency>		
 	</dependencies>
 
 	<build>
@@ -299,12 +347,12 @@
 					<outxml>true</outxml>
 					<!-- <excludes>net.cloudengine.model</excludes> -->
 
-					<!-- <aspectLibraries> -->
-					<!-- <aspectLibrary> -->
-					<!-- <groupId>org.springframework</groupId> -->
-					<!-- <artifactId>spring-aspects</artifactId> -->
-					<!-- </aspectLibrary> -->
-					<!-- </aspectLibraries> -->
+<!-- 					<aspectLibraries> -->
+<!-- 					<aspectLibrary> -->
+<!-- 					<groupId>org.springframework</groupId> -->
+<!-- 					<artifactId>spring-aspects</artifactId> -->
+<!-- 					</aspectLibrary> -->
+<!-- 					</aspectLibraries> -->
 				</configuration>
 				<executions>
 					<execution>
@@ -359,9 +407,7 @@
 					<server>mycloudfoundry-instance</server>
 					<target>http://api.cloudfoundry.com</target>
 					<url>http://rescue.cloudfoundry.com</url>
-					<username>gerulrich@yahoo.com.ar</username>
-					<password>cvx150ger</password>
-					<memory>256</memory>
+					<memory>512</memory>
 				</configuration>
 			</plugin>
 

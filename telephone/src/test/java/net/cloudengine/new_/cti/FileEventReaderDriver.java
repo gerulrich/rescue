@@ -16,12 +16,17 @@ public class FileEventReaderDriver implements TAPIDriver {
 	public FileEventReaderDriver(String fileName, boolean realTime) {
 		this.provider = new AsteriskEventProvider();
 		this.reader = new EventFileReader(fileName, realTime);
-		this.provider.connectionEstablished(reader);
 	}
 	
 	@Override
 	public EventProvider createEventProvider() {
 		return provider;
+	}
+	
+	@Override
+	public void init() {
+		this.provider.connectionEstablished(reader);
+		reader.exec();		
 	}
 
 	@Override
@@ -29,8 +34,8 @@ public class FileEventReaderDriver implements TAPIDriver {
 		return true;
 	}
 	
-	public void start() {
-		reader.exec();
+	@Override
+	public void close() {
+		this.provider.connectionInterrupted(null);
 	}
-
 }

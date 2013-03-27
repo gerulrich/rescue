@@ -19,6 +19,11 @@ import com.vividsolutions.jts.io.WKTWriter;
 
 public class WKTUtils {
 	
+	public static String asText(Geometry geom) {
+		WKTWriter writer = new WKTWriter();
+		return writer.write(geom);
+	}
+	
 	public static Geometry toGeometry(ShapeObject shape) {
 		switch (shape.getType()) {
 //			case 1: return formatPoint(shape);

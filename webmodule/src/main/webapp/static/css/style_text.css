@@ -144,3 +144,13 @@ h5:first-child,
 h6:first-child {
 	margin : -3px 0 0;
 }
+
+
+
+.dataTables_wrapper .dataTables_paginate a , 
+.dataTables_wrapper .dataTables_paginate a:link, 
+.dataTables_wrapper .dataTables_paginate a:active, 
+.dataTables_wrapper .dataTables_paginate a:visited, a:hover {
+	text-decoration : none;
+	color: #000000;
+}

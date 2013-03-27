@@ -66,7 +66,9 @@ public class LayeredCanvas extends Canvas {
 	
 	protected void paintLayers(PaintEvent e) {
 		for (ICanvasLayer layer : layers) {
-			layer.paint(e.gc);
+			if (layer.isEnabled()) {
+				layer.paint(e.gc);
+			}
 		}
 	}
 	

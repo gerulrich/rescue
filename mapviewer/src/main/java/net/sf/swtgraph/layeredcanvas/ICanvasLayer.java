@@ -30,4 +30,9 @@ public interface ICanvasLayer {
 	
 	void dispose();
 	
+	void setEnabled(boolean enabled);
+	boolean isEnabled();
+	boolean showLegend();
+	String getName();
+	
 }

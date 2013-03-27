@@ -1,22 +1,24 @@
 package net.cloudengine.api.mongo;
 
 import java.io.Serializable;
+import java.lang.reflect.Field;
+import java.util.List;
 
 import net.cloudengine.api.Datastore;
 import net.cloudengine.api.PagingResult;
 import net.cloudengine.api.Query;
 import net.cloudengine.web.MongoDBWrapper;
 
+import org.apache.commons.beanutils.PropertyUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.SimpleMongoDbFactory;
 
 import com.google.code.morphia.Morphia;
+import com.google.code.morphia.annotations.Id;
+import com.mongodb.Mongo;
 
 public class MongoStore<E, PK extends Serializable> implements Datastore<E, PK> {
 
-	private static final int FIRST_PAGE = 1;
-	private static final int PAGE_SIZE = 10;
-	
 	private SimpleMongoDbFactory factory;
 	private Class<E> entityClass;
 	private Morphia morphia;
@@ -36,33 +38,25 @@ public class MongoStore<E, PK extends Serializable> implements Datastore<E, PK> 
 
 	@Override
 	public void save(E entity) {
-        /*Field rectField[]  = entity.getClass().getDeclaredFields();
-        for( Field field : rectField) {
-        	Id annotationId = field.getAnnotation(Id.class);
-        	if (annotationId != null) {
-        		String name = field.getName();
-        		
-        		String methodName = "get"+StringUtils.capitalize(name);
-        		try {
-					Object obj = entity.getClass().getMethod(methodName, new Class[0]);
-					if (obj != null) {
-						throw new IllegalArgumentException("no se puede guardar un objeto con id, debe utilizar update");
-					}
-				} catch (SecurityException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (NoSuchMethodException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-        	}
-        }*/
+		if (haveID(entity)) {
+			throw new IllegalArgumentException("no se puede guardar un objeto con id, para actualizar debe utilizar update");
+		}
 		morphia.createDatastore(factory.getDb().getMongo(), factory.getDb().getName()).save(entity);
 	}
 	
 	@Override
 	public void delete(PK key) {
 		morphia.createDatastore(factory.getDb().getMongo(), factory.getDb().getName()).delete(entityClass, key);
+	}
+	
+	
+
+	@Override
+	public List<E> getAll() {
+		Mongo mongo = factory.getDb().getMongo();
+		String dbName = factory.getDb().getName();
+		return morphia.createDatastore(mongo, dbName)
+				.find(entityClass).asList();
 	}
 
 	@Override
@@ -79,29 +73,30 @@ public class MongoStore<E, PK extends Serializable> implements Datastore<E, PK> 
 	public Query<E> createQuery() {
 		return new QueryImpl<E,PK>(entityClass, factory.getDb().getMongo(), morphia, factory.getDb().getName());
 	}
+	
+	protected boolean haveID(E entity) {
+		try {
+			Field rectField[]  = entity.getClass().getDeclaredFields();
+			for( Field field : rectField) {
+				Id annotationId = field.getAnnotation(Id.class);
+				if (annotationId != null) {
+					Object id = PropertyUtils.getProperty(entity, field.getName());
+					return id != null;
+				}
+			}
+			
+		} catch (Exception e) {
+			// TODO handle exception.
+		}
+		
+		return false;
+	}
 
 	@Override
 	public void update(E entity) {
-		/*Field rectField[]  = entity.getClass().getDeclaredFields();
-        for( Field field : rectField) {
-        	Id annotationId = field.getAnnotation(Id.class);
-        	if (annotationId != null) {
-        		String name = field.getName();
-        		String methodName = "get"+StringUtils.capitalize(name);
-        		try {
-					Object obj = entity.getClass().getMethod(methodName, new Class[0]);
-					if (obj == null) {
-						throw new IllegalArgumentException("no se puede actualizar un objeto sin id, debe utilizar save");
-					}
-				} catch (SecurityException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (NoSuchMethodException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-        	}
-        }*/
+		if (!haveID(entity)) {
+			throw new IllegalArgumentException("no se puede actualizar un objeto sin id, para guardar utilice save");
+		}
 		morphia.createDatastore(factory.getDb().getMongo(), factory.getDb().getName()).save(entity);
 	}
 
@@ -109,5 +104,5 @@ public class MongoStore<E, PK extends Serializable> implements Datastore<E, PK> 
 	public void deleteAll() {
 		morphia.createDatastore(factory.getDb().getMongo(), factory.getDb().getName()).
 			getCollection(entityClass).drop();		
-	}	
+	}
 }

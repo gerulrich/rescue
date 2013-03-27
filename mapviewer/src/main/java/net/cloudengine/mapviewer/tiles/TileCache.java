@@ -8,7 +8,7 @@ import org.eclipse.swt.widgets.Display;
 public class TileCache {
 	
 	private static final int CACHE_SIZE = 256;
-	private LinkedHashMap<Tile, AsyncImage> map = new LinkedHashMap<Tile, AsyncImage>(CACHE_SIZE, 0.75f, true) {
+	private Map<Tile, AsyncImage> map = new LinkedHashMap<Tile, AsyncImage>(CACHE_SIZE, 0.75f, true) {
 
 		private static final long serialVersionUID = 1L;
 

@@ -2,12 +2,15 @@ package net.cloudengine.mapviewer.tiles;
 
 
 public class TileServer {
+	
 	private final String url;
 	private final int maxZoom;
 	private boolean broken;
+	private String name;
 	private TileServerType type;
 
-	public TileServer(String url, int maxZoom, TileServerType type) {
+	public TileServer(String name, String url, int maxZoom, TileServerType type) {
+		this.name = name;
 		this.url = url;
 		this.maxZoom = maxZoom;
 		this.type = type;
@@ -15,6 +18,10 @@ public class TileServer {
 
 	public String toString() {
 		return url;
+	}
+	
+	public String getName() {
+		return name;
 	}
 
 	public int getMaxZoom() {

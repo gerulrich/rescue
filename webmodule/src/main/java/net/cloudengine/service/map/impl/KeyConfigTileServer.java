@@ -11,7 +11,6 @@ import net.cloudengine.model.config.AppProperty;
 import net.cloudengine.model.map.Tile;
 import net.cloudengine.service.admin.ConfigurationService;
 import net.cloudengine.service.map.TileServer;
-import net.cloudengine.web.map.MapController;
 
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
@@ -80,7 +79,7 @@ public class KeyConfigTileServer implements TileServer {
 			// si se produjo un error en la conexion envio como imagen del tile
 			// un tile generico.
 			try {
-				InputStream is = MapController.class.getResourceAsStream("tile.png");
+				InputStream is = KeyConfigTileServer.class.getResourceAsStream("tile.png");
 
 				ByteArrayOutputStream buffer = new ByteArrayOutputStream();
 				IOUtils.copy(is, buffer);

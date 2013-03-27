@@ -1,7 +1,9 @@
 package net.cloudengine.mapviewer.layers;
 
 import net.cloudengine.mapviewer.MapWidget;
-import net.sf.swtgraph.layeredcanvas.ICanvasLayer;
+import net.cloudengine.mapviewer.MapWidgetContext;
+import net.cloudengine.mapviewer.util.MapConstants;
+import net.sf.swtgraph.layeredcanvas.AbstractLayer;
 
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
@@ -9,14 +11,10 @@ import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Display;
 
-public class DebugTileLayer implements ICanvasLayer {
+public class DebugTileLayer extends AbstractLayer {
 
-	//FIXME sacar como constante a una clase utilitaria.
-	private static final int TILE_SIZE = 256;
-	private MapWidget map;
-	
-	public DebugTileLayer (MapWidget map) {
-		this.map = map;
+	public DebugTileLayer(MapWidgetContext context) {
+		super("Debug", context, false);
 	}
 	
 	@Override
@@ -26,26 +24,28 @@ public class DebugTileLayer implements ICanvasLayer {
 
 	@Override
 	public void paint(GC gc) {      
+		MapWidget map = getMap();
 		Point size = map.getSize();
 		int width = size.x, height = size.y;
-		int x0 = (int) Math.floor(((double) map.mapPosition.x) / TILE_SIZE);
-		int y0 = (int) Math.floor(((double) map.mapPosition.y) / TILE_SIZE);
-		int x1 = (int) Math.ceil(((double) map.mapPosition.x + width) / TILE_SIZE);
-		int y1 = (int) Math.ceil(((double) map.mapPosition.y + height) / TILE_SIZE);
+		int x0 = (int) Math.floor(((double) map.mapPosition.x) / MapConstants.TILE_SIZE);
+		int y0 = (int) Math.floor(((double) map.mapPosition.y) / MapConstants.TILE_SIZE);
+		int x1 = (int) Math.ceil(((double) map.mapPosition.x + width) / MapConstants.TILE_SIZE);
+		int y1 = (int) Math.ceil(((double) map.mapPosition.y + height) / MapConstants.TILE_SIZE);
 
-		int dy = y0 * TILE_SIZE - map.mapPosition.y;
+		int dy = y0 * MapConstants.TILE_SIZE - map.mapPosition.y;
 		for (int y = y0; y < y1; ++y) {
-			int dx = x0 * TILE_SIZE - map.mapPosition.x;
+			int dx = x0 * MapConstants.TILE_SIZE - map.mapPosition.x;
 			for (int x = x0; x < x1; ++x) {
 				paintTile(gc, dx, dy, x, y);
-				dx += TILE_SIZE;
+				dx += MapConstants.TILE_SIZE;
 			}
-			dy += TILE_SIZE;
+			dy += MapConstants.TILE_SIZE;
 		}
 	}
 	
 
 	private void paintTile(GC gc, int dx, int dy, int x, int y) {
+		MapWidget map = getMap();
 		Display display = map.getDisplay();
 //		boolean DRAW_IMAGES = false;
 		boolean DEBUG = true;
@@ -59,7 +59,7 @@ public class DebugTileLayer implements ICanvasLayer {
 
 	    if (DEBUG && (!imageDrawn && (tileInBounds || DRAW_OUT_OF_BOUNDS))) {
 	    	gc.setForeground(display.getSystemColor(SWT.COLOR_BLACK));
-	    	gc.drawRectangle(dx + 4, dy + 4, TILE_SIZE - 8, TILE_SIZE - 8);
+	    	gc.drawRectangle(dx + 4, dy + 4, MapConstants.TILE_SIZE - 8, MapConstants.TILE_SIZE - 8);
 	    	String s = "T " + x + ", " + y + (!tileInBounds ? " #" : "");
 	    	
 	    	Color green = new Color (display, 93, 219, 49);
@@ -68,5 +68,4 @@ public class DebugTileLayer implements ICanvasLayer {
 	    	green.dispose();
 	    }
 	}
-
 }

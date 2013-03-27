@@ -2,7 +2,11 @@ package net.cloudengine.client.workbench;
 
 import net.cloudengine.rpc.controller.auth.Context;
 import net.cloudengine.rpc.controller.auth.UserModel;
+import net.cloudengine.rpc.controller.config.PropertyController;
+import net.cloudengine.widgets.panel.PhonePanel;
+import net.cloudengine.widgets.sound.Settings;
 
+import org.apache.commons.lang.StringUtils;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.DisposeEvent;
@@ -10,7 +14,6 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 
@@ -23,10 +26,13 @@ public class TestPage extends AbstractPage {
 	private Composite treeComp;
 	private Composite previewComp;
 	private Composite listAndContentComp;
-
+	private PropertyController propertyController;
+	private boolean sipEnabled;
+	
 	@Inject
-	public TestPage(Context context) {
+	public TestPage(Context context, PropertyController propertyController) {
 		this.userModel = context.getCurrentUser();
+		this.propertyController = propertyController;
 	}
 	
 	@Override
@@ -48,6 +54,10 @@ public class TestPage extends AbstractPage {
 
 		treeComp = new Composite(vsf, SWT.NONE);
 
+		
+		sipEnabled = propertyController.getProperty("sip.enabled")
+				.getValue(Boolean.class);
+		
 		listAndContentComp = new Composite(vsf, SWT.NONE);
 		vsf.setWeights(new int[] { 25, 75 });
 
@@ -77,13 +87,37 @@ public class TestPage extends AbstractPage {
 	// Update the mailbox tree directory structure interface
 	private void updateMailBoxUI() {
 		// refresh the list based on currentAccount.
-		Control[] ctrls = this.treeComp.getChildren();
+//		Control[] ctrls = this.treeComp.getChildren();
 
-		treeComp.setLayout(new FillLayout());
-		if (ctrls.length != 0) {
-			ctrls[0].dispose();
+		
+		GridLayout gridLayout = new GridLayout();
+		gridLayout.numColumns = 1;
+		gridLayout.marginHeight = 0;
+		gridLayout.marginWidth = 0;
+		gridLayout.makeColumnsEqualWidth = true;
+		
+		treeComp.setLayout(gridLayout);
+//		if (ctrls.length != 0) {
+//			ctrls[0].dispose();
+//		}
+		Tree acntTree = new Tree(treeComp, SWT.BORDER);
+		GridData gridData = new GridData();
+		gridData.horizontalAlignment = GridData.FILL;
+		gridData.grabExcessHorizontalSpace = true;
+		gridData.heightHint = 150;
+		acntTree.setLayoutData(gridData);
+		
+		if (sipEnabled && StringUtils.isNotEmpty(userModel.getAgentNumber())) {
+			Settings settings = new Settings(userModel.getAgentNumber(), userModel.getAgentPassword(), 
+					propertyController.getProperty("sip.hostname").getValue(), 5060);
+			PhonePanel phonePanel = new PhonePanel(settings, null, treeComp, SWT.NONE);
+			gridData = new GridData();
+			gridData.horizontalAlignment = GridData.FILL;
+			gridData.grabExcessHorizontalSpace = true;
+			phonePanel.setLayoutData(gridData);
+			
 		}
-		Tree acntTree = new Tree(treeComp, SWT.BORDER | SWT.SINGLE);
+		
 		
 		TreeItem tac = new TreeItem(acntTree, SWT.NULL);
 		tac.setText(userModel.getDisplayName() + " <" + userModel.getUsername() + ">");

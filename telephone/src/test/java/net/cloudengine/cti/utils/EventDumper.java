@@ -8,24 +8,17 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import net.cloudengine.cti.Connection;
-import net.cloudengine.pbx.asterisk.AsteriskModule;
-
+import org.asteriskjava.manager.ManagerConnection;
+import org.asteriskjava.manager.ManagerConnectionFactory;
 import org.asteriskjava.manager.ManagerEventListener;
 import org.asteriskjava.manager.event.ManagerEvent;
 import org.asteriskjava.manager.event.NewStateEvent;
 
-import com.google.inject.Guice;
-import com.google.inject.Inject;
-import com.google.inject.Injector;
-
 public class EventDumper implements ManagerEventListener {
 
-	@Inject
-	private Connection connection;
 	private List<String> classes = new ArrayList<String>();
 	
-	public EventDumper() {
+	public EventDumper(ManagerConnection connection) {
 		classes.add("VarSetEvent");
 		classes.add("RtcpSentEvent");
 		classes.add("RtcpReceivedEvent");
@@ -35,15 +28,17 @@ public class EventDumper implements ManagerEventListener {
 		classes.add("NewAccountCodeEvent");
 		classes.add("DtmfEvent");
 		classes.add("ChannelUpdateEvent");
+		connection.addEventListener(this);
 	}
 	
 	/**
 	 * @param args
 	 */
 	public static void main(String[] args) throws Exception {
-		Injector injector = Guice.createInjector(new AsteriskModule());
-		EventDumper ed = injector.getInstance(EventDumper.class);
-		ed.connection.getAsteriskServer().getManagerConnection().addEventListener(ed);
+		ManagerConnectionFactory factory = new ManagerConnectionFactory("192.168.0.102", "juan", "juan");
+        ManagerConnection managerConnection = factory.createManagerConnection();
+        managerConnection.login();
+		new EventDumper(managerConnection);
 		Thread.sleep(1000000000);
 	}
 
@@ -91,13 +86,4 @@ public class EventDumper implements ManagerEventListener {
 		}
 		System.err.println("--------------------------------------------------------");
 	}
-
-	public Connection getConnection() {
-		return connection;
-	}
-
-	public void setConnection(Connection connection) {
-		this.connection = connection;
-	}
-
 }

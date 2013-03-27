@@ -19,7 +19,10 @@ public class MyHessianProxy extends HessianProxy {
 		super.addRequestHeaders(conn);
 		if (MyHessianProxyFactory.getSessionId() != null) {
 			conn.addHeader("Cookie", "JSESSIONID="+MyHessianProxyFactory.getSessionId());
-		}		
+		}
+		if (MyHessianProxyFactory.getRememberMe() != null) {
+			conn.addHeader("Cookie", "REMEMBER_ME="+MyHessianProxyFactory.getRememberMe());
+		}
 	}
 
 	protected void parseResponseHeaders(URLConnection conn) {

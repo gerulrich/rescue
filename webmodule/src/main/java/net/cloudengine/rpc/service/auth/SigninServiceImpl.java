@@ -7,14 +7,11 @@ import net.cloudengine.mappers.MappersRegistry;
 import net.cloudengine.model.auth.User;
 import net.cloudengine.rpc.controller.auth.SigninService;
 import net.cloudengine.rpc.controller.auth.UserModel;
-import net.cloudengine.service.auth.UserService;
-import net.cloudengine.util.Cipher;
+import net.cloudengine.service.auth.AuthenticationService;
 import net.cloudengine.util.ExternalService;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContext;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -23,40 +20,23 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 @ExternalService(exportedInterface=SigninService.class)
 public class SigninServiceImpl implements SigninService {
 
-	private UserService service;
 	private MappersRegistry mappersRegistry;
+	private AuthenticationService authService;
 	
-	@Autowired
-	public void setService(UserService service) {
-		this.service = service;
-	}
 	
 	@Autowired
 	public void setMappersRegistry(MappersRegistry mappersRegistry) {
 		this.mappersRegistry = mappersRegistry;
 	}
 	
+	@Autowired
+	public void setAuthService(AuthenticationService authService) {
+		this.authService = authService;
+	}
+
 	@Override
 	public String login(String username, String password) {
-		User user = service.getByUsername(username);
-		if (user != null && password != null) {
-			boolean aut = new Cipher().encrypt(password).equals(user.getPassword());
-			if (!aut) {
-				return null;
-			} else {
-				UsernamePasswordAuthenticationToken ut = new UsernamePasswordAuthenticationToken(user,null, user.getAuthorities());
-				SecurityContext sctx = SecurityContextHolder.createEmptyContext(); 
-		        sctx.setAuthentication(ut);
-		        
-		        ServletRequestAttributes attr = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
-			    HttpSession session = attr.getRequest().getSession(true);
-			    String sessionId = session.getId();
-			    session.setAttribute("SPRING_SECURITY_CONTEXT", sctx);
-
-				return sessionId;
-			}
-		}
-		return null;
+		return authService.login(username, password);
 	}
 	
 	public UserModel getUserDetail() {
@@ -67,11 +47,9 @@ public class SigninServiceImpl implements SigninService {
 	    	User user = (User) sctx.getAuthentication().getPrincipal();
 	    	DTOMapper userMapper = mappersRegistry.getMapper(UserModel.class);
 	    	return userMapper.fillModel(user, UserModel.class);
-
-	    }	    
+	    }
 	    return null;		
 	}
-	
 
 	@Override
 	public void logout(UserModel user) {
@@ -80,6 +58,10 @@ public class SigninServiceImpl implements SigninService {
 	    if (session != null) {
 	    	session.invalidate();
 	    }
+	}
+	
+	public String getAuthToken(String username, String password) {
+		return authService.getAuthToken(username, password);
 	}
 
 }

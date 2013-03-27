@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<records>
+	<!-- ============================= -->
+	<!-- usuarios -->
+	<!-- ============================= -->
+	<user id="username">
+		<displayName>Administrador</displayName>
+		<username>admin@admin.com</username>
+		<password>d033e22ae348aeb5660fc2140aec35850c4da997</password>
+		<roles>ADMIN</roles>
+		<account>
+			<enabled type="boolean">true</enabled>
+			<locked type="boolean">false</locked>
+			<!-- <accountExpirationDate>2012-08-01 00:00:00</accountExpirationDate> -->
+			<!-- <credentialsExpirationDate></credentialsExpirationDate> -->
+		</account>
+	</user>
+	
+	<!-- ============================= -->
+	<!-- propiedades de configuracion  -->
+	<!-- ============================= -->	
+	<property id="key">
+		<key>jnlp.url</key>
+		<value>http://localhost:18080/client-deploy/applications/application1.jnlp</value>
+		<clientProperty type="boolean">false</clientProperty>
+	</property>
+	
+	<property id="key">
+		<key>map.google.street</key>
+		<value><![CDATA[http://mt1.google.com/vt/lyrs=m@139&hl=es&x=${x}&y=${y}&z=${zoom}&s=Galil]]></value>
+		<clientProperty type="boolean">false</clientProperty>
+	</property>
+	
+	<property id="key">
+		<key>map.google.sat</key>
+		<value><![CDATA[http://khm0.google.com.ar/kh/v=101&x=${x}&y=${y}&z=${zoom}&s=Galil]]></value>
+		<clientProperty type="boolean">false</clientProperty>
+	</property>
+	<property id="key">
+		<key>map.osm</key>
+		<value><![CDATA[http://b.tile.openstreetmap.org/${zoom}/${x}/${y}.png]]></value>
+		<clientProperty type="boolean">false</clientProperty>
+	</property>
+	<property id="key">
+		<key>asterisk.hostname</key>
+		<value>192.168.0.104</value>
+		<clientProperty type="boolean">true</clientProperty>
+	</property>
+	<property id="key">
+		<key>asterisk.manager.user</key>
+		<value>manager</value>
+		<clientProperty type="boolean">true</clientProperty>
+	</property>
+	<property id="key">
+		<key>asterisk.manager.pass</key>
+		<value>manager</value>
+		<clientProperty type="boolean">true</clientProperty>
+	</property>
+	<property id="key">
+		<key>asterisk.context</key>
+		<value>from-internal</value>
+		<clientProperty type="boolean">true</clientProperty>
+	</property>
+	<property id="key">
+		<key>asterisk.enabled</key>
+		<value>false</value>
+		<clientProperty type="boolean">true</clientProperty>
+	</property>
+	<property id="key">
+		<key>asterisk.rec.directory</key>
+		<value>/var/spool/asterisk/monitor</value>
+		<clientProperty type="boolean">false</clientProperty>
+	</property>	
+	<property id="key">
+		<key>asterisk.ssh.user</key>
+		<value>root</value>
+		<clientProperty type="boolean">false</clientProperty>
+	</property>
+	<property id="key">
+		<key>asterisk.ssh.pass</key>
+		<value>pandora</value>
+		<clientProperty type="boolean">false</clientProperty>
+	</property>
+	<property id="key">
+		<key>sip.enabled</key>
+		<value>false</value>
+		<clientProperty type="boolean">true</clientProperty>
+	</property>
+	<property id="key">
+		<key>sip.hostname</key>
+		<value>192.168.0.104</value>
+		<clientProperty type="boolean">true</clientProperty>
+	</property>
+	<property id="key">
+		<key>openfire.enabled</key>
+		<value>false</value>
+		<clientProperty type="boolean">true</clientProperty>
+	</property>
+	<property id="key">
+		<key>openfire.domain</key>
+		<value>asterisk.localdomain.net</value>
+		<clientProperty type="boolean">false</clientProperty>
+	</property>
+	<property id="key">
+		<key>openfire.token</key>
+		<value>q0A205xd</value>
+		<clientProperty type="boolean">false</clientProperty>
+	</property>
+	
+	
+	<!-- ============================= -->
+	<!-- permisos de la aplicacion     -->
+	<!-- ============================= -->
+	<permission id="name">
+		<name>DESKTOP</name>
+		<description>Permiso de acceso a la aplicacion de escritorio</description>
+	</permission>
+	<permission id="name">
+		<name>ADMIN</name>
+		<description>Permiso de administracion web</description>
+	</permission>
+	<permission id="name">
+		<name>RESOURCE</name>
+		<description>Gestión de recursos</description>
+	</permission>
+	<permission id="name">
+		<name>CONFIG</name>
+		<description>Gestión de configuración</description>
+	</permission>
+	<permission id="name">
+		<name>USER_MANAG</name>
+		<description>Gestión de usuario y grupos</description>
+	</permission>
+	<permission id="name">
+		<name>SQL_CONSOLE</name>
+		<description>Ver consola de SQL</description>
+	</permission>
+	<permission id="name">
+		<name>MONGO_CONSOLE</name>
+		<description>Ver consola de Mongo DB</description>
+	</permission>
+	<permission id="name">
+		<name>FILE_UPLOAD</name>
+		<description>Gestión de archivos</description>
+	</permission>
+	<permission id="name">
+		<name>GEO_MANAGER</name>
+		<description>Gestión de datos cartográficos</description>
+	</permission>
+	<permission id="name">
+		<name>EXEC_REPORT</name>
+		<description>Ejecución de reportes</description>
+	</permission>
+	<permission id="name">
+		<name>STATISTICS</name>
+		<description>Estadisticas</description>
+	</permission>		
+
+	<!-- ============================= -->
+	<!-- roles por defecto             -->
+	<!-- ============================= -->
+	<role id="name">
+		<name>ADMIN</name>
+		<description>Administrador</description>
+		<permissions reference="permission" id="name" value="ADMIN"></permissions>
+		<permissions reference="permission" id="name" value="USER_MANAG"></permissions>		
+	</role>
+
+</records>

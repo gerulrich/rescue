@@ -1,6 +1,6 @@
 package net.cloudengine.api.mongo;
 
-import java.util.Collection;
+import java.util.List;
 
 import net.cloudengine.api.PagingResult;
 import net.cloudengine.util.Assert;
@@ -66,8 +66,13 @@ public final class MongoPagingResult<E> implements PagingResult<E> {
 	}
 
 	@Override
-	public Collection<E> getList() {
+	public List<E> getList() {
 		return datastore.find(entityClass).offset(startIndex).limit(pageSize).asList();
+	}
+
+	@Override
+	public List<E> getCompleteList() {
+		return datastore.find(entityClass).asList();
 	}
 
 }

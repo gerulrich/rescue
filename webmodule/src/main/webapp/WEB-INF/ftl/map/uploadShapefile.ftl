@@ -2,6 +2,7 @@
 
 <#macro breadcrumbs>
 	<li><a href="<@spring.url '/'/>">Dashboard</a></li>
+	<li>Cargar capa desde archivo</li>
 </#macro>
 
 <#macro menu>
@@ -15,60 +16,37 @@
 
 <#macro body>
 
-
-	<div class="section">
-	
-		<div class="plain">
-			<h3>A tener en cuenta</h3>
-			<br/>
-			<ul class="tick">
-				<li>El archivo desde estar subido previamente desde la opci&oacute;n correspondiente.</li>
-				<li>El archivo shapefile deben estar en la projecci&oacute;n GWS84.</li>
-				<li>El archivo shapefile deber&aacute; estar comprimido en formato zip, el cual contendr&aacute;
-				el archivo .shp y el archivo .dbf, ambos con el mismo nombre (sin tener en cuenta la extensi&oacute;n).</li>
-				<li>Deber&aacute;n contar con los campos necesarios seg&uacute;n se trate de puntos de interes, calles o zonas.</li>
-			</ul>
-		</div>
-	
-		<div class="box">
-			<div class="title">
-			Cargar layer desde archivo<span class="hide"></span>
-			</div>
-			<div class="content">
+	<@page.section>
+		
+		<@page.half>
 			
+			<@page.box title="Cargar layer desde archivo">
 				<iframe id="uploadFrameID" name="uploadFrame" height="0" width="0" frameborder="0" scrolling="yes"></iframe>
 				<form method="post" class="valid">
-					<div class="row">
-						<label>Archivo</label>
-						<div class="right">
-							<select name="file">
-							<#list files as f>
-								<option value="${f.id}">${f.filename}</option>							
-							</#list>
-							</select>
-						</div>
-					</div>
-					
-					<div class="row">
-						<label>Subir como</label>
-						<div class="right">
-							<select name="type">
-							<option value="poi">Puntos de interes</option>
-							<option value="street">Calles</option>
-							<option value="zone">Zonas</option>
-							</select>
-						</div>
-					</div>
-						
-					<div class="row">
-						<label></label>
-						<div class="right">
-							<button id="boton" type="submit" class="green"><span>Siguiente</span></button>
-						</div>
-					</div>
-				</form>
-			</div>
-		</div>
-	</div>
+					<@form.row label="Archivo">
+						<@form.pojoSelect name="file" list=files id="id" value="filename"/>
+					</@form.row>
 
+					<@form.row label="Subir como">
+						<@form.mapSelect name="type" map={"poi" : "Puntos de interes", "street": "Calles", "zone":"Zonas"}/>
+					</@form.row>
+					<@form.submit>Siguiente</@form.submit>
+
+				</form>
+			</@page.box>
+		</@page.half>
+	
+		<@page.half>	
+			<@page.box title="Ayuda">
+				<ul class="comments">
+					<li>El archivo debe estar subido previamente desde la opci&oacute;n correspondiente.</li>
+					<li>El archivo shapefile deben estar en la projecci&oacute;n <b>GWS84</b>.</li>
+					<li>El archivo shapefile deber&aacute; estar comprimido en formato zip, el cual contendr&aacute;
+					el archivo .shp y el archivo .dbf, ambos con el mismo nombre (sin tener en cuenta la extensi&oacute;n).</li>
+					<li>Deber&aacute;n contar con los campos necesarios seg&uacute;n se trate de puntos de interes, calles o zonas.</li>					
+				</ul>
+			</@page.box>
+			
+		</@page.half>
+	</@page.section>
 </#macro>

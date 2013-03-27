@@ -12,8 +12,11 @@ public class UserModel implements Serializable {
 	private String displayName;
 	private String username;
 	
-	@Value("account.phoneNumber")
-	private String phoneNumber;
+	@Value("account.agentNumber")
+	private String agentNumber;
+	
+	@Value("account.agentPassword")
+	private String agentPassword;
 
 	public String getDisplayName() {
 		return displayName;
@@ -27,10 +30,16 @@ public class UserModel implements Serializable {
 	public void setUsername(String username) {
 		this.username = username;
 	}
-	public String getPhoneNumber() {
-		return phoneNumber;
+	public String getAgentNumber() {
+		return agentNumber;
 	}
-	public void setPhoneNumber(String phoneNumber) {
-		this.phoneNumber = phoneNumber;
+	public void setAgentNumber(String agentNumber) {
+		this.agentNumber = agentNumber;
+	}
+	public String getAgentPassword() {
+		return agentPassword;
+	}
+	public void setAgentPassword(String agentPassword) {
+		this.agentPassword = agentPassword;
 	}
 }
