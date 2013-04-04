@@ -3,6 +3,8 @@ package net.shapefile.geometry;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.commons.lang.ArrayUtils;
+
 import net.shapefile.Point;
 import net.shapefile.ShapeObject;
 
@@ -126,8 +128,9 @@ public class WKTUtils {
 			rings[i] = factory.createLinearRing(points2Coords(shape.getPoints(i+1)));
 		}
 		Polygon polygon = null;
-		if (rings.length > 1)
-			polygon = factory.createPolygon(rings[0], Arrays.copyOfRange(rings, 1, rings.length-1));
+		if (rings.length > 1) {
+			polygon = factory.createPolygon(rings[0], Arrays.copyOfRange(rings, 1, rings.length));
+		}
 		else
 			polygon = factory.createPolygon(rings[0], new LinearRing[0]);
 		return polygon;

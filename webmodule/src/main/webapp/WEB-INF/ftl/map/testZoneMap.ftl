@@ -2,10 +2,9 @@
 
 <#macro script>
 <style type="text/css">
-		@import url("<@spring.url '/static/js/cloudmade/leaflet.css'/>");
+		@import url("<@spring.url '/static/css/leaflet.css'/>");
 </style>
-
-<script type="text/javascript" src="<@spring.url '/static/js/cloudmade/leaflet-src.js'/>"></script>
+<script src="<@spring.url '/static/js/leaflet.js'/>"></script>
 <script>
 
 	var map = null;
@@ -70,7 +69,7 @@
 			url: urlData,
 			//dataType: 'text',
 			success: function(zones) {
-        		geojsonLayer.addGeoJSON(zones);
+        		geojsonLayer.addData(zones);
 			}
 		});
 	}
