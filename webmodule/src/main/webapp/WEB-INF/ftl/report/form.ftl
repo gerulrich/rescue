@@ -4,26 +4,34 @@
 
 <script>
 	$(document).ready(function() {
+		
 		$("#target").validate({
 			meta: "validate",
 			submitHandler: function(form) {
 				$.get('<@spring.url "/report/token"/>', function(data) {
   					$('#target').find('input[name="token"]').val(data);
-  					$('#dialog').dialog({
-      					height: 140,
-      					modal: true,
-            			show: "fade",
-            			hide: "fade"
-    				});
+  					$('#waitmessage').show();
+    				setTimeout ( 'progress("'+data+'")', 500 );
   					form.submit();
 				});
 			}
 		});
-		
-		
-		
-		
 	});
+	
+	function progress(token) {
+    	$.ajax({
+			url: '<@spring.url '/report/progress?token='/>'+token,
+    		success: function(data) {
+    			if (data == token) {
+    				setTimeout ( 'progress("'+token+'")', 500 );
+				} else {
+					$('#waitmessage').hide();
+					$('#okmessage').show();
+				}
+			}
+		});
+	}
+	
 </script>
 
 
@@ -60,6 +68,16 @@
 				Ejecutar reporte
 				<span class="hide"></span>
 			</div>
+			
+			<div id="okmessage" class="message green" style="display:none">
+				<span>Se ha generado el reporte correctamente. La descarga comenzar&aacute; en un momento.</span>
+			</div>
+			<div id="errormessage" class="message red" style="display:none"></div>
+			<div id="waitmessage" class="message blue" style="display:none">
+				<span>Generando el reporte. Por favor espere...</span>
+			</div>
+			
+			
 			<div class="content">
 				<iframe id="uploadFrameID" name="uploadFrame" height="0" width="0" frameborder="0" scrolling="yes"></iframe>
 				<form id="target" action="<@spring.url '/report/generate/${report.id}'/>" method="get" target="uploadFrame">

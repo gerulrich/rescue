@@ -33,14 +33,14 @@ import org.springframework.web.servlet.ModelAndView;
 
 @Controller
 @RequestMapping("/report")
-public class ListReportController {
+public class ReportController {
 	
 	private Datastore<FileDescriptor, ObjectId> fileStore;
 	private ReportService reportService;
 	private TokenService tokenService;
 	
 	@Autowired
-	public ListReportController(
+	public ReportController(
 			@Qualifier("fileStore") Datastore<FileDescriptor, ObjectId> fileStore,
 			ReportService reportService,
 			TokenService tokenService) {
@@ -100,6 +100,12 @@ public class ListReportController {
 			}
 		}
 		
+		String token = null; 
+		if (parametersMap.get("token")!=null) {
+			token = parametersMap.get("token")[0];
+			System.out.println(token);
+		}
+		
 		try {
 			FileDescriptor fileDescriptor = fileStore.get(id);
 			byte[] report = reportService.executeReport(fileDescriptor, params);
@@ -116,13 +122,15 @@ public class ListReportController {
 		} catch (Exception e) {
 			String msg = "<html>error</html>";
 			return new ResponseEntity<byte[]>(msg.getBytes(), HttpStatus.OK);
-		}	
+		} finally {
+			tokenService.remove(token);
+		}
 
 	}
 	
 	
 	@RequestMapping(value="progress")
-	public @ResponseBody String checkDownloadProgress(@RequestParam String token) {
+	public @ResponseBody String checkDownloadProgress(@RequestParam("token") String token) {
 		return tokenService.check(token);
 	}
 	
