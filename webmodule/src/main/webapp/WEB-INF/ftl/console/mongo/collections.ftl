@@ -39,8 +39,8 @@
 						<td>${col.indexes}</td>
 						<td>${col.indexSize}</td>
 						<td>
-							<@widget.link "/mongo/show/${col.name}" "view_doc.png" "Ver"/>
-							<@widget.link "/mongo/drop/${col.name}" "delete.png" "Borrar"/>
+							<@widget.link "/mongo/show/${col.encodedName}" "view_doc.png" "Ver"/>
+							<@widget.link "/mongo/drop/${col.encodedName}" "delete.png" "Borrar"/>
 						</td>
 					</tr>
 					</#list>

@@ -54,8 +54,8 @@ public class LoginDialogVerifierImpl implements LoginDialogVerifier {
 		} catch (Exception e) {
 			try {
 				throw e;
-			} catch (IOException ex) {
-				throw new AuthenticationException("Se produjo un erorr en la conexión con el servidor");
+//			} catch (IOException ex) {
+//				throw new AuthenticationException("Se produjo un erorr en la conexión con el servidor");
 //			} catch (HessianProtocolException ex) {
 			} catch (HessianConnectionException ex) {
 				throw new AuthenticationException("No se pudo establecer la conexión con el servidor");

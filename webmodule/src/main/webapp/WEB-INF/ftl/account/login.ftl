@@ -13,17 +13,17 @@
 	<form name="loginform" id="loginform" action="<@spring.url '/j_spring_security_check'/>" method="post">
 		<p>
 			<label for="user_login"><@spring.message "signin.username"/><br />
-				<input type="text" name="j_username" id="user_login" class="input" value="" size="20" tabindex="1" />
+				<input type="text" name="username" id="user_login" class="input" value="" size="20" tabindex="1" />
 			</label>
 		</p>
 		<p>
 			<label for="user_pass"><@spring.message "signin.password"/>:<br />
-				<input type="password" name="j_password" id="user_pass" class="input" value="" size="20" tabindex="2" />
+				<input type="password" name="password" id="user_pass" class="input" value="" size="20" tabindex="2" />
 			</label>
 		</p>
 		<p class="forgetmenot">
 			<label for="rememberme">
-				<input type='checkbox' name='remember_me' id="rememberme" tabindex="3"/><@spring.message "signin.rememberme"/>
+				<input type='checkbox' name='rememberme' id="rememberme" tabindex="3"/><@spring.message "signin.rememberme"/>
 			</label>
 		</p>
 		<p class="submit">

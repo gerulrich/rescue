@@ -12,7 +12,7 @@ public class PasswordVerificationValidator implements ConstraintValidator<Passwo
 
 	public boolean isValid(PasswordVerificable value, ConstraintValidatorContext context) {
 		if ( value.getPassword() == null && value.getPasswordVerification() == null ) {
-			return true;
+			return false;
 		}
 		else if ( value.getPassword() == null ) {
 			return false;

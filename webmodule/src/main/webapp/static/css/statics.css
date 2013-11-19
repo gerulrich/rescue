@@ -5,6 +5,8 @@ Author URI: http://www.dreamwire.nl
 Version: 1.0
 */
 
+.blue-loader .ajax_loader {background: url("ajax-loader_blue.gif") no-repeat center center transparent;}
+
 #wrapper #container #right .section .box .content .space {
 	display : block;
 	height : 19px;
@@ -27,16 +29,17 @@ Version: 1.0
 	font-weight : bold;
 }
 
-#wrapper #container #right .section .box .content .flot-graph .legend {
+/*#wrapper #container #right .section .box .content .flot-graph*/ .legend {
 	line-height : 12px;
+	margin : 2px 0 0 2px;
 }
 
-#wrapper #container #right .section .box .content .flot-graph .legend table {
+/*#wrapper #container #right .section .box .content .flot-graph*/ .legend table {
 	border : 0;
 	width : auto;
 }
 
-#wrapper #container #right .section .box .content .flot-graph .legend table td {
+/*#wrapper #container #right .section .box .content .flot-graph*/ .legend table td {
 	border : 0;
 	padding : 2px 0 0 5px;
 	line-height : 18px;

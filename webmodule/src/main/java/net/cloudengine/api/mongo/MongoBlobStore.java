@@ -1,18 +1,18 @@
 package net.cloudengine.api.mongo;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Date;
 
 import net.cloudengine.api.BlobStore;
 import net.cloudengine.model.commons.FileDescriptor;
-import net.cloudengine.web.MongoDBWrapper;
 
+import org.apache.commons.io.IOUtils;
 import org.bson.types.ObjectId;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.data.mongodb.core.SimpleMongoDbFactory;
 
 import com.mongodb.gridfs.GridFS;
 import com.mongodb.gridfs.GridFSDBFile;
@@ -20,15 +20,14 @@ import com.mongodb.gridfs.GridFSInputFile;
 
 public class MongoBlobStore implements BlobStore {
 
-	private SimpleMongoDbFactory factory;
-	private GridFS gridfs;
+	private static Logger logger = LoggerFactory.getLogger(MongoBlobStore.class);
 	private MongoStore<FileDescriptor, ObjectId> fileStore;
+	private GridFS gridfs;
 	
 	@Autowired
 	public MongoBlobStore(MongoDBWrapper wrapper, @Qualifier("fileStore") MongoStore<FileDescriptor, ObjectId> fileStore) {
 		super();
-		this.factory = wrapper.getFactory();
-		this.gridfs = new GridFS(factory.getDb());
+		this.gridfs = new GridFS(wrapper.getFactory().getDb());
 		this.fileStore = fileStore;
 	}
 	
@@ -39,12 +38,18 @@ public class MongoBlobStore implements BlobStore {
 
 	@Override
 	public boolean exists(String filename) {
+		if (logger.isDebugEnabled()) {
+			logger.debug("Verificando si existe el archivo {} en el BlobStore", filename);
+		}
 		return gridfs.findOne(filename) != null;
 	}
 
 	@Override
 	public void storeFile(String filename, InputStream inputStream, String description, String type, String version) {
-	    GridFSInputFile inputFile = gridfs.createFile(inputStream);
+		if (logger.isDebugEnabled()) {
+			logger.debug("Guardando el archivo {} en el BlobStore", filename);
+		}
+		GridFSInputFile inputFile = gridfs.createFile(inputStream);
 	    inputFile.setContentType(type);
 	    inputFile.setFilename(filename);
 	    inputFile.save();
@@ -63,25 +68,32 @@ public class MongoBlobStore implements BlobStore {
 	    	
 	    	
 	    } catch (Exception e) {
-	    	e.printStackTrace();
+	    	logger.error("Error al guardar el archivo en el BlobStore", e);
 	    }
 	}
 
 	@Override
 	public void retrieveFile(ObjectId id, OutputStream outputStream) {
-	    GridFSDBFile dbfile = gridfs.findOne(id);
+		if (logger.isDebugEnabled()) {
+			logger.debug("Obteniendo el archivo con id {} del BlobStore", id.toString());
+		}
+		GridFSDBFile dbfile = gridfs.findOne(id);
 	    try {
 	    	dbfile.writeTo(outputStream);
 	    } catch (Exception e) {
-	    	
+	    	logger.error("Error al obtener el archivo con id {} del BlobStore", id.toString(), e);
 	    } finally {
-	    	try {
-				outputStream.close();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+	    	IOUtils.closeQuietly(outputStream);
 	    }
+	}
+	
+	@Override
+	public InputStream retrieveFile(ObjectId id) {
+		if (logger.isDebugEnabled()) {
+			logger.debug("Obteniendo el archivo con id {} del BlobStore", id.toString());
+		}
+		GridFSDBFile dbfile = gridfs.findOne(id);
+		return dbfile.getInputStream();
 	}
 
 }

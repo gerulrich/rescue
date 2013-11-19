@@ -2,8 +2,8 @@ package net.cloudengine.rpc.controller.auth;
 
 import java.io.Serializable;
 
-import net.cloudengine.rpc.model.DataObject;
-import net.cloudengine.rpc.model.Value;
+import net.cloudengine.rpc.mappers.DataObject;
+import net.cloudengine.rpc.mappers.Value;
 
 @DataObject
 public class UserModel implements Serializable {

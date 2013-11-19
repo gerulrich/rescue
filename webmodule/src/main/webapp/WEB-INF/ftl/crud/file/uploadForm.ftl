@@ -83,7 +83,7 @@
 				<@form.row label="Tipo">
 					<#assign mapValues = {
 						"shp": "ShapeFile (comprimido en zip)", "png", "PNG",
-						"jpg": "JPG", "rpt" : "Reporte", "otro": "Otro"}>  
+						"jpg": "JPG", "rpt" : "Reporte", "wf": "Workflow","otro": "Otro"}>  
 					<@form.mapSelect name="type" map=mapValues/>
 				</@form.row>	
 

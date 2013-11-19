@@ -18,14 +18,13 @@
     </rule>
     <rule match-type="wildcard">
         <note>Direct access to the springMVC servlet should not be cached</note>
-        <from>/smvc/**</from>
         <condition name="request-uri" operator="notequal">/avatar</condition>
+        <from>/smvc/**</from>
         <set name="Cache-Control" type="response-header">no-cache, no-store, max-age=0</set>
         <set name="Pragma" type="response-header">no-cache</set>
         <set name="Expires" type="response-header">0</set>
         <to>/smvc/$1</to>
     </rule>
-    
     <rule match-type="wildcard">
         <note>Redirect all resources to the springMVC servlet, and do not cache the result</note>
         <from>/**</from>

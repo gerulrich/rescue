@@ -20,11 +20,6 @@
 			<url>http://java.freehep.org/maven2</url>
 		</repository>
 		
-		<repository>
-			<id>swt</id>
-			<url>http://repository.jboss.org/maven2/</url>
-		</repository>
-
 	</repositories>
 
 
@@ -71,9 +66,6 @@
 			<artifactId>core-commands</artifactId>
 			<version>${swt-version}</version>
 		</dependency>		
-		
-		
-
 		<dependency>
 			<groupId>org.eclipse</groupId>
 			<artifactId>equinox-common</artifactId>

@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.cloudengine.api.jpa.dao.ZoneDao;
-import net.cloudengine.model.map.Zone;
+import net.cloudengine.management.ExternalService;
+import net.cloudengine.model.geo.Zone;
 import net.cloudengine.rpc.controller.geo.ZoneController;
 import net.cloudengine.rpc.controller.geo.ZoneModel;
-import net.cloudengine.util.ExternalService;
 import net.shapefile.geometry.WKTUtils;
 
 import org.springframework.beans.factory.annotation.Autowired;

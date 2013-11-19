@@ -2,16 +2,13 @@ package net.cloudengine.web.crud.user;
 
 import javax.validation.Valid;
 
-import net.cloudengine.api.Datastore;
+import net.cloudengine.api.mongo.dao.UserDao;
 import net.cloudengine.forms.PasswordForm;
 import net.cloudengine.model.auth.User;
 import net.cloudengine.util.Cipher;
 
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.mail.MailSender;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -24,18 +21,17 @@ import org.springframework.web.servlet.ModelAndView;
 @Controller
 public class ChangePasswordController {
 	
-	
-	private Datastore<User, ObjectId> datastore;
+	private UserDao userDao;
 
 	@Autowired
-	public ChangePasswordController(@Qualifier("userStore") Datastore<User, ObjectId> datastore) {
+	public ChangePasswordController(UserDao userDao) {
 		super();
-		this.datastore = datastore;
+		this.userDao = userDao;
 	}
 
 	@ModelAttribute("user")
 	public User getUser(@PathVariable("id") ObjectId id) {
-		return datastore.get(id);
+		return userDao.get(id);
 	}
 	
 	@ModelAttribute("passwordForm")
@@ -62,9 +58,9 @@ public class ChangePasswordController {
 			mav.setViewName("/crud/user/passwordForm");
 			return mav;
 		} else {
-			User user = datastore.get(id);
+			User user = userDao.get(id);
 			user.setPassword(new Cipher().encrypt(form.getPassword()));
-			datastore.update(user);
+			userDao.update(user);
 			mav.setViewName("redirect:/user/password/"+user.getId().toString()+"?result=0");
 			return mav;
 		}

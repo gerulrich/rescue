@@ -10,6 +10,7 @@ import net.cloudengine.model.commons.FileDescriptor;
 import net.cloudengine.model.resource.Resource;
 import net.cloudengine.model.resource.ResourceType;
 import net.cloudengine.model.resource.WayPoint;
+import net.cloudengine.service.console.SqlService;
 
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;

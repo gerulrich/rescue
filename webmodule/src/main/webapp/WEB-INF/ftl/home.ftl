@@ -3,72 +3,118 @@
 
 <#macro script>
 	<script type="text/javascript" src="http://people.iola.dk/olau/flot/jquery.flot.js"></script>
+	<script type="text/javascript" src="<@spring.url '/static/js/graphs/graphs.js'/>"></script>
 	<!--script type="text/javascript" src="http://people.iola.dk/olau/flot/jquery.flot.selection.js"></script-->
 <script type="text/javascript">
 
 $(document).ready(function() {
 	 
-	var options = {
-		xaxis: { mode: "time", tickLength: 1},
-		yaxis: { ticks: 10, min: 0 },
-		legend: { show: false },
-		series:{
-    		lines: { fill: true },
-    		color: "#1E90FF",
-    		shadowSize: 0
-		},
-		grid: {
-			borderWidth: 2,
-			minBorderMargin: 20,
-			labelMargin: 10,
-			backgroundColor: {
-				colors: ["#fff", "#e4f4f4"]
-			},			
-		}         
-    };
-    var data = [];
-    var placeholder = $("#placeholder");
-    
-    $.plot(placeholder, data, options);
-    
-    // fetch one series, adding to what we got
-    var alreadyFetched = {};
-    
-	$.ajax({
-		url: "stats/request",
+	 function updateTopMethodError() {
+	 	$.ajax({
+			url: "stats/topErrorMethods/",
+			method: 'GET',
+			dataType: 'json',
+			success: function(data) {
+				$("#topErrorMethod tbody").find("tr").remove();
+				for(var i=0;i<data.length;i++) {
+					var partsOfStr = data[i].x.split('.');
+					var logUrl = "<@spring.url '/log/get/'/>"+partsOfStr[0]+"/"+partsOfStr[1];
+					appendRow3("#topErrorMethod", data[i].x, data[i].y.toFixed(3)+"%", logUrl);
+				}			
+			}
+		});		 
+	 }
+	 
+	 function updateTopMethod() {
+		$.ajax({
+			url: "stats/topMethods/",
+			method: 'GET',
+			dataType: 'json',
+			success: function(data) {
+				$("#topMethod tbody").find("tr").remove();
+				for(var i=0;i<data.length;i++) {
+					appendRow("#topMethod", data[i].x, data[i].y.toFixed(1)+"%");
+				}			
+			}
+		});	 
+	 }
+	 
+	 function dropLog() {
+		$.ajax({
+			url: "log/drop/",
+			method: 'GET',
+			dataType: 'json',
+			success: function(data) {
+				$("#topMethod tbody").find("tr").remove();
+				for(var i=0;i<data.length;i++) {
+					//appendRow("#topMethod", data[i].x, data[i].y.toFixed(1)+"%");
+				}			
+			}
+		});	 
+	 }	 
+	 
+	 createGraph("#placeholder", "stats/request/PER_MINUTE");
+	 createGraph("#placeholderavg", "stats/avg/PER_MINUTE");
+	 updateTopMethod();
+	 updateTopMethodError();
+	 
+	
+	function appendRow(selector, col1, col2) {
+		$(selector).find('tbody')
+  			  .append($('<tr>')
+				.append($('<td>')
+					.text(col1)
+    			)
+    			.append($('<td>')
+					.text(col2)
+    			)
+		);
+	}
+	
+	function appendRow3(selector, col1, col2, col3) {
+		$(selector).find('tbody')
+  			  .append($('<tr>')
+				.append($('<td>')
+					.text(col1)
+    			)
+    			.append($('<td>')
+					.text(col2)
+    			)
+    			.append($('<td>')
+					.append($('<a href="' + col3 + '">Log</a>'))
+    			)
+		);
+	}
+	
+	$("#logError").click(function(){
+		saveLog("ERROR");
+	});
+	
+	$("#logOk").click(function(){
+		saveLog("OK");
+	});
+	
+	$("#logDrop").click(function(){
+		dropLog();
+	});	
+	
+	$("#update").click(function(){
+		updateGraph("#placeholder", "stats/request/PER_MINUTE");
+		updateTopMethod();		
+		updateTopMethodError();
+	});
+	
+	function saveLog(status) {
+	 $.ajax({
+		url: "log/save/"+status,
 		method: 'GET',
 		dataType: 'json',
-		success: onDataReceived
-	});  
+		success: function(data) {
+						
+		}
+	});	
+	}
 	 
-	 // then fetch the data with jQuery
-     function onDataReceived(series) {
-		// extract the first coordinate pair so you can see that
-		// data is now an ordinary Javascript object
-		var firstcoordinate = '(' + series.data[0][0] + ', ' + series.data[0][1] + ')';
-
-		// first correct the timestamps - they are recorded as the daily
-		// midnights in UTC+0100, but Flot always displays dates in UTC
-		// so we have to add one hour to hit the midnights in the plot
-		for (var i = 0; i < series.data.length; ++i) {
-			series.data[i][0] -= 60 * 60 * 3000;
-			//series.data[i][1]++;
-		}
-
-		// let's add it to our current data
-		if (!alreadyFetched[series.label]) {
-			alreadyFetched[series.label] = true;
-			data.push(series);
-		} else {
-			data = [];
-			data.push(series);
-		}
-
-		// and plot all we got
-		$.plot(placeholder, data, options);
-	}	
-	
-	
 });
 
 </script>
@@ -140,9 +186,65 @@ $(document).ready(function() {
 	<div id="msg"></div>	
 
 	<@widget.hasPermission "STATISTICS">
+		
+		<@page.half>
+			<@page.box title="Metodos m&aacute;s ejecutados">
+			<table id="topMethod" cellspacing="0" cellpadding="0" border="0">
+				<thead>
+					<tr>
+						<th>Nombre</th>
+						<th>Porcentage</th>
+					</tr>
+				</thead>
+				<tbody>
+				</tbody>
+			</table>
+			</@page.box>		
+		</@page.half>
+		
+		<@page.half>
+			<@page.box title="Metodos con m&aacute;s errores">
+			<table id="topErrorMethod" cellspacing="0" cellpadding="0" border="0">
+				<thead>
+					<tr>
+						<th>Nombre</th>
+						<th>Porcentage</th>
+						<th>Log</th>
+					</tr>
+				</thead>
+				<tbody>
+				</tbody>
+			</table>
+			
+			<#if debug>
+			<div class="content">
+				<div class="row">
+					<div class="let">
+						<button id="logError" type="submit" class="medium red linkopen"><span>Log error</span></button>
+						<button id="logDrop" type="submit" class="medium red linkopen"><span>Borrar log</span></button>
+					</div>
+				</div>
+				<div class="row">
+					<div class="left">
+						<button id="logOk" type="submit" class="medium green linkopen"><span>Log ok</span></button>
+					</div>
+				</div>
+				<div class="row">
+					<div class="left">
+						<button id="update" type="submit" class="medium linkopen"><span>Actualizar</span></button>
+					</div>
+				</div>
+			</div>
+				
+			</#if>
+			</@page.box>		
+		</@page.half>
+		
+		
+		
 		<@page.section>
-			<@page.box title="Gr&aacute;fico - Request">
-				<div id="placeholder" style="width:100%;height:350px; text-align: left;"></div>			
+			<@page.box title="Gr&aacute;fico - Request por Minuto">
+				<div id="placeholder" style="width:100%;height:350px; text-align: left;"></div>
 				<div class="dataTables_wrapper">
 					<div>
 						<div>
@@ -156,6 +258,23 @@ $(document).ready(function() {
 				</div>
 			</@page.box>
 		</@page.section>
+		
+		<@page.section>
+			<@page.box title="Gr&aacute;fico - Tiempo promedio request">
+				<div id="placeholderavg" style="width:100%;height:350px; text-align: left;"></div>			
+				<div class="dataTables_wrapper">
+					<div>
+						<div>
+							<select>
+								<option value="1" selected="selected">Ultima hora</option>
+								<option value="2">Ultimas 24 horas</option>
+								<option value="3">Ultima semana</option>
+							</select>
+						</div>
+					</div>
+				</div>
+			</@page.box>
+		</@page.section>		
 	</@widget.hasPermission>		
 	
 </#macro>

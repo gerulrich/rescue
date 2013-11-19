@@ -3,7 +3,7 @@ package net.cloudengine.api.mongo;
 import java.util.List;
 
 import net.cloudengine.api.PagingResult;
-import net.cloudengine.util.Assert;
+import net.cloudengine.validation.Assert;
 
 import com.google.code.morphia.Datastore;
 

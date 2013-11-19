@@ -1,7 +1,7 @@
 <#ftl strip_whitespace=true>
 
 <#macro welcome>
-	<@spring.message "home.welcome" /> <#if currentUser??>${currentUser.displayName}<#else>Anonimo</#if>
+	<@spring.message "home.welcome" /> <#if sessionService.currentUser??>${sessionService.currentUser.displayName}<#else>Anonimo</#if>
 </#macro>
 
 <#macro statistics>
@@ -124,6 +124,7 @@
 		@import url("<@spring.url '/static/css/wysiwyg.modal.css'/>");
 		@import url("<@spring.url '/static/css/wysiwyg-editor.css'/>");
 		@import url("<@spring.url '/static/css/handheld.css'/>");
+		@import url("<@spring.url '/static/css/prettyLoader.css'/>");
 
 		#wrapper {
 			width : auto;
@@ -165,6 +166,7 @@
 	<script type="text/javascript" src="<@spring.url '/static/js/controls/wysiwyg.link.js'/>"></script>
 	<script type="text/javascript" src="<@spring.url '/static/js/controls/wysiwyg.table.js'/>"></script>
 	<script type="text/javascript" src="<@spring.url '/static/js/plugins/wysiwyg.rmFormat.js'/>"></script>
+	<script type="text/javascript" src="<@spring.url '/static/js/plugins/jquery.prettyLoader.js'/>"></script>
 	<script type="text/javascript" src="<@spring.url '/static/js/costum.js?version=01'/>"></script>
 </#macro>
 
@@ -281,7 +283,7 @@
 </#macro>
 
 <#macro hasPermission permission>
-	<#if ( userUtil.currentUser()?? && userUtil.currentUser().hasPermission(permission))>
+	<#if ( sessionService.getCurrentUser()?? && sessionService.getCurrentUser().hasPermission(permission))>
 		<#nested>
 	</#if>
 </#macro>

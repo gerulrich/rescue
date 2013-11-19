@@ -2,13 +2,13 @@ package net.cloudengine.rpc.service.auth;
 
 import javax.servlet.http.HttpSession;
 
-import net.cloudengine.mappers.DTOMapper;
-import net.cloudengine.mappers.MappersRegistry;
+import net.cloudengine.management.ExternalService;
 import net.cloudengine.model.auth.User;
 import net.cloudengine.rpc.controller.auth.SigninService;
 import net.cloudengine.rpc.controller.auth.UserModel;
+import net.cloudengine.rpc.mappers.DTOMapper;
+import net.cloudengine.rpc.mappers.MappersRegistry;
 import net.cloudengine.service.auth.AuthenticationService;
-import net.cloudengine.util.ExternalService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContext;
@@ -59,9 +59,4 @@ public class SigninServiceImpl implements SigninService {
 	    	session.invalidate();
 	    }
 	}
-	
-	public String getAuthToken(String username, String password) {
-		return authService.getAuthToken(username, password);
-	}
-
 }

@@ -4,7 +4,7 @@ import javax.annotation.Resource;
 
 import net.cloudengine.api.Datastore;
 import net.cloudengine.api.Query;
-import net.cloudengine.model.map.Tile;
+import net.cloudengine.model.geo.Tile;
 import net.cloudengine.service.map.TileCache;
 
 import org.bson.types.ObjectId;

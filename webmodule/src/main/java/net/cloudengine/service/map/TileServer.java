@@ -1,6 +1,6 @@
 package net.cloudengine.service.map;
 
-import net.cloudengine.model.map.Tile;
+import net.cloudengine.model.geo.Tile;
 
 public interface TileServer {
 	

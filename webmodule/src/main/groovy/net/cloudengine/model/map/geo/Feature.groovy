@@ -6,6 +6,7 @@ interface Feature {
 	
 	Geometry getGeom();
 	String getGeomType();
+	String getName();
 	Map<String,String> getProperties();
 
 }

@@ -14,5 +14,5 @@ public class CloudApplicationContextInitializer implements ApplicationContextIni
 		} else {
 			applicationContext.getEnvironment().setActiveProfiles("default");
 		}
-	}
+	}	
 }

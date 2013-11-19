@@ -3,6 +3,7 @@ package net.cloudengine.web.crud.user;
 import javax.validation.Valid;
 
 import net.cloudengine.forms.PasswordForm;
+import net.cloudengine.model.auth.Group;
 import net.cloudengine.model.auth.User;
 import net.cloudengine.service.auth.UserService;
 
@@ -31,6 +32,7 @@ public class AddUserController {
 	@InitBinder
 	public void initBinder(WebDataBinder binder) {
 		binder.setDisallowedFields("id");
+		binder.registerCustomEditor(Group.class, new GroupEditor());
 	}
 	
 	@ModelAttribute("user")
@@ -45,7 +47,9 @@ public class AddUserController {
 	
 	@RequestMapping(value = "/user/new", method = RequestMethod.GET)
 	public ModelAndView setupForm() {
-		return new ModelAndView("/crud/user/form");
+		ModelAndView mav = new ModelAndView("/crud/user/form"); 
+		mav.addObject("groups", this.service.getGroups());
+		return mav;
 	}
 	
 	@RequestMapping(value = "/user/new", method = RequestMethod.POST)

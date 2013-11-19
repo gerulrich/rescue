@@ -8,7 +8,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import net.cloudengine.model.config.AppProperty;
-import net.cloudengine.model.map.Tile;
+import net.cloudengine.model.geo.Tile;
 import net.cloudengine.service.admin.ConfigurationService;
 import net.cloudengine.service.map.TileServer;
 

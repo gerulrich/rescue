@@ -33,6 +33,13 @@ public interface BlobStore {
 	 * @param outputStream para leer el archivo.
 	 */
 	void retrieveFile(ObjectId id, OutputStream outputStream);
+	
+	/**
+	 * Obtiene un archivo del BlobStore.
+	 * @param filename nombre del archivo a obtener
+	 * @return un {@link InputStream} para leer el archivo.
+	 */
+	InputStream retrieveFile(ObjectId id);
 
 
 }

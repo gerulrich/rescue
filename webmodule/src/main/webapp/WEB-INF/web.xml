@@ -14,7 +14,7 @@
 	
 	<context-param>
 		<param-name>contextConfigLocation</param-name>
-		<param-value>classpath:spring/spring-cloud.xml,classpath:spring/spring-security.xml,classpath:spring/spring-base.xml</param-value>
+		<param-value>classpath:spring/spring-cloud.xml,classpath:spring/spring-security.xml,classpath:spring/spring-base.xml,classpath:spring/spring-amq.xml</param-value>
 	</context-param>
 
 	<filter>
@@ -72,14 +72,14 @@
 	</listener>
 
 	<servlet>
-        <description>Configuración para Spring MVC webapp servlet</description>
         <servlet-name>springmvc</servlet-name>
         <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
-        <load-on-startup>1</load-on-startup>
+<!--         <description>Configuración para Spring MVC webapp servlet</description> -->
         <init-param>
             <param-name>contextConfigLocation</param-name>
             <param-value>classpath*:spring/mvc-spring.xml</param-value>
-        </init-param>        
+        </init-param>
+        <load-on-startup>1</load-on-startup>
     </servlet>
 
     <servlet-mapping>
@@ -98,9 +98,14 @@
         <location>/WEB-INF/jsp/errors/404.jsp</location>
     </error-page>
     <error-page>
+  	<exception-type>org.springframework.security.web.authentication.rememberme.CookieTheftException</exception-type>
+  		<location>/account/signin.html</location>
+	</error-page>
+    <error-page>
         <exception-type>java.lang.Exception</exception-type>
         <location>/WEB-INF/jsp/errors/uncaught-error.jsp</location>
     </error-page>
+    
 
 	<mime-mapping>
         <extension>ttf</extension>

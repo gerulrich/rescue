@@ -2,12 +2,10 @@
 package net.cloudengine.model.auth
 
 import javax.validation.constraints.NotNull
-import javax.validation.constraints.Pattern
-import javax.validation.constraints.Size
 
 import net.cloudengine.validation.Email
 
-import org.apache.bval.constraints.NotEmpty;
+import org.apache.bval.constraints.NotEmpty
 import org.bson.types.ObjectId
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
@@ -15,6 +13,7 @@ import org.springframework.security.core.userdetails.UserDetails
 import com.google.code.morphia.annotations.Entity
 import com.google.code.morphia.annotations.Id
 import com.google.code.morphia.annotations.NotSaved
+import com.google.code.morphia.annotations.Reference
 
 @Entity(value="user", noClassnameStored=true)
 class User implements UserDetails {
@@ -39,6 +38,8 @@ class User implements UserDetails {
 	List<Permission> permissions;
 
 	Account account = new Account();
+	
+	@Reference Group group;
 
 	boolean hasPermission(String name) {
 		return permissions.find { Permission p ->

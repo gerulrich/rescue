@@ -65,6 +65,12 @@
 				</@form.row>
 				
 				<#if user.id??>
+					
+					<@form.row label="Grupo">
+						<@form.pojoSelect "group" groups "id" "name"/>
+						<@spring.showErrors "<br/>"/>
+					</@form.row>
+					
 					<@form.row label="">
 						<@spring.formCheckbox  "user.account.enabled"/>
 						<label for="account.enabled">Habilitado</label>

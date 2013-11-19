@@ -8,10 +8,11 @@ class GeoFeature {
 	
 	String type = "Feature";
 	GeoData geometry;
+	String name;
 //	Map<String,String> properties;
 	
 	GeoFeature(Feature feature) {
-		
+		name = feature.getName();
 		Geometry g = feature.getGeom();
 
 		Object coordinates;

@@ -28,19 +28,10 @@ class DataReader {
 	
 	DB mongoDB;
 	
-	def exec() {
-		this.mongoDB = new Mongo().getDB("webadmin");
-		loadAppData(mongoDB);
-	}
-	
-	public static void main(String []args) {
-		new DataReader().exec();
-	}
-	
-	def loadAppData(DB db) {
+	def loadAppData(DB db, String file) {
 		this.mongoDB = db;
 		StringBuffer sb = new StringBuffer();
-		URL url = DataReader.class.getResource("/net/cloudengine/xml/data.xml")
+		URL url = DataReader.class.getResource(file)
 		File f = new File(url.toURI())
 		f.eachLine() { String line ->
 			sb.append (line);
@@ -84,38 +75,37 @@ class DataReader {
 				child = Boolean.valueOf(child);
 			}
 			object.put(node.name(), child)
-			
+//		} else {
+//			if (!root) {
+//				node.children().each { child ->
+//					processNode(child, object, false);
+//				}
 		} else {
-			if (!root) {
-				node.children().each { child ->
-					processNode(child, object, false);
-				}
+			String collectionRef = node.'@reference';
+			if (StringUtils.isNotEmpty(collectionRef)) {
+				
+				String id = node.'@id';
+				String value = node.'@value';
+				DBCollection dbCollection = this.mongoDB.getCollection(collectionRef);
+				
+				BasicDBObject query = new BasicDBObject();
+				query.put(id, value);
+				DBObject dbObject = dbCollection.findOne(query);
+				
+				ObjectId idRef = (ObjectId) dbObject.get("_id");
+				DBRef ref = new DBRef(mongoDB, collectionRef, idRef);
+				
+				object.put(node.name(), ref);
+				
 			} else {
-				String collectionRef = node.'@reference';
-				if (StringUtils.isNotEmpty(collectionRef)) {
-				
-					String id = node.'@id';
-					String value = node.'@value';
-					DBCollection dbCollection = this.mongoDB.getCollection(collectionRef);
-				
-					BasicDBObject query = new BasicDBObject();
-					query.put(id, value);
-					DBObject dbObject = dbCollection.findOne(query);
-				
-					ObjectId idRef = (ObjectId) dbObject.get("_id");
-					DBRef ref = new DBRef(mongoDB, collectionRef, idRef);
-				
-					object.put(node.name(), ref);
-				
-				} else {
-					BasicDBObject embeedd = new BasicDBObject();
-					node.children().each { child ->
-						processNode(child, embeedd, true);
-					}
-					object.put(node.name(), embeedd);
+				BasicDBObject embeedd = new BasicDBObject();
+				node.children().each { child ->
+					processNode(child, embeedd, true);
 				}
+				object.put(node.name(), embeedd);
 			}
 		}
+//		}
 	}
 		
 }

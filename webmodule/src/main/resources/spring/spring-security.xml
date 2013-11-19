@@ -18,11 +18,11 @@
 	<http security="none" pattern="/img/**"/>
 	<http security="none" pattern="/tiles/**"/>
 	<http security="none" pattern="/hessian/SigninService**"/>
+	<http security="none" pattern="/burlap/SigninService**"/>
 	<http security="none" pattern="/static/**"/>
 	<http security="none" pattern="/cloud/**"/>
 	<http security="none" pattern="/account/signin.html"/>
-	<http security="none" pattern="/account/mtoken**"/>
-	<http security="none" pattern="/account/msignin**"/>
+	<http security="none" pattern="/rest/**"/>
 	
 
    <http use-expressions="true">
@@ -37,36 +37,31 @@
     	
     	<!--  Para todas las otras url se debe estar autenticado. -->
         <intercept-url pattern="/**" access="isAuthenticated()" />
-		<form-login login-page="/account/signin.html" authentication-failure-url="/account/signin.html" />
+		<form-login 
+			login-page="/account/signin.html" 
+			authentication-failure-url="/account/signin.html" 
+			username-parameter="username"
+			password-parameter="password" />
 		<logout />
         <remember-me key="rescuemeApp" services-ref="rememberMeServices"/>
         
-        <custom-filter ref="userSessionFilter" position="LAST"/>
         <custom-filter after="REMEMBER_ME_FILTER" ref="expiredSessionFilter" />
         
     </http>
     
-    <beans:bean id="userSessionFilter" class="net.cloudengine.util.UserSessionFilter"/>
-
     <authentication-manager>
-        <authentication-provider user-service-ref="userDetailsService">
+        <authentication-provider user-service-ref="userStore">
         	<password-encoder hash="sha"/>
     	</authentication-provider>
     </authentication-manager>
     
-    <beans:bean id="userDetailsService" class="net.cloudengine.service.auth.UserDetailsServiceImpl"/>
-
-	<beans:bean id="persistentTokenRepository" class="net.cloudengine.service.auth.MongoTokenRepositoryImpl">
-		<beans:constructor-arg ref="tokenStore"></beans:constructor-arg>
-	</beans:bean>
-
-	<beans:bean id="expiredSessionFilter" class="net.cloudengine.util.ExpiredSessionFilter"/>
+	<beans:bean id="expiredSessionFilter" class="net.cloudengine.service.web.ExpiredSessionFilter"/>
 
 	<beans:bean id="rememberMeServices" class="org.springframework.security.web.authentication.rememberme.PersistentTokenBasedRememberMeServices">
-        <beans:property name="userDetailsService" ref="userDetailsService" />
-        <beans:property name="tokenRepository" ref="persistentTokenRepository" />
+        <beans:property name="userDetailsService" ref="userStore" />
+        <beans:property name="tokenRepository" ref="tokenStore" />
         <beans:property name="cookieName" value="REMEMBER_ME" />
-        <beans:property name="parameter" value="remember_me" />
+        <beans:property name="parameter" value="rememberme" />
         <beans:property name="key" value="rescuemeApp" />
     </beans:bean>
            

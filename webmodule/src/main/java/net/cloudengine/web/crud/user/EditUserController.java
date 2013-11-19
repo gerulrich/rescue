@@ -2,6 +2,7 @@ package net.cloudengine.web.crud.user;
 
 import javax.validation.Valid;
 
+import net.cloudengine.model.auth.Group;
 import net.cloudengine.model.auth.User;
 import net.cloudengine.service.auth.UserService;
 
@@ -32,6 +33,7 @@ public class EditUserController {
 	@InitBinder
 	public void initBinder(WebDataBinder binder) {
 		binder.setDisallowedFields("id", "username","password");
+		binder.registerCustomEditor(Group.class, new GroupEditor());
 	}
 	
 	@ModelAttribute("user")
@@ -41,7 +43,9 @@ public class EditUserController {
 	
 	@RequestMapping(value = URI, method = RequestMethod.GET)
 	public ModelAndView setupForm(@PathVariable("id") ObjectId id) {
-		return new ModelAndView("/crud/user/form");
+		ModelAndView mav = new ModelAndView("/crud/user/form"); 
+		mav.addObject("groups", this.service.getGroups());
+		return mav;
 	}
 	
 	@RequestMapping(value = URI, method = RequestMethod.POST)

@@ -6,10 +6,10 @@
       <provider>org.hibernate.ejb.HibernatePersistence</provider>
       <properties>
          <property name="hibernate.session_factory_name" value="SESSION_FACTORY" />
-         <property name="hibernate.ejb.naming_strategy" value="net.cloudengine.util.CustomNamingStrategy"/>    
+         <property name="hibernate.ejb.naming_strategy" value="net.cloudengine.api.jpa.CustomNamingStrategy"/>    
 <!--          <property name="hibernate.dialect" value="org.hibernate.spatial.dialect.postgis.PostgisDialect" /> -->
          <property name="hibernate.hbm2ddl.auto" value="update" />
-<!--          <property name="hibernate.show_sql" value="true" /> -->
+         <property name="hibernate.show_sql" value="true" />
 <!--          <property name="hibernate.cache.provider_class" value="org.hibernate.cache.HashtableCacheProvider" /> -->
       </properties>
    </persistence-unit>

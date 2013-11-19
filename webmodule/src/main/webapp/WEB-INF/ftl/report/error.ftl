@@ -21,7 +21,6 @@
 	<@widget.statistics/>
 </#macro>
 
-
 <#macro body>
 	<@page.section>
 		<@page.box title="Error al Ejecutar reporte">

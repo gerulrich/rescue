@@ -1,9 +1,6 @@
 package net.cloudengine.web.crud.user;
 
-import javax.annotation.Resource;
-
-import net.cloudengine.api.Datastore;
-import net.cloudengine.model.auth.User;
+import net.cloudengine.api.mongo.dao.UserDao;
 import net.cloudengine.model.config.AppProperty;
 import net.cloudengine.service.admin.ConfigurationService;
 
@@ -19,19 +16,15 @@ import org.springframework.web.servlet.ModelAndView;
 @Controller
 public class ListUserController {
 	
-
 	protected static final String URL_LIST_REDIRECT = "redirect:/user/list/1/10";
+	private UserDao userDao;
 	private ConfigurationService service;
-	private Datastore<User,ObjectId> datastore;
-	
-	@Resource(name="userStore")
-	public void setDatastore(Datastore<User, ObjectId> datastore) {
-		this.datastore= datastore;
-	}
 	
 	@Autowired
-	public void setService(ConfigurationService service) {
+	public ListUserController(UserDao userDao, ConfigurationService service) {
+		super();
 		this.service = service;
+		this.userDao = userDao;
 	}
 
 	@RequestMapping(value = "/user/list", method = RequestMethod.GET)
@@ -48,7 +41,7 @@ public class ListUserController {
 		AppProperty xmppDomain = service.getProperty("openfire.domain");
 		ModelAndView mav = new ModelAndView();
 		mav.addObject("q", queryFilter);
-		mav.addObject("users", datastore.list(page, size));
+		mav.addObject("users", userDao.list(page, size));
 		mav.addObject("openfire_enabled", Boolean.valueOf(xmppEnabled.getValue()));
 		mav.addObject("openfire_domain", xmppDomain.getValue());
 		mav.setViewName("/crud/user/list");
@@ -57,7 +50,7 @@ public class ListUserController {
 	
 	@RequestMapping(value = "/user/show/{id}", method = RequestMethod.GET)
 	public ModelAndView show(@PathVariable("id") ObjectId id) {
-		return new ModelAndView("/crud/user/show", "user", datastore.get(id));
+		return new ModelAndView("/crud/user/show", "user", userDao.get(id));
 	}
 	
 }

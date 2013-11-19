@@ -2,7 +2,7 @@ package net.cloudengine.service.auth;
 
 /**
  * Interface que establece las acciones posibles
- * para la integración de usuarios con openfire.
+ * para la integraci&oacute;n de usuarios con openfire.
  * @author German
  *
  */

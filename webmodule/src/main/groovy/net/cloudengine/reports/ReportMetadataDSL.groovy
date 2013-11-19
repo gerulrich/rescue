@@ -3,9 +3,13 @@ package net.cloudengine.reports
 class ReportMetadataDSL {
 	
 	ReportMetadata parseDSL(File dsl) {
+		parseDSL(dsl.text, dsl.getName());
+	}
+	
+	ReportMetadata parseDSL(String text, String name) {
 		
 		ReportMetadata reportMetadata = new ReportMetadata()
-		Script dslScript = new GroovyShell().parse(dsl.text, dsl.getName())		
+		Script dslScript = new GroovyShell().parse(text, name)		
 				
 		dslScript.metaClass = createEMC(dslScript.class, {
 			ExpandoMetaClass emc ->
@@ -42,6 +46,10 @@ class ReportDelegate {
 
 	void name(String name) {
 		reportMetadata.setName(name);
+	}
+	
+	void datasource(String datasource) {
+		reportMetadata.setDatasource(datasource);
 	}
 	
 	void parameters(Closure cl) {

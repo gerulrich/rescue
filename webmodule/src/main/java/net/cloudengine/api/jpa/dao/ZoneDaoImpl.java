@@ -5,7 +5,7 @@ import java.util.List;
 import javax.persistence.Query;
 
 import net.cloudengine.api.jpa.JPADatastore;
-import net.cloudengine.model.map.Zone;
+import net.cloudengine.model.geo.Zone;
 
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Criteria;

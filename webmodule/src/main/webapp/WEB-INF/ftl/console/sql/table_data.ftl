@@ -38,6 +38,7 @@
 						</#list>
 					</tbody>
 				</table>
+				<@widget.tablePaging rows "/sql/table/list/${tableEncodedName}" />
 			<#else>
 				<h3>No hay datos en la tabla</h3>
 			</#if>

@@ -18,11 +18,6 @@
 	<url>http://maven.apache.org</url>
 
 	<repositories>
-		<repository>
-			<id>morphia</id>
-			<url>http://morphia.googlecode.com/svn/mavenrepo/</url>
-		</repository>
-
 		<!-- For developing against latest Spring milestones -->
 		<repository>
 			<id>org.springframework.maven.milestone</id>
@@ -147,7 +142,7 @@
 		<dependency>
 			<groupId>org.mongodb</groupId>
 			<artifactId>mongo-java-driver</artifactId>
-			<version>2.5</version>
+			<version>2.11.1</version>
 		</dependency>
 		<dependency>
 			<groupId>org.springframework.data</groupId>
@@ -157,8 +152,8 @@
 		<dependency>
 			<groupId>com.google.code.morphia</groupId>
 			<artifactId>morphia</artifactId>
-			<version>0.99</version>
-		</dependency>
+			<version>0.102</version>
+		</dependency>		
 		<dependency>
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-entitymanager</artifactId>
@@ -233,9 +228,27 @@
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
+ 			<groupId>org.springframework.amqp</groupId>
+ 			<artifactId>spring-rabbit</artifactId>
+ 			<version>1.2.0.RELEASE</version>
+		</dependency>		
+		<dependency>
+			<groupId>com.jaspersoft.mongodb</groupId>
+			<artifactId>js-mongodb-datasource</artifactId>
+			<version>0.5.0</version>
+		</dependency>
+<dependency>
+    <groupId>com.ganyo</groupId>
+    <artifactId>gcm-server</artifactId>
+    <version>1.0.2</version>
+</dependency>		
+		<dependency>
 			<groupId>net.sf.jasperreports</groupId>
 			<artifactId>jasperreports</artifactId>
-			<version>4.0.0</version>
+			<version>5.2.0</version>
+<!-- 			<groupId>net.sf.jasperreports</groupId> -->
+<!-- 			<artifactId>jasperreports</artifactId> -->
+<!-- 			<version>4.0.0</version> -->
 			<exclusions>
 				<exclusion>
 					<artifactId>bcmail-jdk14</artifactId>
@@ -309,6 +322,15 @@
 			</resource>
 
 		</resources>
+		
+		<testResources>
+			<testResource>
+				<directory>${basedir}/src/test/java</directory>
+				<includes>
+					<include>**/*.xml</include>
+				</includes>
+			</testResource>
+		</testResources>
 
 		<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
 		<!-- PLUGINS -->
@@ -383,9 +405,13 @@
 			</plugin>
 
 			<plugin>
-				<groupId>org.codehaus.groovy.maven</groupId>
+				<groupId>org.codehaus.gmaven</groupId>
 				<artifactId>gmaven-plugin</artifactId>
-				<version>1.0</version>
+				<version>1.4</version>
+				<configuration>
+          			<providerSelection>2.0</providerSelection>
+          			<sourceEncoding>UTF-8</sourceEncoding>
+          		</configuration>
 				<executions>
 					<execution>
 						<goals>
@@ -397,21 +423,6 @@
 					</execution>
 				</executions>
 			</plugin>
-
-
-			<plugin>
-				<groupId>org.cloudfoundry</groupId>
-				<artifactId>cf-maven-plugin</artifactId>
-				<version>1.0.0.M1</version>
-				<configuration>
-					<server>mycloudfoundry-instance</server>
-					<target>http://api.cloudfoundry.com</target>
-					<url>http://rescue.cloudfoundry.com</url>
-					<memory>512</memory>
-				</configuration>
-			</plugin>
-
-
 		</plugins>
 
 
@@ -428,9 +439,9 @@
 							<pluginExecutions>
 								<pluginExecution>
 									<pluginExecutionFilter>
-										<groupId>org.codehaus.groovy.maven</groupId>
+										<groupId>org.codehaus.gmaven</groupId>
 										<artifactId>gmaven-plugin</artifactId>
-										<versionRange>[1.0,)</versionRange>
+										<versionRange>[1.4,)</versionRange>
 										<goals>
 											<goal>generateStubs</goal>
 											<goal>compile</goal>

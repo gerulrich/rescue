@@ -1,28 +1,20 @@
 package net.cloudengine.web.console;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeSet;
+import javax.servlet.http.HttpServletRequest;
 
-import net.cloudengine.api.mongo.CollectionPagingResult;
+import net.cloudengine.service.console.MongoService;
+import net.cloudengine.util.HexString;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.commons.codec.DecoderException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.mongodb.MongoDbFactory;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.ModelAndView;
-
-import com.mongodb.DB;
-import com.mongodb.DBCollection;
-import com.mongodb.DBCursor;
-import com.mongodb.DBObject;
 /**
  * Mustra información basica de la DB de Mongo.
  * @author German Ulrich
@@ -31,13 +23,12 @@ import com.mongodb.DBObject;
 @Controller
 public class MongoController {
 	
-	private static final Logger logger = LoggerFactory.getLogger(MongoController.class);
-	private DB db;
+	private MongoService service;
 
 	@Autowired
-	public MongoController(MongoDbFactory factory) {
+	public MongoController(MongoService service) {
 		super();
-		this.db = factory.getDb();
+		this.service = service;
 	}
 	
 	/**
@@ -46,16 +37,7 @@ public class MongoController {
 	@RequestMapping(value="/mongo/list", method = RequestMethod.GET)
 	public ModelAndView mongoCollections() {
 		ModelAndView mav = new ModelAndView();
-		
-		List<MongoCollection> collections = new ArrayList<MongoCollection>();
-		for (String colName : db.getCollectionNames()) {
-			if (colName != null && !colName.startsWith("system.") && !colName.startsWith("fs.")) {
-				DBCollection collection = db.getCollection(colName);
-				MongoCollection mcol = new MongoCollection(colName, collection.getStats());
-				collections.add(mcol);
-			}
-		}
-		mav.addObject("collections", collections);
+		mav.addObject("collections", service.getCollections());
 		mav.setViewName("/console/mongo/collections");
 		return mav;
 	}
@@ -66,14 +48,10 @@ public class MongoController {
 	@RequestMapping(value="/mongo/drop/{collection}", method = RequestMethod.GET)
 	public ModelAndView dropCollection(@PathVariable("collection") String collection) {
 		ModelAndView mav = new ModelAndView();
-		if (collection != null && !collection.startsWith("system.")) {
-			logger.debug("Borrando colección {} de la base de mongodb", collection);
-			db.getCollection(collection).drop();
-		}
+		service.drop(HexString.decode(collection));
 		mav.setViewName("redirect:/mongo/list");
 		return mav;
 	}
-	
 	
 	@RequestMapping(value="/mongo/show/{collection}", method = RequestMethod.GET)
 	public ModelAndView showCollection(@PathVariable("collection") String collection) {
@@ -85,46 +63,23 @@ public class MongoController {
 	@RequestMapping(value="/mongo/show/{collection}/{page}/{size}", method = RequestMethod.GET)
 	public ModelAndView showCollection(@PathVariable("collection") String collection, @PathVariable("page") int page, @PathVariable("size") int size) {
 		ModelAndView mav = new ModelAndView();
-		if (collection != null && collection.startsWith("system.")) {
+		String collectionName = HexString.decode(collection);
+		if (!service.isValidCollection(collectionName)) {
 			mav.setViewName("redirect:/mongo/list");
 			return mav;
 		}
 		
-		DBCollection colDB = db.getCollection(collection);
-		DBCursor cursor = colDB.find().skip((page-1)*size).limit(size);
-		long totalPages = totalPages(colDB, page, size);
-		
-		List<MongoObject> objects = new ArrayList<MongoObject>();
-		
-		Set<String> headers = new TreeSet<String>(); 
-		
-		for (DBObject object : cursor) {
-			headers.addAll(object.keySet());
-			MongoObject obj = new MongoObject();
-			Map<String,Object> values = new HashMap<String, Object>();
-			for (String key : object.keySet()) {
-				values.put(key, object.get(key));
-			}
-			obj.setValues(values);
-			objects.add(obj);
-
-		}
-		
-		headers.remove("className");
-		headers.remove("password");
-		
-		mav.addObject("collection", collection);
-		mav.addObject("objects", new CollectionPagingResult<MongoObject>(objects, page, size, totalPages, colDB.count()));
-		mav.addObject("headers", headers);
+		mav.addObject("collectionName", collectionName);
+		mav.addObject("collectionEncodedName", collection);
+		mav.addObject("objects", service.getObjects(collectionName, page, size));
+		mav.addObject("headers", service.getHeaders(collectionName, page, size));
 		mav.setViewName("/console/mongo/collection");
 		return mav;
 	}
 	
-	private long totalPages(DBCollection colDB, int page, int size) {
-		long total = colDB.count();
-		long totalPages = total / size;
-		if (total % size != 0)
-			totalPages++;
-		return totalPages;
+	@ExceptionHandler(DecoderException.class)
+	@ResponseStatus(value = HttpStatus.NOT_FOUND, reason = "Invalid collection name")
+	public void handleDecoderException(DecoderException ex, HttpServletRequest request) {
+		ex.printStackTrace();
 	}
 }

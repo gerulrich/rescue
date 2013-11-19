@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beansProjectDescription>
 	<version>1</version>
-	<pluginVersion><![CDATA[2.8.0.201110170010-RELEASE]]></pluginVersion>
+	<pluginVersion><![CDATA[3.2.0.201303060654-RELEASE]]></pluginVersion>
 	<configSuffixes>
 		<configSuffix><![CDATA[xml]]></configSuffix>
 	</configSuffixes>
@@ -19,6 +19,7 @@
 			<configs>
 				<config>src/main/resources/spring/mvc-spring.xml</config>
 				<config>src/main/resources/spring/spring-base.xml</config>
+				<config>src/main/resources/spring/spring-cloud.xml</config>
 			</configs>
 			<profiles>
 			</profiles>

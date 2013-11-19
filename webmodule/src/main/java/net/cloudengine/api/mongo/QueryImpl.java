@@ -64,4 +64,9 @@ public class QueryImpl<E, PK> implements Query<E>, Field<E> {
 		this.query = fieldEnd.lessThan(object);
 		return this;
 	}
+
+	public com.google.code.morphia.query.Query<E> getQuery() {
+		return query;
+	}	
+	
 }

@@ -51,7 +51,7 @@ public class EmailValidatorTest extends TestCase {
 		this.email = email;
 		this.validEmail = validEmail;
 	}
-
+	
 	@Test
 	public void emailVerificationTest() {
 		EmailValidator validator = new EmailValidator();

@@ -10,6 +10,7 @@ import net.cloudengine.rpc.controller.config.ContextImpl;
 import net.cloudengine.rpc.controller.config.PropertyController;
 import net.cloudengine.rpc.controller.geo.ZoneController;
 import net.cloudengine.rpc.controller.resource.ResourceController;
+import net.cloudengine.util.UncheckedThrow;
 
 import com.caucho.hessian.client.MyHessianProxyFactory;
 import com.caucho.services.client.ServiceProxyFactory;
@@ -36,7 +37,7 @@ public class ServiceModule extends AbstractModule {
 			bindService(baseUrl, ZoneController.class, factory);
 			
 		} catch (Exception e) {
-			e.printStackTrace();
+			UncheckedThrow.throwUnchecked(e);
 		}
 	}
 	

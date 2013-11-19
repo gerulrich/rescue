@@ -10,5 +10,11 @@ class RequestLog {
 	
 	@Id ObjectId id;
 	Date time;
-
+	long executionTime;
+	String url;
+	String controller;
+	String method;
+	String user;
+	String status;
+	String[] errors;
 }

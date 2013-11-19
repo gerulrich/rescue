@@ -479,7 +479,7 @@ $(document).ready(function() {
     $(".dataTables_wrapper .dataTables_length select").addClass("entries");
 	
 	// CHARTS        
-    $("table.chart").each(function() {
+/*    $("table.chart").each(function() {
         var colors = [];
         $("table.chart thead th:not(:first)").each(function() {
             colors.push($(this).css("color"));
@@ -727,7 +727,7 @@ $(document).ready(function() {
             $("#tooltip").remove();
             previousPoint = null;
         }
-    });
+    });*/
     
 	jQuery.ajaxSetup({
 		beforeSend: function(xhrobj) {
@@ -749,5 +749,14 @@ $(document).ready(function() {
 			}
 		}
 	});
+	
+	$.prettyLoader({
+		animation_speed: 'fast', /* fast/normal/slow/integer */
+		bind_to_ajax: true, /* true/false */
+		delay: 500, /* false OR time in milliseconds (ms) */
+		loader: location.path+'static/images/prettyLoader/ajax-loader.gif', /* Path to your loader gif */
+		offset_top: 13, /* integer */
+		offset_left: 10 /* integer */
+	});	
 	
 });

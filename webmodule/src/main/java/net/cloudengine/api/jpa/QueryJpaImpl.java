@@ -5,6 +5,7 @@ import java.util.Collection;
 
 import net.cloudengine.api.Field;
 import net.cloudengine.api.Query;
+import net.cloudengine.util.Cast;
 
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;

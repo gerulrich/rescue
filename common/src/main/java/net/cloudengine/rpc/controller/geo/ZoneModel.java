@@ -2,7 +2,7 @@ package net.cloudengine.rpc.controller.geo;
 
 import java.io.Serializable;
 
-import net.cloudengine.rpc.model.DataObject;
+import net.cloudengine.rpc.mappers.DataObject;
 
 @DataObject
 public class ZoneModel implements Serializable {

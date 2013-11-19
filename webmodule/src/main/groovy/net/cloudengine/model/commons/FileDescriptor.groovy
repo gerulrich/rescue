@@ -25,5 +25,9 @@ class FileDescriptor {
 		char pre = ("KMGTPE").charAt(exp-1);
 		return String.format("%.1f %cB", size / Math.pow(unit, exp), pre);
 	}
+	
+	ObjectId getFileObjectId() {
+		return new ObjectId(fileId);
+	}
 
 }

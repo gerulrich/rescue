@@ -3,11 +3,9 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns:p="http://www.springframework.org/schema/p"
 	xmlns:context="http://www.springframework.org/schema/context"
-	xmlns:aop="http://www.springframework.org/schema/aop"
 	xmlns:tx="http://www.springframework.org/schema/tx"
 	xmlns:jdbc="http://www.springframework.org/schema/jdbc"
 	xsi:schemaLocation="http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-3.1.xsd
-		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.1.xsd
 		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
 		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.1.xsd
 		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd">
@@ -21,26 +19,37 @@
 		</bean>
 		
 		<bean id="morphia" class="com.google.code.morphia.Morphia"/>
-		<bean id="mongoWrapper" class="net.cloudengine.web.MongoDBWrapper">
+		<bean id="mongoWrapper" class="net.cloudengine.api.mongo.MongoDBWrapper" autowire="byType">
 			<constructor-arg ref="mongoDbFactory"></constructor-arg>
 		</bean>
 	
-		<bean id="userStore" class="net.cloudengine.api.mongo.MongoStore">
-			<constructor-arg ref="mongoWrapper"></constructor-arg>
-			<constructor-arg type="java.lang.Class" value="net.cloudengine.model.auth.User"></constructor-arg>
-			<constructor-arg ref="morphia"></constructor-arg>
+		<bean id="roleStore" class="net.cloudengine.api.mongo.MongoStore">
+			<constructor-arg ref="mongoWrapper"/>
+			<constructor-arg type="java.lang.Class" value="net.cloudengine.model.auth.Role"/>
+			<constructor-arg ref="morphia"/>
+		</bean>
+	
+		<bean id="userStore" class="net.cloudengine.api.mongo.dao.UserDaoImpl">
+			<constructor-arg ref="roleStore"/>
+			<constructor-arg ref="mongoWrapper"/>
+			<constructor-arg ref="morphia"/>
 		</bean>
 		
 		<bean id="tileStore" class="net.cloudengine.api.mongo.MongoStore">
 			<constructor-arg ref="mongoWrapper"></constructor-arg>
-			<constructor-arg type="java.lang.Class" value="net.cloudengine.model.map.Tile"></constructor-arg>
+			<constructor-arg type="java.lang.Class" value="net.cloudengine.model.geo.Tile"></constructor-arg>
 			<constructor-arg ref="morphia"></constructor-arg>
 		</bean>
+		
+		<bean id="tokenStore" class="net.cloudengine.api.mongo.dao.TokenDaoImpl">
+    		<constructor-arg ref="mongoWrapper"/>
+			<constructor-arg ref="morphia"/>
+    	</bean>
 	
-		<bean id="tokenStore" class="net.cloudengine.api.mongo.MongoStore">
-			<constructor-arg ref="mongoWrapper"></constructor-arg>
-			<constructor-arg type="java.lang.Class" value="net.cloudengine.service.auth.MongoRememberMeToken"></constructor-arg>
-			<constructor-arg ref="morphia"></constructor-arg>
+		<bean id="authTokenStore" class="net.cloudengine.api.mongo.MongoStore">
+			<constructor-arg ref="mongoWrapper"/>
+			<constructor-arg type="java.lang.Class" value="net.cloudengine.model.auth.AuthenticationToken"/>
+			<constructor-arg ref="morphia"/>
 		</bean>
 		
 		<bean id="propertyStore" class="net.cloudengine.api.mongo.MongoStore">
@@ -57,13 +66,7 @@
 		
 		<bean id="poiStore" class="net.cloudengine.api.mongo.MongoStore">
 			<constructor-arg ref="mongoWrapper"></constructor-arg>
-			<constructor-arg type="java.lang.Class" value="net.cloudengine.model.map.POI"/>
-			<constructor-arg ref="morphia"></constructor-arg>
-		</bean>
-		
-		<bean id="roleStore" class="net.cloudengine.api.mongo.MongoStore">
-			<constructor-arg ref="mongoWrapper"></constructor-arg>
-			<constructor-arg type="java.lang.Class" value="net.cloudengine.model.auth.Role"/>
+			<constructor-arg type="java.lang.Class" value="net.cloudengine.model.geo.POI"/>
 			<constructor-arg ref="morphia"></constructor-arg>
 		</bean>
 		
@@ -85,32 +88,49 @@
 			<constructor-arg ref="morphia"></constructor-arg>
 		</bean>
 		
-		<bean id="requestLogStore" class="net.cloudengine.api.mongo.MongoStore">
+		<bean id="requestLogStore" class="net.cloudengine.api.mongo.dao.RequestLogDaoImpl">
 			<constructor-arg ref="mongoWrapper"></constructor-arg>
-			<constructor-arg type="java.lang.Class" value="net.cloudengine.model.auth.Group"/>
 			<constructor-arg ref="morphia"></constructor-arg>
 		</bean>
 		
-				
+		<bean id="reportExecution" class="net.cloudengine.api.mongo.MongoStore">
+			<constructor-arg ref="mongoWrapper"></constructor-arg>
+			<constructor-arg type="java.lang.Class" value="net.cloudengine.reports.ReportExecution"/>
+			<constructor-arg ref="morphia"></constructor-arg>
+		</bean>
+		
+		<bean id="deviceStore" class="net.cloudengine.api.mongo.MongoStore">
+			<constructor-arg ref="mongoWrapper"></constructor-arg>
+			<constructor-arg type="java.lang.Class" value="net.cloudengine.model.gcm.RegisteredDevice"/>
+			<constructor-arg ref="morphia"></constructor-arg>
+		</bean>
+		
+		<bean id="wfStore" class="net.cloudengine.api.mongo.MongoStore">
+			<constructor-arg ref="mongoWrapper"></constructor-arg>
+			<constructor-arg type="java.lang.Class" value="net.cloudengine.domain.dsl.workflow.PersistentWorkflow"/>
+			<constructor-arg ref="morphia"></constructor-arg>
+		</bean>		
 		
 		<bean id="blobStore" class="net.cloudengine.api.mongo.MongoBlobStore" />
 		
 		<bean id="appListener" class="net.cloudengine.AppListener">
 			<constructor-arg ref="mongoWrapper"></constructor-arg>
+			<constructor-arg ref="morphia"></constructor-arg>
 		</bean>
+		
+		<bean class="net.cloudengine.management.Injector"/>
 		
 		<context:component-scan base-package="net.cloudengine.service"/>
 		<context:component-scan base-package="net.cloudengine.api"/>
 		<context:component-scan base-package="net.cloudengine.rpc"/>
 		
-		<bean id="mappers" class="net.cloudengine.mappers.MappersRegistry">
+		<bean id="mappers" class="net.cloudengine.rpc.mappers.MappersRegistry">
 <!-- 			<property name="mappers"> -->
 <!-- 				<map> -->
 <!-- 					<entry></entry> -->
 <!-- 				</map> -->
 <!-- 			</property> -->
 		</bean>
-		
 		
 		 <!-- Este bean toma propiedades de archivos properties y permite utilizar las
 			  claves como atributos de otros beans. Se utiliza principalmente para los datos de 
@@ -160,6 +180,11 @@
   		<jdbc:script location="classpath:spring/sequence_table.sql"/>
       	<jdbc:script location="classpath:spring/sequence.sql" separator="$$"/>
     </jdbc:initialize-database>
+    
+	<bean id="threadExecutor" class="org.springframework.scheduling.concurrent.ThreadPoolExecutorFactoryBean">
+  		<property name="corePoolSize" value="1" />
+  		<property name="maxPoolSize" value="1" />
+	</bean>
     
 	<!-- bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
 		<property name="host" value="smtp.gmail.com" />

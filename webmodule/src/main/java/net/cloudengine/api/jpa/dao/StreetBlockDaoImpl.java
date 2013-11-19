@@ -1,10 +1,12 @@
 package net.cloudengine.api.jpa.dao;
 
+import java.util.Collection;
+
 import javax.persistence.Query;
 
 import net.cloudengine.api.jpa.JPADatastore;
-import net.cloudengine.model.map.StreetBlock;
-import net.cloudengine.model.map.StreetIntersection;
+import net.cloudengine.model.geo.StreetBlock;
+import net.cloudengine.model.geo.StreetIntersection;
 
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,8 +20,8 @@ public class StreetBlockDaoImpl extends JPADatastore<StreetBlock, Long> implemen
 
 	@Override
 	@Transactional
-	public StreetBlock find(String loc, Integer nro) {
-		StreetBlock street = null;
+	public Collection<StreetBlock> find(String loc, Integer nro) {
+		Collection<StreetBlock> street = null;
 		
 		try {
 			Query query = getEntityManager().createNativeQuery(
@@ -33,9 +35,7 @@ public class StreetBlockDaoImpl extends JPADatastore<StreetBlock, Long> implemen
 			query.setParameter(1, "%"+loc+"%");
 			query.setParameter(2, nro);
 			query.setParameter(3, nro);
-		
-			query.setMaxResults(1);
-			street = (StreetBlock) query.getSingleResult();
+			street = cast(query.getResultList());
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

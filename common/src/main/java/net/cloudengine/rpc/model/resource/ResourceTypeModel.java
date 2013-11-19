@@ -3,7 +3,7 @@ package net.cloudengine.rpc.model.resource;
 import java.io.Serializable;
 import java.util.Arrays;
 
-import net.cloudengine.rpc.model.DataObject;
+import net.cloudengine.rpc.mappers.DataObject;
 
 @DataObject
 public class ResourceTypeModel implements Serializable {

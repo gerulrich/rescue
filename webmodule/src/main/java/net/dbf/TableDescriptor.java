@@ -1,5 +1,6 @@
 package net.dbf;
 
+
 public class TableDescriptor {
 	private String name;
 	private int type = 101;
@@ -54,5 +55,5 @@ public class TableDescriptor {
 
 	public void setType(int type) {
 		this.type = type;
-	}
+	}	
 }

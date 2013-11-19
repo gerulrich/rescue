@@ -1,5 +1,7 @@
 package net.cloudengine.service.auth;
 
+import net.cloudengine.model.auth.User;
+
 public interface AuthenticationService {
 	
 	/**
@@ -11,13 +13,18 @@ public interface AuthenticationService {
 	String login(String username, String password);
 	
 	/**
-	 * Retorna un token de autenticación de usuario si 
-	 * las credenciales de usuario son válidas.
+	 * Crea un token se sesion.
 	 * @param username
 	 * @param password
 	 * @return
 	 */
-	String getAuthToken(String username, String password);
-
+	String createToken(String username, String password);
+	
+	/**
+	 * Obtiene un usuario a partir de un token.
+	 * @param token
+	 * @return
+	 */
+	User getUserByToken(String token);
 
 }

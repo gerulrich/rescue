@@ -3,8 +3,6 @@ package net.shapefile.geometry;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.commons.lang.ArrayUtils;
-
 import net.shapefile.Point;
 import net.shapefile.ShapeObject;
 
@@ -16,8 +14,6 @@ import com.vividsolutions.jts.geom.LinearRing;
 import com.vividsolutions.jts.geom.MultiLineString;
 import com.vividsolutions.jts.geom.Polygon;
 import com.vividsolutions.jts.io.WKTWriter;
-
-
 
 public class WKTUtils {
 	
@@ -121,7 +117,6 @@ public class WKTUtils {
 	}
 	
 	private static Geometry formatPolygon(ShapeObject shape) {
-		
 		GeometryFactory factory = new GeometryFactory();
 		LinearRing rings[] = new LinearRing[shape.getPartCount()];
 		for (int i = 0; i < rings.length; i++) {
@@ -135,5 +130,4 @@ public class WKTUtils {
 			polygon = factory.createPolygon(rings[0], new LinearRing[0]);
 		return polygon;
 	}	
-
 }

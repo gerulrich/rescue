@@ -2,13 +2,13 @@ package net.cloudengine.rpc.service.config;
 
 import java.util.Collection;
 
-import net.cloudengine.mappers.DTOMapper;
-import net.cloudengine.mappers.MappersRegistry;
+import net.cloudengine.management.ExternalService;
 import net.cloudengine.model.config.AppProperty;
 import net.cloudengine.rpc.controller.config.PropertyController;
 import net.cloudengine.rpc.controller.config.PropertyModel;
+import net.cloudengine.rpc.mappers.DTOMapper;
+import net.cloudengine.rpc.mappers.MappersRegistry;
 import net.cloudengine.service.admin.ConfigurationService;
-import net.cloudengine.util.ExternalService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

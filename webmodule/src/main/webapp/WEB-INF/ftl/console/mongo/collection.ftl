@@ -3,7 +3,7 @@
 <#macro breadcrumbs>
 	<li><a href="<@spring.url '/'/>">Dashboard</a></li>
 	<li><a href="<@spring.url '/mongo/list'/>">MongoDB Collections</a></li>
-	<li><a href="<@spring.url '/mongo/show/${collection}'/>">${collection}</a></li>
+	<li><a href="<@spring.url '/mongo/show/${collectionEncodedName}'/>">${collectionName}</a></li>
 </#macro>
 
 <#macro menu>
@@ -17,7 +17,7 @@
 
 <#macro body>
 	<@page.section>
-		<@page.box title="MongoDB ${collection} Collection">
+		<@page.box title="MongoDB ${collectionName} Collection">
 			<#if objects.totalSize &gt; 0 > 
 			<table cellspacing="0" cellpadding="0" border="0"> 
 				<thead>

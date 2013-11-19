@@ -22,11 +22,23 @@
     	$.ajax({
 			url: '<@spring.url '/report/progress?token='/>'+token,
     		success: function(data) {
-    			if (data == token) {
-    				setTimeout ( 'progress("'+token+'")', 500 );
+    			if (data == "") {
+    				setTimeout ( 'progress("'+token+'")', 1000 );
 				} else {
-					$('#waitmessage').hide();
-					$('#okmessage').show();
+					reportResult(token);
+				}
+			}
+		});
+	}
+	
+	function reportResult(token) {
+		$.ajax({
+			url: '<@spring.url '/report/result?token='/>'+token,
+    		success: function(data) {
+    			if ("OK" == data) {
+    				window.location = '<@spring.url '/report/download/'/>'+token;
+				} else {
+					window.location = '<@spring.url '/report/error?token='/>'+token;
 				}
 			}
 		});
@@ -65,7 +77,7 @@
 	<div class="section">
 		<div class="box">
 			<div class="title">
-				Ejecutar reporte
+				Ejecutar reporte: "${metadata.name}"
 				<span class="hide"></span>
 			</div>
 			
@@ -82,6 +94,7 @@
 				<iframe id="uploadFrameID" name="uploadFrame" height="0" width="0" frameborder="0" scrolling="yes"></iframe>
 				<form id="target" action="<@spring.url '/report/generate/${report.id}'/>" method="get" target="uploadFrame">
 					<input type="hidden" name="token" value=""/>
+					<input type="hidden" name="datasource" value="${datasource}"/>
 					<#list metadata.parameters as param>
 					<div class="row">
 						<label>${param.label}</label>

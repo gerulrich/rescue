@@ -9,7 +9,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
 import net.cloudengine.api.PagingResult;
-import net.cloudengine.util.Assert;
+import net.cloudengine.validation.Assert;
 
 public final class JPAPagingResult<E> implements PagingResult<E> {
 

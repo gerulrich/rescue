@@ -5,10 +5,13 @@
     xmlns:mvc           = "http://www.springframework.org/schema/mvc"
     xmlns:p             = "http://www.springframework.org/schema/p"
     xmlns:xsi           = "http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:aop           = "http://www.springframework.org/schema/aop"
     xsi:schemaLocation  = "http://www.springframework.org/schema/beans 
                            http://www.springframework.org/schema/beans/spring-beans-3.1.xsd    
                            http://www.springframework.org/schema/context 
-                           http://www.springframework.org/schema/context/spring-context-3.1.xsd    
+                           http://www.springframework.org/schema/context/spring-context-3.1.xsd
+                           http://www.springframework.org/schema/aop 
+                           http://www.springframework.org/schema/aop/spring-aop-3.1.xsd
                            http://www.springframework.org/schema/mvc
                            http://www.springframework.org/schema/mvc/spring-mvc-3.1.xsd">
     
@@ -18,14 +21,14 @@
 	<!-- Soporte para la anotation @Controller -->
 	<mvc:annotation-driven>
 		<mvc:argument-resolvers>
-			<bean class="net.cloudengine.util.CurrentUserArgumentResolver"/>
+			<bean class="net.cloudengine.service.web.CurrentUserArgumentResolver"/>
 		</mvc:argument-resolvers>
 	</mvc:annotation-driven>
 
     <!-- interceptors para los web controllers -->
     <mvc:interceptors>
 		<bean class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor"/>
-		<bean class="net.cloudengine.web.statistics.RequestInterceptor"/>
+		<bean class="net.cloudengine.management.DebugCookieInterceptor"/>
 	</mvc:interceptors>
     
 	<bean class="org.springframework.web.servlet.view.ContentNegotiatingViewResolver">
@@ -56,7 +59,7 @@
 <!--   		</property> -->
 	</bean>
 	
-	<bean id="freemarkerConfig" class="net.cloudengine.util.MyFMConfigurer">
+	<bean id="freemarkerConfig" class="net.cloudengine.service.web.MyFMConfigurer">
     	<property name="templateLoaderPath" value="/WEB-INF/ftl/"/>
     	<property name="defaultEncoding" value="UTF-8"></property>
 	</bean>
@@ -81,10 +84,18 @@
     
     <bean
         class="org.springframework.web.servlet.handler.SimpleMappingExceptionResolver"
-        p:defaultErrorView="errors/exception-caught" p:order="3" p:warnLogCategory="warn">
+        p:defaultErrorView="errors/exception-caught" p:order="3" p:warnLogCategory="warn" >
         <description>When no @ExceptionHandler was found then map these exceptions to view names, set the default error</description>
     
     </bean>
     
-	<bean id="serviceExporter" class="net.cloudengine.web.HessianServiceExporterPostProcessor" />
+	<bean id="serviceExporter" class="net.cloudengine.management.HessianServiceExporterPostProcessor" />
+	
+	<aop:aspectj-autoproxy/>
+	<bean class="net.cloudengine.management.RequestInterceptorAspect" factory-method="aspectOf">
+		<property name="sessionService" ref="sessionServiceImpl"/>
+		<property name="executorService" ref="threadExecutor"/>
+		<property name="ds" ref="requestLogStore"/>
+	</bean>
+	
 </beans>

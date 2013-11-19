@@ -3,16 +3,16 @@ package net.cloudengine.rpc.service.model;
 import java.util.Collection;
 import java.util.List;
 
-import net.cloudengine.mappers.DTOMapper;
-import net.cloudengine.mappers.MappersRegistry;
+import net.cloudengine.management.ExternalService;
 import net.cloudengine.model.resource.Resource;
 import net.cloudengine.model.resource.ResourceType;
 import net.cloudengine.model.resource.WayPoint;
 import net.cloudengine.rpc.controller.resource.ResourceController;
+import net.cloudengine.rpc.mappers.DTOMapper;
+import net.cloudengine.rpc.mappers.MappersRegistry;
 import net.cloudengine.rpc.model.resource.ResourceModel;
 import net.cloudengine.rpc.model.resource.ResourceTypeModel;
 import net.cloudengine.service.admin.ResourceService;
-import net.cloudengine.util.ExternalService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

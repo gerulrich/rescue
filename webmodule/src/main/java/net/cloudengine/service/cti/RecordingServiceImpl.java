@@ -4,7 +4,7 @@ import java.io.OutputStream;
 import java.util.Properties;
 
 import net.cloudengine.service.admin.ConfigurationService;
-import net.cloudengine.util.Assert;
+import net.cloudengine.validation.Assert;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

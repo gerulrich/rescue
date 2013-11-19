@@ -3,7 +3,7 @@ package net.cloudengine.web.map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-import net.cloudengine.model.map.Tile;
+import net.cloudengine.model.geo.Tile;
 import net.cloudengine.service.admin.ConfigurationService;
 import net.cloudengine.service.map.TileCache;
 import net.cloudengine.service.map.TileServer;

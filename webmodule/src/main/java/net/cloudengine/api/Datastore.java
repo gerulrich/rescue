@@ -27,7 +27,7 @@ public interface Datastore <E, PK extends Serializable> {
      */
     E get(PK id);
 
-	void save(E entity);
+	<T> void save(T entity);
 
 	List<E> getAll();
 	
@@ -42,6 +42,8 @@ public interface Datastore <E, PK extends Serializable> {
 	Query<E> createQuery();
 	
 	void deleteAll();
+	
+	void delete(Query<E> query);
 	
 
 }

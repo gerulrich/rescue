@@ -17,8 +17,8 @@
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <spring.version>3.1.0.M2</spring.version>
-    <jdk-version>1.6</jdk-version>
-    <groovy-version>1.7.5</groovy-version>
+    <jdk-version>1.7</jdk-version>
+    <groovy-version>2.1.0</groovy-version>
     <org.cloudfoundry-version>0.8.1</org.cloudfoundry-version>
     <maven.build.timestamp.format>yyyy.MM.dd.HH.mm.ss</maven.build.timestamp.format>
     <swt-version>3.5.2</swt-version>
@@ -87,6 +87,12 @@
 		<artifactId>commons-logging</artifactId>
 		<version>1.1.1</version>
 	</dependency>
+	
+	<dependency>
+		<groupId>com.google.guava</groupId>
+		<artifactId>guava</artifactId>
+		<version>14.0.1</version>
+	</dependency>	
   
   	<dependency>
 		<groupId>log4j</groupId>

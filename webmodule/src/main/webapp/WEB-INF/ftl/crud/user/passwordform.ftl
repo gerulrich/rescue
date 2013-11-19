@@ -30,11 +30,11 @@
 		
 		<#if "0" = result!>
 			<div class="message green">
-				<span><b>Succes</b>: La contraseña se ha cambiado con exito</span>
+				<span><b>Succes</b>: La contrase&ntilde;a se ha cambiado con exito</span>
 			</div>
 		</#if>		
 	
-		<@page.box title="Cambiar la contraseña del usuario ${user.displayName}">
+		<@page.box title="Cambiar la contrase&ntilde;a del usuario ${user.displayName}">
 			<form  action="<@spring.url '/user/password/${user.id}'/>" method="post" class="valid">
 				
 				<@form.row label="Contraseña">

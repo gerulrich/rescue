@@ -4,9 +4,7 @@ public interface SigninService {
 	
 	String login(String username, String password);
 	
-	String getAuthToken(String username, String password);
-	
-	public UserModel getUserDetail();
+	UserModel getUserDetail();
 	
 	void logout(UserModel user);
 

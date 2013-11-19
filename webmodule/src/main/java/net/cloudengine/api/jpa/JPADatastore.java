@@ -9,6 +9,7 @@ import javax.persistence.PersistenceContext;
 import net.cloudengine.api.Datastore;
 import net.cloudengine.api.PagingResult;
 import net.cloudengine.api.Query;
+import net.cloudengine.util.Cast;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
@@ -46,7 +47,7 @@ public class JPADatastore<E, PK extends Serializable> implements Datastore<E, PK
 	}
 
 	@Override
-	public void save(E entity) {
+	public <T> void save(T entity) {
 		 this.entityManager.persist(entity);
 	}
 	
@@ -75,6 +76,11 @@ public class JPADatastore<E, PK extends Serializable> implements Datastore<E, PK
 	@Override
 	public void delete(PK key) {
 		 this.entityManager.remove(this.get(key));
+	}
+	
+	@Override
+	public void delete(Query<E> query) {
+		throw new RuntimeException("Not implemented yet");
 	}
 
 	@Override

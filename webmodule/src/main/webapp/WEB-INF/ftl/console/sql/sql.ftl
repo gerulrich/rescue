@@ -37,8 +37,8 @@
 						<td>${table.sizeHumanReadable}</td>
 						<td>${table.indexSizeHumanReadable}</td>
 						<td>
-							<@widget.detail "/sql/table/${table.name}" />
-							<@widget.detail "/sql/table/list/${table.name}/" />
+							<@widget.link "/sql/table/list/${table.encodedName}/" "view_doc.png" "Ver"/>
+							<@widget.link "/sql/table/${table.encodedName}" "detail.png" "Detalle"/>							
 						</td>
 					</tr>
 					</#list>

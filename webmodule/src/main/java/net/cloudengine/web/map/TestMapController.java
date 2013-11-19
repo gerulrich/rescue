@@ -1,10 +1,13 @@
 package net.cloudengine.web.map;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 import net.cloudengine.api.jpa.dao.StreetBlockDao;
 import net.cloudengine.api.jpa.dao.ZoneDao;
-import net.cloudengine.model.map.Location;
-import net.cloudengine.model.map.StreetBlock;
-import net.cloudengine.model.map.geo.FatureCollection;
+import net.cloudengine.model.geo.Location;
+import net.cloudengine.model.geo.StreetBlock;
+import net.cloudengine.model.map.geo.FeatureCollection;
 import net.cloudengine.service.admin.ConfigurationService;
 import net.shapefile.Point;
 
@@ -40,6 +43,7 @@ public class TestMapController {
 		ModelAndView mav = new ModelAndView();
 		mav.addObject("map.google.street", service.getProperty("map.google.street"));
 		mav.addObject("map.osm", service.getProperty("map.osm"));
+		mav.addObject("zones", zoneDao.getZonesType());
 		mav.setViewName("/map/testMap");
 		return mav;
 	}
@@ -55,21 +59,23 @@ public class TestMapController {
 	}
 	
 	@RequestMapping(value = "/locate", method = RequestMethod.GET)
-	public @ResponseBody Location find(@RequestParam("loc") String loc, @RequestParam("nro") int nro) {
-		StreetBlock s = streetDao.find(loc, nro);
-		Location c = new Location();
-		if (s != null) {
-			c.setName(s.getName()+" "+nro);
-			Point p = s.pointForNumber(nro);
+	public @ResponseBody Collection<Location> find(@RequestParam("loc") String loc, @RequestParam("nro") int nro) {
+		Collection<StreetBlock> s = streetDao.find(loc, nro);
+		Collection<Location> locations = new ArrayList<Location>();
+		for(StreetBlock street : s) {
+			Location c = new Location();
+			c.setName(street.getName()+" "+nro);
+			Point p = street.pointForNumber(nro);
 			c.setX(p.getX());
 			c.setY(p.getY());
+			locations.add(c);
 		}
-		return c;
+		return locations;
 	}
 	
 	@RequestMapping(value = "/zone", method = RequestMethod.GET)
-	public @ResponseBody FatureCollection getZones(@RequestParam("name") String name, @RequestParam("type") String type) {
-		FatureCollection fc = new FatureCollection(zoneDao.getByNameAndType(name, type));
+	public @ResponseBody FeatureCollection getZones(@RequestParam("name") String name, @RequestParam("type") String type) {
+		FeatureCollection fc = new FeatureCollection(zoneDao.getByNameAndType(name, type));
 		return fc;
 	}
 	
