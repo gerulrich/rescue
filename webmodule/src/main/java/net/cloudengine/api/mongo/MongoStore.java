@@ -1,5 +1,8 @@
 package net.cloudengine.api.mongo;
 
+import static org.springframework.data.mongodb.core.query.Criteria.where;
+import static org.springframework.data.mongodb.core.query.Query.query;
+
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.util.List;
@@ -7,32 +10,29 @@ import java.util.List;
 import net.cloudengine.api.Datastore;
 import net.cloudengine.api.PagingResult;
 import net.cloudengine.api.Query;
+import net.cloudengine.util.UncheckedThrow;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.mongodb.core.SimpleMongoDbFactory;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.MongoTemplate;
 
-import com.google.code.morphia.Morphia;
-import com.google.code.morphia.annotations.Id;
-import com.mongodb.WriteConcern;
 
 public class MongoStore<E, PK extends Serializable> implements Datastore<E, PK> {
 
-	protected SimpleMongoDbFactory factory;
 	protected Class<E> entityClass;
-	protected Morphia morphia;
+	protected MongoTemplate mongoTemplate;
 	
 	@Autowired
-	public MongoStore(MongoDBWrapper wrapper, Class<E> entityClass, Morphia morphia) {
+	public MongoStore(MongoTemplate mongoTemplate, Class<E> entityClass) {
 		super();
-		this.factory = wrapper.getFactory();
 		this.entityClass = entityClass;
-		this.morphia = morphia;
+		this.mongoTemplate = mongoTemplate;
 	}
 
 	@Override
 	public E get(PK id) {
-		return createMorphiaDatastore().get(entityClass, id);
+		return mongoTemplate.findById(id, entityClass);
 	}
 
 	@Override
@@ -40,22 +40,22 @@ public class MongoStore<E, PK extends Serializable> implements Datastore<E, PK> 
 		if (haveID(entity)) {
 			throw new IllegalArgumentException("no se puede guardar un objeto con id, para actualizar debe utilizar update");
 		}
-		createMorphiaDatastore().save(entity);
+		mongoTemplate.save(entity);
 	}
 	
 	@Override
 	public void delete(PK key) {
-		createMorphiaDatastore().delete(entityClass, key);
+		mongoTemplate.remove(get(key));
 	}
 	
 	@Override
 	public void delete(Query<E> query) {
-		createMorphiaDatastore().delete(((QueryImpl<E,PK>)query).getQuery(), WriteConcern.ACKNOWLEDGED);
+//		createMorphiaDatastore().delete(((QueryImpl<E,PK>)query).getQuery(), WriteConcern.ACKNOWLEDGED);
 	}
 
 	@Override
 	public List<E> getAll() {
-		return createMorphiaDatastore().find(entityClass).asList();
+		return mongoTemplate.findAll(entityClass);
 	}
 
 	@Override
@@ -65,14 +65,27 @@ public class MongoStore<E, PK extends Serializable> implements Datastore<E, PK> 
 
 	@Override
 	public PagingResult<E> list(int page, int size) {
-		return new MongoPagingResult<E>(entityClass, createMorphiaDatastore(), page, size);
+		return new MongoPagingResult<E>(mongoTemplate, entityClass, page, size);
 	}
 
 	@Override
 	public Query<E> createQuery() {
-		return new QueryImpl<E,PK>(entityClass, factory.getDb().getMongo(), morphia, factory.getDb().getName());
+//		return new QueryImpl<E,PK>(entityClass, factory.getDb().getMongo(), morphia, factory.getDb().getName());
+		return null;
 	}
 	
+	@Override
+	@Deprecated
+	public E findOne(String field, Object value) {
+		return mongoTemplate.findOne(query(where(field).is(value)), entityClass);
+	}
+	
+	@Override
+	@Deprecated
+	public List<E> findAll(String field, Object value) {
+		return mongoTemplate.find(query(where(field).is(value)), entityClass);
+	}
+
 	protected <T> boolean haveID(T entity) {
 		try {
 			Field rectField[]  = entity.getClass().getDeclaredFields();
@@ -83,9 +96,8 @@ public class MongoStore<E, PK extends Serializable> implements Datastore<E, PK> 
 					return id != null;
 				}
 			}
-			
 		} catch (Exception e) {
-			// TODO handle exception.
+			UncheckedThrow.throwUnchecked(e);
 		}
 		
 		return false;
@@ -96,15 +108,15 @@ public class MongoStore<E, PK extends Serializable> implements Datastore<E, PK> 
 		if (!haveID(entity)) {
 			throw new IllegalArgumentException("no se puede actualizar un objeto sin id, para guardar utilice save");
 		}
-		createMorphiaDatastore().save(entity);
+//		createMorphiaDatastore().save(entity);
 	}
 
 	@Override
 	public void deleteAll() {
-		createMorphiaDatastore().getCollection(entityClass).drop();		
+//		createMorphiaDatastore().getCollection(entityClass).drop();		
 	}
 	
-	protected com.google.code.morphia.Datastore createMorphiaDatastore() {
-		return morphia.createDatastore(factory.getDb().getMongo(), factory.getDb().getName());
-	}
+//	protected com.google.code.morphia.Datastore createMorphiaDatastore() {
+//		return morphia.createDatastore(factory.getDb().getMongo(), factory.getDb().getName());
+//	}
 }

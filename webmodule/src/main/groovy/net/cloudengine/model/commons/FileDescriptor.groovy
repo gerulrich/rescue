@@ -1,15 +1,13 @@
 package net.cloudengine.model.commons
 
 import org.bson.types.ObjectId
+import org.springframework.data.annotation.Id
+import org.springframework.data.mongodb.core.mapping.Document
 
-import com.google.code.morphia.annotations.Entity
-import com.google.code.morphia.annotations.Id
-
-@Entity(value="file_descriptor", noClassnameStored=true)
+@Document(collection="file_descriptor")
 class FileDescriptor {
 	
-	@Id
-	ObjectId id;
+	@Id ObjectId id;
 	String fileId;
 	String filename;
 	String type;

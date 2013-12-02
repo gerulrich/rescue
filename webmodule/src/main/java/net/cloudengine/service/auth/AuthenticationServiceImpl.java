@@ -14,7 +14,7 @@ import net.cloudengine.util.Cipher;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.security.core.codec.Base64;
+import org.springframework.security.crypto.codec.Base64;
 import org.springframework.security.web.authentication.rememberme.InvalidCookieException;
 import org.springframework.stereotype.Service;
 
@@ -60,8 +60,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 		String token = null;
 		if (user != null) {
 			if (isValidUser(user, password)) {
-				Query<AuthenticationToken> query = authTokenStore.createQuery().field("username").eq(username);
-				AuthenticationToken authToken = query.get();
+				AuthenticationToken authToken = authTokenStore.findOne("username", username);
 				if (authToken == null) {
 					authToken = createToken(username);
 					authTokenStore.save(authToken);
@@ -76,8 +75,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 	public User getUserByToken(String token) {
 		String values[] = decodeToken(token);
 		if (values != null && values.length == 2) {
-			Query<AuthenticationToken> query = authTokenStore.createQuery().field("series").eq(values[0]);
-			AuthenticationToken authToken = query.get();
+			AuthenticationToken authToken = authTokenStore.findOne("series", values[0]);
 			if (authToken != null && values[1].equals(authToken.getTokenValue())) {
 				return userService.getByUsername(authToken.getUsername());
 			}

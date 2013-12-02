@@ -5,11 +5,10 @@ import javax.validation.constraints.Size
 
 import org.apache.bval.constraints.NotEmpty
 import org.bson.types.ObjectId
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document
 
-import com.google.code.morphia.annotations.Entity
-import com.google.code.morphia.annotations.Id
-
-@Entity(value="group", noClassnameStored=true)
+@Document(collection="group")
 class Group {
 	
 	@Id ObjectId id;

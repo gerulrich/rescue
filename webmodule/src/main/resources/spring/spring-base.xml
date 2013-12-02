@@ -18,104 +18,90 @@
 			<property name="datastore" ref="propertyStore"/>
 		</bean>
 		
-		<bean id="morphia" class="com.google.code.morphia.Morphia"/>
+		<bean id="mongoTemplate" class="org.springframework.data.mongodb.core.MongoTemplate">
+			<constructor-arg ref="mongoDbFactory"></constructor-arg>
+		</bean>
 		<bean id="mongoWrapper" class="net.cloudengine.api.mongo.MongoDBWrapper" autowire="byType">
 			<constructor-arg ref="mongoDbFactory"></constructor-arg>
 		</bean>
 	
 		<bean id="roleStore" class="net.cloudengine.api.mongo.MongoStore">
-			<constructor-arg ref="mongoWrapper"/>
+			<constructor-arg ref="mongoTemplate"/>
 			<constructor-arg type="java.lang.Class" value="net.cloudengine.model.auth.Role"/>
-			<constructor-arg ref="morphia"/>
 		</bean>
 	
 		<bean id="userStore" class="net.cloudengine.api.mongo.dao.UserDaoImpl">
-			<constructor-arg ref="roleStore"/>
-			<constructor-arg ref="mongoWrapper"/>
-			<constructor-arg ref="morphia"/>
+			<constructor-arg ref="mongoTemplate"/>
 		</bean>
 		
 		<bean id="tileStore" class="net.cloudengine.api.mongo.MongoStore">
-			<constructor-arg ref="mongoWrapper"></constructor-arg>
+			<constructor-arg ref="mongoTemplate"/>
 			<constructor-arg type="java.lang.Class" value="net.cloudengine.model.geo.Tile"></constructor-arg>
-			<constructor-arg ref="morphia"></constructor-arg>
 		</bean>
 		
 		<bean id="tokenStore" class="net.cloudengine.api.mongo.dao.TokenDaoImpl">
-    		<constructor-arg ref="mongoWrapper"/>
-			<constructor-arg ref="morphia"/>
+			<constructor-arg ref="mongoTemplate"/>
     	</bean>
 	
 		<bean id="authTokenStore" class="net.cloudengine.api.mongo.MongoStore">
-			<constructor-arg ref="mongoWrapper"/>
+			<constructor-arg ref="mongoTemplate"/>
 			<constructor-arg type="java.lang.Class" value="net.cloudengine.model.auth.AuthenticationToken"/>
-			<constructor-arg ref="morphia"/>
 		</bean>
 		
 		<bean id="propertyStore" class="net.cloudengine.api.mongo.MongoStore">
-			<constructor-arg ref="mongoWrapper"></constructor-arg>
+			<constructor-arg ref="mongoTemplate"/>
 			<constructor-arg type="java.lang.Class" value="net.cloudengine.model.config.AppProperty"></constructor-arg>
-			<constructor-arg ref="morphia"></constructor-arg>
 		</bean>
 		
 		<bean id="fileStore" class="net.cloudengine.api.mongo.MongoStore">
-			<constructor-arg ref="mongoWrapper"></constructor-arg>
+			<constructor-arg ref="mongoTemplate"/>
 			<constructor-arg type="java.lang.Class" value="net.cloudengine.model.commons.FileDescriptor"/>
-			<constructor-arg ref="morphia"></constructor-arg>
 		</bean>
 		
 		<bean id="poiStore" class="net.cloudengine.api.mongo.MongoStore">
-			<constructor-arg ref="mongoWrapper"></constructor-arg>
+			<constructor-arg ref="mongoTemplate"/>
 			<constructor-arg type="java.lang.Class" value="net.cloudengine.model.geo.POI"/>
-			<constructor-arg ref="morphia"></constructor-arg>
 		</bean>
 		
 		<bean id="permissionStore" class="net.cloudengine.api.mongo.MongoStore">
-			<constructor-arg ref="mongoWrapper"></constructor-arg>
+			<constructor-arg ref="mongoTemplate"/>
 			<constructor-arg type="java.lang.Class" value="net.cloudengine.model.auth.Permission"/>
-			<constructor-arg ref="morphia"></constructor-arg>
 		</bean>
 		
 		<bean id="wayPointStore" class="net.cloudengine.api.mongo.MongoStore">
-			<constructor-arg ref="mongoWrapper"></constructor-arg>
+			<constructor-arg ref="mongoTemplate"/>
 			<constructor-arg type="java.lang.Class" value="net.cloudengine.model.resource.WayPoint"/>
-			<constructor-arg ref="morphia"></constructor-arg>
 		</bean>
 		
 		<bean id="groupStore" class="net.cloudengine.api.mongo.MongoStore">
-			<constructor-arg ref="mongoWrapper"></constructor-arg>
+			<constructor-arg ref="mongoTemplate"/>
 			<constructor-arg type="java.lang.Class" value="net.cloudengine.model.auth.Group"/>
-			<constructor-arg ref="morphia"></constructor-arg>
 		</bean>
 		
 		<bean id="requestLogStore" class="net.cloudengine.api.mongo.dao.RequestLogDaoImpl">
-			<constructor-arg ref="mongoWrapper"></constructor-arg>
-			<constructor-arg ref="morphia"></constructor-arg>
+			<constructor-arg ref="mongoTemplate"/>
 		</bean>
 		
 		<bean id="reportExecution" class="net.cloudengine.api.mongo.MongoStore">
-			<constructor-arg ref="mongoWrapper"></constructor-arg>
+			<constructor-arg ref="mongoTemplate"/>
 			<constructor-arg type="java.lang.Class" value="net.cloudengine.reports.ReportExecution"/>
-			<constructor-arg ref="morphia"></constructor-arg>
 		</bean>
 		
 		<bean id="deviceStore" class="net.cloudengine.api.mongo.MongoStore">
-			<constructor-arg ref="mongoWrapper"></constructor-arg>
+			<constructor-arg ref="mongoTemplate"/>
 			<constructor-arg type="java.lang.Class" value="net.cloudengine.model.gcm.RegisteredDevice"/>
-			<constructor-arg ref="morphia"></constructor-arg>
 		</bean>
 		
 		<bean id="wfStore" class="net.cloudengine.api.mongo.MongoStore">
-			<constructor-arg ref="mongoWrapper"></constructor-arg>
+			<constructor-arg ref="mongoTemplate"/>
 			<constructor-arg type="java.lang.Class" value="net.cloudengine.domain.dsl.workflow.PersistentWorkflow"/>
-			<constructor-arg ref="morphia"></constructor-arg>
 		</bean>		
 		
 		<bean id="blobStore" class="net.cloudengine.api.mongo.MongoBlobStore" />
 		
 		<bean id="appListener" class="net.cloudengine.AppListener">
 			<constructor-arg ref="mongoWrapper"></constructor-arg>
-			<constructor-arg ref="morphia"></constructor-arg>
+<!-- 			<constructor-arg ref="morphia"></constructor-arg> -->
 		</bean>
 		
 		<bean class="net.cloudengine.management.Injector"/>
@@ -185,22 +171,5 @@
   		<property name="corePoolSize" value="1" />
   		<property name="maxPoolSize" value="1" />
 	</bean>
-    
-	<!-- bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
-		<property name="host" value="smtp.gmail.com" />
-		<property name="port" value="465" />
-		<property name="username" value="gerulrich@gmail.com" />
-		<property name="password" value="xxxxx" />
-		<property name="protocol" value="smtps" />
-		<property name="javaMailProperties">
-			<props>
-				<prop key="mail.smtp.auth">true</prop>
-				<prop key="mail.smtp.socketFactory.class">javax.net.ssl.SSLSocketFactory</prop>
-				<prop key="mail.smtp.socketFactory.port">465</prop>
-				<prop key="mail.debug">true</prop>
-				<prop key="mail.smtp.starttls.enable">true</prop>
-			</props>
-		</property>
-	</bean-->
 
 </beans>

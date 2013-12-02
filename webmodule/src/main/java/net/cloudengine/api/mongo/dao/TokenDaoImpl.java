@@ -1,18 +1,18 @@
 package net.cloudengine.api.mongo.dao;
 
+import static org.springframework.data.mongodb.core.query.Criteria.where;
+import static org.springframework.data.mongodb.core.query.Query.query;
+
 import java.util.Date;
 
-import net.cloudengine.api.Query;
-import net.cloudengine.api.mongo.MongoDBWrapper;
 import net.cloudengine.api.mongo.MongoStore;
 import net.cloudengine.model.auth.RememberMeToken;
 
 import org.bson.types.ObjectId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.security.web.authentication.rememberme.PersistentRememberMeToken;
-
-import com.google.code.morphia.Morphia;
 
 /**
  * Mongo based persistent login token repository implementation.
@@ -23,8 +23,8 @@ public class TokenDaoImpl extends MongoStore<RememberMeToken, ObjectId> implemen
 
 	private static final Logger logger = LoggerFactory.getLogger(TokenDaoImpl.class);
 	
-	public TokenDaoImpl(MongoDBWrapper wrapper, Morphia morphia) {
-		super(wrapper, RememberMeToken.class, morphia);
+	public TokenDaoImpl(MongoTemplate mongoTemplate) {
+		super(mongoTemplate, RememberMeToken.class);
 	}
 	
 	@Override
@@ -37,8 +37,7 @@ public class TokenDaoImpl extends MongoStore<RememberMeToken, ObjectId> implemen
 	
 	@Override
 	public synchronized void updateToken(String series, String tokenValue, Date lastUsed) {
-		Query<RememberMeToken> query = createQuery().field("series").eq(series);
-		RememberMeToken token = query.get();
+		RememberMeToken token = getRememberMeTokenBySeries(series);
 
 		if (logger.isDebugEnabled()) {
 			logger.debug("Actualizando token de sesion para {}, usuario: {}", token.getSeries(), token.getUsername());
@@ -58,11 +57,20 @@ public class TokenDaoImpl extends MongoStore<RememberMeToken, ObjectId> implemen
 			logger.debug("Obteniendo token de sesion - seriesId={}", seriesId);
 		}
 		
-		Query<RememberMeToken> query = createQuery().field("series").eq(seriesId);
-		RememberMeToken token = query.get();
+		RememberMeToken token = getRememberMeTokenBySeries(seriesId);
 		if (token != null)
 			return token.toSpringToken();
 		return null;
+	}
+
+	private RememberMeToken getRememberMeTokenBySeries(String seriesId) {
+		RememberMeToken token = mongoTemplate.findOne(query(where("series").is(seriesId)), entityClass);
+		return token;
+	}
+	
+	private RememberMeToken getRememberMeTokenByUsername(String username) {
+		RememberMeToken token = mongoTemplate.findOne(query(where("username").is(username)), entityClass);
+		return token;
 	}
 	
 	@Override
@@ -72,11 +80,12 @@ public class TokenDaoImpl extends MongoStore<RememberMeToken, ObjectId> implemen
 			logger.debug("Borrando token de sesion para usuario: "+username);
 		}
 
-		Query<RememberMeToken> query = createQuery().field("username").eq(username);
-		RememberMeToken token = query.get();
+		RememberMeToken token = getRememberMeTokenByUsername(username);
 		if (token != null)
 			delete(token.getId());
 	}
+	
+	 
 
 	
 		

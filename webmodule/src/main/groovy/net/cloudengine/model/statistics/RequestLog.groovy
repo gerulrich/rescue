@@ -1,11 +1,10 @@
 package net.cloudengine.model.statistics
 
-import org.bson.types.ObjectId;
+import org.bson.types.ObjectId
+import org.springframework.data.annotation.Id
+import org.springframework.data.mongodb.core.mapping.Document
 
-import com.google.code.morphia.annotations.Entity;
-import com.google.code.morphia.annotations.Id;
-
-@Entity("request_log")
+@Document(collection="request_log")
 class RequestLog {
 	
 	@Id ObjectId id;

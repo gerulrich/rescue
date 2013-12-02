@@ -1,16 +1,14 @@
 package net.cloudengine.model.auth
 
 import org.bson.types.ObjectId
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document
 import org.springframework.security.core.GrantedAuthority
 
-import com.google.code.morphia.annotations.Entity
-import com.google.code.morphia.annotations.Id
-
-@Entity(value="permission", noClassnameStored=true)
+@Document(collection="permission")
 class Permission implements GrantedAuthority {
 
-	@Id
-	ObjectId id;
+	@Id ObjectId id;
 	String name;
 	String description;
 	

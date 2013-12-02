@@ -1,9 +1,8 @@
 package net.cloudengine.model.resource
 
 import org.bson.types.ObjectId
-
-import com.google.code.morphia.annotations.Entity;
-import com.google.code.morphia.annotations.Id
+import org.springframework.data.annotation.Id
+import org.springframework.data.mongodb.core.mapping.Document
 
 /**
  * Representa coordenadas para ubicar puntos de referencia para 
@@ -11,7 +10,7 @@ import com.google.code.morphia.annotations.Id
  * @author German
  *
  */
-@Entity("waypoint")
+@Document(collection="waypoint")
 class WayPoint {
 	
 	@Id ObjectId id;

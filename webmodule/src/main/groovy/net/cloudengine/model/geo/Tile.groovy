@@ -1,15 +1,13 @@
 package net.cloudengine.model.geo
 
-import org.bson.types.ObjectId;
+import org.bson.types.ObjectId
+import org.springframework.data.annotation.Id
+import org.springframework.data.mongodb.core.mapping.Document
 
-import com.google.code.morphia.annotations.Entity
-import com.google.code.morphia.annotations.Id;
-
-@Entity(value="tile", noClassnameStored=true)
+@Document(collection="tile")
 class Tile {
 
-	@Id
-	ObjectId id;
+	@Id ObjectId id;
 	int x;
 	int y;
 	int z;

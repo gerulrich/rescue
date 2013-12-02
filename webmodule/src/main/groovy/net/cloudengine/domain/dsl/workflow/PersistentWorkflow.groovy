@@ -1,12 +1,10 @@
 package net.cloudengine.domain.dsl.workflow
 
-import org.apache.commons.digester.annotations.rules.ObjectCreate;
-import org.bson.types.ObjectId;
+import org.bson.types.ObjectId
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document
 
-import com.google.code.morphia.annotations.Entity;
-import com.google.code.morphia.annotations.Id;
-
-@Entity("workflow")
+@Document(collection="workflow")
 class PersistentWorkflow {
 
 	@Id ObjectId id;

@@ -4,12 +4,11 @@ import javax.validation.constraints.NotNull
 import javax.validation.constraints.Pattern
 
 import org.bson.types.ObjectId
+import org.springframework.data.annotation.Id
+import org.springframework.data.mongodb.core.mapping.DBRef;
+import org.springframework.data.mongodb.core.mapping.Document
 
-import com.google.code.morphia.annotations.Entity
-import com.google.code.morphia.annotations.Id
-import com.google.code.morphia.annotations.Reference
-
-@Entity(value="role", noClassnameStored=true)
+@Document(collection="role")
 class Role {
 
 	@Id ObjectId id;
@@ -22,7 +21,7 @@ class Role {
 	@Pattern(regexp=".+")
 	String description;
 	
-	@Reference
+	@DBRef
 	List<Permission> permissions;
 	
 }

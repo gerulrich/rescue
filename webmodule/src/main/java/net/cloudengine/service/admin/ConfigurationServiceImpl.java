@@ -4,7 +4,6 @@ import java.util.Collection;
 
 import net.cloudengine.api.Datastore;
 import net.cloudengine.api.PagingResult;
-import net.cloudengine.api.Query;
 import net.cloudengine.model.config.AppProperty;
 
 public class ConfigurationServiceImpl implements ConfigurationService {
@@ -27,7 +26,7 @@ public class ConfigurationServiceImpl implements ConfigurationService {
 
 	@Override
 	public AppProperty getProperty(String key) {
-		return datastore.createQuery().field("key").eq(key).get();
+		return datastore.findOne("key", key);
 	}
 
 	@Override
@@ -38,8 +37,7 @@ public class ConfigurationServiceImpl implements ConfigurationService {
 
 	@Override
 	public Collection<AppProperty> getAllClientProperties() {
-		Query<AppProperty> q = datastore.createQuery();
-		return q.field("clientProperty").eq(Boolean.TRUE).list();
+		return datastore.findAll("clientProperty", Boolean.TRUE);
 	}
 
 	@Override

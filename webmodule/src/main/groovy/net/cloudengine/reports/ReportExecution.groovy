@@ -1,14 +1,11 @@
 package net.cloudengine.reports
 
 import org.bson.types.ObjectId
+import org.springframework.data.annotation.Id
+import org.springframework.data.mongodb.core.mapping.Document
 
-import com.google.code.morphia.annotations.Entity
-import com.google.code.morphia.annotations.Id
-import com.google.code.morphia.annotations.Index
-import com.google.code.morphia.annotations.Indexes
-
-@Entity(value='report_token', noClassnameStored=true)
-@Indexes(@Index(value='date', expireAfterSeconds=360, name='date_index'))
+//@Indexes(@Index(value='date', expireAfterSeconds=360, name='date_index'))
+@Document(collection='report_token')
 class ReportExecution {
 	
 	@Id ObjectId id;

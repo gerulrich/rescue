@@ -5,14 +5,16 @@ import java.util.List;
 import net.cloudengine.api.PagingResult;
 import net.cloudengine.validation.Assert;
 
-import com.google.code.morphia.Datastore;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Query;
+
+//import com.google.code.morphia.Datastore;
 
 public final class MongoPagingResult<E> implements PagingResult<E> {
 
 	private Class<E> entityClass;
-	private Datastore datastore;
 	private int startIndex;
-//	private int endIndex;
+	private MongoTemplate mongoTemplate;
 	private int pageSize;
 	private int pageNumber;
 	
@@ -20,17 +22,16 @@ public final class MongoPagingResult<E> implements PagingResult<E> {
 	private long totalPages = -1;
 	private long totalSize = -1;
 	
-	public MongoPagingResult(Class<E> entityClass, Datastore datastore, int pageNumber, int pageSize) {
+	public MongoPagingResult(MongoTemplate mongoTemplate, Class<E> entityClass, int pageNumber, int pageSize) {
 		Assert.isTrue(pageNumber > 0, "error.page.number");
 		Assert.isTrue(pageSize > 0, "error.page.size");
 		Assert.notNull(entityClass, "");
-		
+		this.mongoTemplate = mongoTemplate;
 		this.entityClass = entityClass;
-		this.datastore = datastore;
 		this.pageSize = pageSize;
 		this.startIndex = (pageNumber-1)*pageSize;
-//		this.endIndex = (pageNumber+1)*pageSize;
 		this.pageNumber = pageNumber;
+		
 	}
 	
 	@Override
@@ -60,19 +61,21 @@ public final class MongoPagingResult<E> implements PagingResult<E> {
 	@Override
 	public long getTotalSize() {
 		if (this.totalSize < 0) {
-			this.totalSize = datastore.getCount(entityClass);
+			this.totalSize = mongoTemplate.getCollection(mongoTemplate.getCollectionName(entityClass)).count();
 		}
 		return this.totalSize;
 	}
 
 	@Override
 	public List<E> getList() {
-		return datastore.find(entityClass).offset(startIndex).limit(pageSize).asList();
+		Query query = new Query();
+		query.skip(startIndex).limit(pageSize);
+		return mongoTemplate.find(query, entityClass);
 	}
 
 	@Override
 	public List<E> getCompleteList() {
-		return datastore.find(entityClass).asList();
+		return mongoTemplate.findAll(entityClass);
 	}
 
 }

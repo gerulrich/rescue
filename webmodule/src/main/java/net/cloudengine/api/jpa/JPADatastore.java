@@ -116,4 +116,20 @@ public class JPADatastore<E, PK extends Serializable> implements Datastore<E, PK
 		return this.entityManager;
 	}
 
+	@Override
+	@Deprecated
+	public E findOne(String field, Object value) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	@Deprecated
+	public List<E> findAll(String field, Object value) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	
+
 }

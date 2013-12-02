@@ -104,7 +104,7 @@ public class ResourceServiceImpl implements ResourceService {
 
 	@Override
 	public Collection<FileDescriptor> getAllImages() {
-		return fileStore.createQuery().field("type").eq("png").list();
+		return fileStore.findAll("type", "png");
 	}
 
 	@Override

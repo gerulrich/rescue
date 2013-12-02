@@ -45,5 +45,10 @@ public interface Datastore <E, PK extends Serializable> {
 	
 	void delete(Query<E> query);
 	
+	@Deprecated
+	E findOne(String field, Object value);
+	
+	@Deprecated
+	List<E> findAll(String field, Object value);
 
 }

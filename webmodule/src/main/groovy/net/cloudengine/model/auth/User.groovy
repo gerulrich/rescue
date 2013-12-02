@@ -7,19 +7,17 @@ import net.cloudengine.validation.Email
 
 import org.apache.bval.constraints.NotEmpty
 import org.bson.types.ObjectId
+import org.springframework.data.annotation.Id
+import org.springframework.data.annotation.Transient;
+import org.springframework.data.mongodb.core.mapping.DBRef
+import org.springframework.data.mongodb.core.mapping.Document
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
 
-import com.google.code.morphia.annotations.Entity
-import com.google.code.morphia.annotations.Id
-import com.google.code.morphia.annotations.NotSaved
-import com.google.code.morphia.annotations.Reference
-
-@Entity(value="user", noClassnameStored=true)
+@Document(collection="user")
 class User implements UserDetails {
 	
-	@Id
-	ObjectId id;
+	@Id ObjectId id;
 	
 	@NotNull
 	@NotEmpty
@@ -34,12 +32,12 @@ class User implements UserDetails {
 	@NotEmpty
 	String roles;
 	
-	@NotSaved
+	@Transient
 	List<Permission> permissions;
 
 	Account account = new Account();
 	
-	@Reference Group group;
+	@DBRef Group group;
 
 	boolean hasPermission(String name) {
 		return permissions.find { Permission p ->

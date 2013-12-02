@@ -2,19 +2,15 @@
 
 package net.cloudengine.model.auth
 
-import java.util.Date;
+import org.bson.types.ObjectId
+import org.springframework.data.annotation.Id
+import org.springframework.data.mongodb.core.mapping.Document
+import org.springframework.security.web.authentication.rememberme.PersistentRememberMeToken
 
-import org.bson.types.ObjectId;
-import org.springframework.security.web.authentication.rememberme.PersistentRememberMeToken;
-
-import com.google.code.morphia.annotations.Entity;
-import com.google.code.morphia.annotations.Id;
-
-@Entity("rememberme_token")
+@Document(collection="rememberme_token")
 class RememberMeToken {
 	
-	@Id
-	ObjectId id;
+	@Id ObjectId id;
 	String username;
 	String series;
 	String tokenValue;

@@ -4,15 +4,13 @@ import net.cloudengine.validation.Email
 
 import org.apache.bval.constraints.NotEmpty
 import org.bson.types.ObjectId
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document
 
-import com.google.code.morphia.annotations.Entity
-import com.google.code.morphia.annotations.Id
-
-@Entity(value="registered_device", noClassnameStored=true)
+@Document(collection="registered_device")
 class RegisteredDevice {
 	
-	@Id
-	ObjectId id;
+	@Id ObjectId id;
 	
 	@NotEmpty
 	@Email
