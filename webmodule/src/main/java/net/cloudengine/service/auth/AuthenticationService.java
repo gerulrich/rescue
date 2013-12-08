@@ -21,7 +21,7 @@ public interface AuthenticationService {
 	String createToken(String username, String password);
 	
 	/**
-	 * Obtiene un usuario a partir de un token.
+	 * Obtiene el usuario a partir de un token.
 	 * @param token
 	 * @return
 	 */

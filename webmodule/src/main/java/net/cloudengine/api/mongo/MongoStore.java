@@ -29,6 +29,11 @@ public class MongoStore<E, PK extends Serializable> implements Datastore<E, PK> 
 		this.entityClass = entityClass;
 		this.mongoTemplate = mongoTemplate;
 	}
+	
+	@Override
+	public Class<E> getType() {
+		return this.entityClass;
+	}
 
 	@Override
 	public E get(PK id) {

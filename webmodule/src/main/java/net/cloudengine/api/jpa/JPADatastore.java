@@ -42,6 +42,11 @@ public class JPADatastore<E, PK extends Serializable> implements Datastore<E, PK
 	}
 
 	@Override
+	public Class<E> getType() {
+		return this.persistentClass;
+	}
+
+	@Override
 	public E get(PK id) {
 		return this.entityManager.find(persistentClass, id);
 	}

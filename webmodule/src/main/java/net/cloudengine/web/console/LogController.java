@@ -5,8 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.Date;
 
-import net.cloudengine.api.Query;
-import net.cloudengine.api.mongo.dao.RequestLogDao;
+import net.cloudengine.dao.mongodb.RequestLogRepository;
 import net.cloudengine.management.IgnoreTrace;
 import net.cloudengine.model.statistics.RequestLog;
 
@@ -26,10 +25,10 @@ public class LogController {
 
 	private static final String ERROR_STATUS = "ERROR";
 	private static final String OK_STATUS = "OK";
-	private RequestLogDao dao;
+	private RequestLogRepository dao;
 
 	@Autowired
-	public LogController(RequestLogDao dao) {
+	public LogController(RequestLogRepository dao) {
 		super();
 		this.dao = dao;
 	}
@@ -60,15 +59,15 @@ public class LogController {
 	@RequestMapping(value="/log/drop/", method = RequestMethod.GET)
 	@IgnoreTrace
 	public @ResponseBody String dropLog() {
-		Query<RequestLog> query = dao.createQuery().field("controller").eq("LogController");
-		dao.delete(query);
+//		Query<RequestLog> query = dao.createQuery().field("controller").eq("LogController");
+//		dao.delete(query);
 		return "OK";
 	}
 	
 	@RequestMapping(value="/log/get/{controller}/{method}", method = RequestMethod.GET)
 	@IgnoreTrace
 	public ResponseEntity<byte[]> getLog(@PathVariable("controller") String controller, @PathVariable("method") String method) {
-		Collection<RequestLog> logs = dao.getRequestLog(controller, method);
+		Collection<RequestLog> logs = dao.getByControllerAndMethod(controller, method);
 		ByteArrayOutputStream os = new ByteArrayOutputStream();
 		SimpleDateFormat format = new SimpleDateFormat("dd/MM/yyyy hh:mm:ss");
 		try {

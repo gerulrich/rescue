@@ -1,6 +1,6 @@
 package net.cloudengine.web.crud.user;
 
-import net.cloudengine.api.mongo.dao.UserDao;
+import net.cloudengine.dao.mongodb.UserRepository;
 import net.cloudengine.model.config.AppProperty;
 import net.cloudengine.service.admin.ConfigurationService;
 
@@ -17,11 +17,11 @@ import org.springframework.web.servlet.ModelAndView;
 public class ListUserController {
 	
 	protected static final String URL_LIST_REDIRECT = "redirect:/user/list/1/10";
-	private UserDao userDao;
+	private UserRepository userDao;
 	private ConfigurationService service;
 	
 	@Autowired
-	public ListUserController(UserDao userDao, ConfigurationService service) {
+	public ListUserController(UserRepository userDao, ConfigurationService service) {
 		super();
 		this.service = service;
 		this.userDao = userDao;

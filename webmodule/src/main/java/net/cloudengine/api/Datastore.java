@@ -3,6 +3,7 @@ package net.cloudengine.api;
 import java.io.Serializable;
 import java.util.List;
 
+
 /**
  * Generic DAO (Data Access Object) with common methods to CRUD POJOs.
  *
@@ -38,6 +39,8 @@ public interface Datastore <E, PK extends Serializable> {
 	void update(E entity);
 
 	void delete(PK key);
+	
+	Class<E> getType();
 
 	Query<E> createQuery();
 	

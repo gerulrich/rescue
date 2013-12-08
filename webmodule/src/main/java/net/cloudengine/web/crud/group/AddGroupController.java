@@ -2,12 +2,12 @@ package net.cloudengine.web.crud.group;
 
 import javax.validation.Valid;
 
-import net.cloudengine.api.Datastore;
+import net.cloudengine.dao.support.Repository;
+import net.cloudengine.dao.support.RepositoryLocator;
 import net.cloudengine.model.auth.Group;
 
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
@@ -20,12 +20,12 @@ import org.springframework.web.servlet.ModelAndView;
 @Controller
 public class AddGroupController {
 
-	private Datastore<Group,ObjectId> datastore;
+	private Repository<Group,ObjectId> groupRepository;
 
 	@Autowired
-	public AddGroupController(@Qualifier("groupStore") Datastore<Group, ObjectId> datastore) {
+	public AddGroupController(RepositoryLocator repositoryLocator) {
 		super();
-		this.datastore = datastore;
+		this.groupRepository = repositoryLocator.getRepository(Group.class);
 	}
 	
 	@InitBinder
@@ -52,7 +52,7 @@ public class AddGroupController {
 			mav.setViewName("/crud/group/form");
 		} else {
 			// TODO validar que no se repita el nombre del grupo
-			datastore.save(group);
+			groupRepository.save(group);
 			mav.setViewName("redirect:/group/list/");
 		}
 		return mav;		

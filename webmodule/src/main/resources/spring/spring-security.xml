@@ -50,7 +50,7 @@
     </http>
     
     <authentication-manager>
-        <authentication-provider user-service-ref="userStore">
+        <authentication-provider user-service-ref="userRepository">
         	<password-encoder hash="sha"/>
     	</authentication-provider>
     </authentication-manager>
@@ -58,8 +58,8 @@
 	<beans:bean id="expiredSessionFilter" class="net.cloudengine.service.web.ExpiredSessionFilter"/>
 
 	<beans:bean id="rememberMeServices" class="org.springframework.security.web.authentication.rememberme.PersistentTokenBasedRememberMeServices">
-        <beans:property name="userDetailsService" ref="userStore" />
-        <beans:property name="tokenRepository" ref="tokenStore" />
+        <beans:property name="userDetailsService" ref="userRepository" />
+        <beans:property name="tokenRepository" ref="tokenRepository" />
         <beans:property name="cookieName" value="REMEMBER_ME" />
         <beans:property name="parameter" value="rememberme" />
         <beans:property name="key" value="rescuemeApp" />

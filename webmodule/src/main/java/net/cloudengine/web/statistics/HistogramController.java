@@ -3,6 +3,7 @@ package net.cloudengine.web.statistics;
 import java.util.List;
 
 import net.cloudengine.api.mongo.MongoDBWrapper;
+import net.cloudengine.api.mongo.dao.MapReduceService;
 import net.cloudengine.management.IgnoreTrace;
 import net.cloudengine.rest.model.statistics.GraphSerie;
 import net.cloudengine.rest.model.statistics.Tuple;
@@ -25,12 +26,14 @@ public class HistogramController {
 
 	private DB db;
 	private HistogramService service;
+	private MapReduceService rmService;
 	
 	@Autowired
-	public HistogramController(MongoDBWrapper mongoWrapper, HistogramService service) {
+	public HistogramController(MongoDBWrapper mongoWrapper, HistogramService service, MapReduceService rmService) {
 		super();
 		this.db = mongoWrapper.getFactory().getDb();
 		this.service = service;
+		this.rmService = rmService;
 	}
 	
 	@RequestMapping("/stats/request/{period}")
@@ -48,7 +51,8 @@ public class HistogramController {
 	@RequestMapping("/stats/topMethods")
 	@IgnoreTrace
 	public @ResponseBody List<Tuple<String,Double>> topMethodsGraph() {
-		return new HistogramMapReduce().topMethods(db, "request_log", "time", TimeUnits.PER_MINUTE);
+//		return new HistogramMapReduce().topMethods(db, "request_log", "time", TimeUnits.PER_MINUTE);
+		return this.rmService.topMethods(TimeUnits.PER_MINUTE);
 	}
 	
 	@RequestMapping("/stats/topErrorMethods")

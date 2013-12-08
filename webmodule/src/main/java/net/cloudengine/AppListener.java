@@ -17,11 +17,9 @@ public class AppListener {
 	private static Logger logger = LoggerFactory.getLogger(AppListener.class);
 	
 	private MongoDBWrapper wrapper;
-//	private Morphia morphia;
 	
-	public AppListener(MongoDBWrapper wrapper/*, Morphia morphia*/) {
+	public AppListener(MongoDBWrapper wrapper) {
 		this.wrapper = wrapper;
-//		this.morphia = morphia;
 	}
 
 	@PostConstruct

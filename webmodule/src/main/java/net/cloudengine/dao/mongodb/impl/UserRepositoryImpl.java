@@ -1,4 +1,4 @@
-package net.cloudengine.api.mongo.dao;
+package net.cloudengine.dao.mongodb.impl;
 
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 import static org.springframework.data.mongodb.core.query.Query.query;
@@ -8,7 +8,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import net.cloudengine.api.mongo.MongoStore;
+import net.cloudengine.dao.mongodb.MongoRepository;
+import net.cloudengine.dao.mongodb.UserRepository;
 import net.cloudengine.model.auth.Permission;
 import net.cloudengine.model.auth.Role;
 import net.cloudengine.model.auth.User;
@@ -20,16 +21,16 @@ import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
-public class UserDaoImpl extends MongoStore<User, ObjectId> implements UserDao {
+public class UserRepositoryImpl extends MongoRepository<User, ObjectId> implements UserRepository {
 
-	public UserDaoImpl(MongoTemplate mongoTemplate) {
-		super(mongoTemplate, User.class);
+	public UserRepositoryImpl(MongoTemplate mongoTemplate) {
+		super(User.class, mongoTemplate);
 	}
 	
 	@Override
 	public User getByUsername(String username) {
 		Assert.notNull(username, "El parámetro username no puede ser null");
-		User user = mongoTemplate.findOne(query(where("username").is(username)), entityClass);
+		User user = mongoTemplate.findOne(query(where("username").is(username)), this.getType());
 		if (user != null) {
 			user.setPermissions(getPermissionForUser(user));
 		}

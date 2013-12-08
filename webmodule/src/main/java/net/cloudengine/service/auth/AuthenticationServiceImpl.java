@@ -1,11 +1,14 @@
 package net.cloudengine.service.auth;
 
+import static net.cloudengine.dao.support.SearchParametersBuilder.forClass;
+
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.util.Date;
 
-import net.cloudengine.api.Datastore;
-import net.cloudengine.api.Query;
+import net.cloudengine.dao.support.Repository;
+import net.cloudengine.dao.support.RepositoryLocator;
+import net.cloudengine.dao.support.SearchParametersBuilder;
 import net.cloudengine.model.auth.AuthenticationToken;
 import net.cloudengine.model.auth.User;
 import net.cloudengine.service.web.SessionService;
@@ -13,7 +16,6 @@ import net.cloudengine.util.Cipher;
 
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.crypto.codec.Base64;
 import org.springframework.security.web.authentication.rememberme.InvalidCookieException;
 import org.springframework.stereotype.Service;
@@ -23,16 +25,16 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
 	private UserService userService;
 	private SessionService sessionService;
-	private Datastore<AuthenticationToken, ObjectId> authTokenStore;
+	private Repository<AuthenticationToken, ObjectId> authTokenRepository;
 	private SecureRandom random;
 	
 	@Autowired
 	public AuthenticationServiceImpl(UserService userService, SessionService sessionService,
-			@Qualifier("authTokenStore") Datastore<AuthenticationToken, ObjectId> authTokenStore) throws NoSuchAlgorithmException {
+			RepositoryLocator repositoryLocator) throws NoSuchAlgorithmException {
 		super();
 		this.userService = userService;
 		this.sessionService = sessionService;
-		this.authTokenStore = authTokenStore;
+		this.authTokenRepository = repositoryLocator.getRepository(AuthenticationToken.class);
 		random = SecureRandom.getInstance("SHA1PRNG");
 	}
 	
@@ -60,10 +62,12 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 		String token = null;
 		if (user != null) {
 			if (isValidUser(user, password)) {
-				AuthenticationToken authToken = authTokenStore.findOne("username", username);
+				SearchParametersBuilder builder = forClass(AuthenticationToken.class);
+				builder.eq("username", username);
+				AuthenticationToken authToken = authTokenRepository.findOne(builder.build());
 				if (authToken == null) {
 					authToken = createToken(username);
-					authTokenStore.save(authToken);
+					authTokenRepository.save(authToken);
 				}
 				token = encodeTokens(new String[] {authToken.getSeries(), authToken.getTokenValue()});
 			}
@@ -75,7 +79,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 	public User getUserByToken(String token) {
 		String values[] = decodeToken(token);
 		if (values != null && values.length == 2) {
-			AuthenticationToken authToken = authTokenStore.findOne("series", values[0]);
+			SearchParametersBuilder builder = forClass(AuthenticationToken.class);
+			builder.eq("series", values[0]);
+			AuthenticationToken authToken = authTokenRepository.findOne(builder.build());
 			if (authToken != null && values[1].equals(authToken.getTokenValue())) {
 				return userService.getByUsername(authToken.getUsername());
 			}

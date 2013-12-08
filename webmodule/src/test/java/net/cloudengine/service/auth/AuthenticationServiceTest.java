@@ -2,6 +2,7 @@ package net.cloudengine.service.auth;
 
 import java.util.UUID;
 
+import net.cloudengine.dao.support.RepositoryLocator;
 import net.cloudengine.model.auth.User;
 import net.cloudengine.service.web.SessionService;
 import net.cloudengine.utils.TestUtil;
@@ -19,11 +20,13 @@ public class AuthenticationServiceTest {
 
 	private UserService userService;
 	private SessionService sessionService;
+	private RepositoryLocator repositoryLocator;
 	
 	@Before
 	public void init() {
 		userService = TestUtil.getUserServiceMock();
 		sessionService = Mockito.mock(SessionService.class);
+		repositoryLocator = new RepositoryLocator();
 		Mockito
 			.when(sessionService.getSessionId(Mockito.any(User.class)))
 			.thenAnswer(new Answer<String>() {
@@ -39,7 +42,7 @@ public class AuthenticationServiceTest {
 	@Ignore
 	public void testLoginWithValidUserWithAccessPermission() throws Exception {
 		String username = "user1@test.com";
-		AuthenticationService authService = new AuthenticationServiceImpl(userService, sessionService, null);
+		AuthenticationService authService = new AuthenticationServiceImpl(userService, sessionService, repositoryLocator);
 		String token = authService.login(username, "pass1");
 		
 		Assert.assertNotNull(token);
@@ -57,7 +60,7 @@ public class AuthenticationServiceTest {
 	@Test(expected=RuntimeException.class)
 	public void testLoginWithValidUserWithoutAccessPermission() throws Exception {
 		String username = "user2@test.com";
-		AuthenticationService authService = new AuthenticationServiceImpl(userService, sessionService, null);
+		AuthenticationService authService = new AuthenticationServiceImpl(userService, sessionService, repositoryLocator);
 		authService.login(username, "pass2");
 		// nada para validar, se lanza una excepcion.
 	}
@@ -65,7 +68,7 @@ public class AuthenticationServiceTest {
 	@Test
 	public void testLoginWithInvalidUser() throws Exception {
 		String username = "user2@test.com";
-		AuthenticationService authService = new AuthenticationServiceImpl(userService, sessionService, null);
+		AuthenticationService authService = new AuthenticationServiceImpl(userService, sessionService, repositoryLocator);
 		String token = authService.login(username, "invalidpass");
 		
 		Assert.assertNull(token);
@@ -77,7 +80,7 @@ public class AuthenticationServiceTest {
 	
 	@Test
 	public void testLoginWithoutUsername() throws Exception {
-		AuthenticationService authService = new AuthenticationServiceImpl(userService, sessionService, null);
+		AuthenticationService authService = new AuthenticationServiceImpl(userService, sessionService, repositoryLocator);
 		String token = authService.login(null, "pass");
 		Assert.assertNull(token);
 		
@@ -89,7 +92,7 @@ public class AuthenticationServiceTest {
 	@Test
 	public void testLoginWithoutPassword() throws Exception {
 		String username = "user1@test.com";
-		AuthenticationService authService = new AuthenticationServiceImpl(userService, sessionService, null);
+		AuthenticationService authService = new AuthenticationServiceImpl(userService, sessionService, repositoryLocator);
 		String token = authService.login("user1@test.com", null);
 		Assert.assertNull(token);
 		
@@ -100,7 +103,7 @@ public class AuthenticationServiceTest {
 	
 	@Test
 	public void testLoginWithoutUsernameAndPassword() throws Exception {
-		AuthenticationService authService = new AuthenticationServiceImpl(userService, sessionService, null);
+		AuthenticationService authService = new AuthenticationServiceImpl(userService, sessionService, repositoryLocator);
 		String token = authService.login(null, null);
 		Assert.assertNull(token);
 		

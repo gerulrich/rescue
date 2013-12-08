@@ -1,11 +1,12 @@
-package net.cloudengine.api.mongo.dao;
+package net.cloudengine.dao.mongodb.impl;
 
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 import static org.springframework.data.mongodb.core.query.Query.query;
 
 import java.util.Date;
 
-import net.cloudengine.api.mongo.MongoStore;
+import net.cloudengine.dao.mongodb.MongoRepository;
+import net.cloudengine.dao.mongodb.TokenRepository;
 import net.cloudengine.model.auth.RememberMeToken;
 
 import org.bson.types.ObjectId;
@@ -19,12 +20,12 @@ import org.springframework.security.web.authentication.rememberme.PersistentReme
  *
  * @author German Ulrich
  */
-public class TokenDaoImpl extends MongoStore<RememberMeToken, ObjectId> implements TokenDao {
+public class TokenRepositoryImpl extends MongoRepository<RememberMeToken, ObjectId> implements TokenRepository {
 
-	private static final Logger logger = LoggerFactory.getLogger(TokenDaoImpl.class);
+	private static final Logger logger = LoggerFactory.getLogger(TokenRepositoryImpl.class);
 	
-	public TokenDaoImpl(MongoTemplate mongoTemplate) {
-		super(mongoTemplate, RememberMeToken.class);
+	public TokenRepositoryImpl(MongoTemplate mongoTemplate) {
+		super(RememberMeToken.class, mongoTemplate);
 	}
 	
 	@Override
@@ -64,12 +65,12 @@ public class TokenDaoImpl extends MongoStore<RememberMeToken, ObjectId> implemen
 	}
 
 	private RememberMeToken getRememberMeTokenBySeries(String seriesId) {
-		RememberMeToken token = mongoTemplate.findOne(query(where("series").is(seriesId)), entityClass);
+		RememberMeToken token = mongoTemplate.findOne(query(where("series").is(seriesId)), this.getType());
 		return token;
 	}
 	
 	private RememberMeToken getRememberMeTokenByUsername(String username) {
-		RememberMeToken token = mongoTemplate.findOne(query(where("username").is(username)), entityClass);
+		RememberMeToken token = mongoTemplate.findOne(query(where("username").is(username)), this.getType());
 		return token;
 	}
 	
@@ -83,11 +84,6 @@ public class TokenDaoImpl extends MongoStore<RememberMeToken, ObjectId> implemen
 		RememberMeToken token = getRememberMeTokenByUsername(username);
 		if (token != null)
 			delete(token.getId());
-	}
-	
-	 
-
-	
-		
+	}		
 	
 }

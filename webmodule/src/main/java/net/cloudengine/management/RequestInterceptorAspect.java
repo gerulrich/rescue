@@ -3,7 +3,7 @@ package net.cloudengine.management;
 import java.util.Date;
 import java.util.concurrent.ExecutorService;
 
-import net.cloudengine.api.Datastore;
+import net.cloudengine.dao.mongodb.RequestLogRepository;
 import net.cloudengine.model.statistics.RequestLog;
 import net.cloudengine.service.web.SessionService;
 
@@ -15,13 +15,12 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
-import org.bson.types.ObjectId;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @Aspect
 public class RequestInterceptorAspect {
 
-	private Datastore<RequestLog, ObjectId> ds;
+	private RequestLogRepository dao;
 	private ExecutorService executorService;
 	private SessionService sessionService;
 	private ThreadLocal<Long> threadLocal = new ThreadLocal<Long>();
@@ -85,7 +84,7 @@ public class RequestInterceptorAspect {
 		executorService.execute(new Runnable() {
 			@Override
 			public void run() {
-				ds.save(log);
+				dao.save(log);
 			}
 		});		
 	}
@@ -98,7 +97,7 @@ public class RequestInterceptorAspect {
 		this.executorService = executorService;
 	}
 
-	public void setDs(Datastore<RequestLog, ObjectId> ds) {
-		this.ds = ds;
+	public void setDao(RequestLogRepository dao) {
+		this.dao = dao;
 	}
 }

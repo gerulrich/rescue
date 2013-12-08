@@ -95,7 +95,7 @@
 	<bean class="net.cloudengine.management.RequestInterceptorAspect" factory-method="aspectOf">
 		<property name="sessionService" ref="sessionServiceImpl"/>
 		<property name="executorService" ref="threadExecutor"/>
-		<property name="ds" ref="requestLogStore"/>
+		<property name="dao" ref="reqLogRepository"/>
 	</bean>
 	
 </beans>

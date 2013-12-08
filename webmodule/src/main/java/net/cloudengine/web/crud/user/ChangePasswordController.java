@@ -2,7 +2,7 @@ package net.cloudengine.web.crud.user;
 
 import javax.validation.Valid;
 
-import net.cloudengine.api.mongo.dao.UserDao;
+import net.cloudengine.dao.mongodb.UserRepository;
 import net.cloudengine.forms.PasswordForm;
 import net.cloudengine.model.auth.User;
 import net.cloudengine.util.Cipher;
@@ -21,10 +21,10 @@ import org.springframework.web.servlet.ModelAndView;
 @Controller
 public class ChangePasswordController {
 	
-	private UserDao userDao;
+	private UserRepository userDao;
 
 	@Autowired
-	public ChangePasswordController(UserDao userDao) {
+	public ChangePasswordController(UserRepository userDao) {
 		super();
 		this.userDao = userDao;
 	}

@@ -1,7 +1,8 @@
 package net.cloudengine.rpc.service.ticket;
 
-import net.cloudengine.api.Datastore;
 import net.cloudengine.api.jpa.dao.TicketDao;
+import net.cloudengine.dao.support.Repository;
+import net.cloudengine.dao.support.RepositoryLocator;
 import net.cloudengine.management.ExternalService;
 import net.cloudengine.model.auth.Group;
 import net.cloudengine.model.auth.User;
@@ -17,7 +18,6 @@ import net.cloudengine.service.web.SessionService;
 import org.apache.commons.lang.StringUtils;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,18 +27,18 @@ import org.springframework.transaction.annotation.Transactional;
 public class TicketControllerImpl implements TicketController {
 
 	private TicketDao ticketDao;
-	private Datastore<Group, ObjectId> groupDao;
+	private Repository<Group, ObjectId> groupRepository;
 	private SessionService sessionService;
 	private MappersRegistry mappersRegistry;
 	
 	
 	@Autowired
 	public TicketControllerImpl(TicketDao ticketDao, MappersRegistry mappersRegistry, SessionService sessionService, 
-			@Qualifier("groupStore") Datastore<Group, ObjectId> groupDao) {
+			RepositoryLocator repositoryLocator) {
 		super();
 		this.ticketDao = ticketDao;
 		this.sessionService = sessionService;
-		this.groupDao = groupDao;
+		this.groupRepository = repositoryLocator.getRepository(Group.class);
 		this.mappersRegistry = mappersRegistry;
 	}
 
@@ -84,7 +84,7 @@ public class TicketControllerImpl implements TicketController {
 	@Override
 	public void joinGroup(Long ticketId, String groupId) {
 		Ticket ticket = ticketDao.get(ticketId);
-		Group group = groupDao.get(new ObjectId(groupId));
+		Group group = groupRepository.get(new ObjectId(groupId));
 		if (ticket != null && group != null) {
 			WorkBook wb = ticket.createWorkBook(group);
 			ticketDao.save(wb);
