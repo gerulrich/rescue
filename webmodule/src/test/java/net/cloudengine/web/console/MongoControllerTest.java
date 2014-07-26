@@ -8,7 +8,7 @@ import java.util.List;
 
 import junit.framework.Assert;
 import net.cloudengine.model.console.MongoCollection;
-import net.cloudengine.service.console.MongoService;
+import net.cloudengine.service.MongoService;
 import net.cloudengine.util.Cast;
 import net.cloudengine.util.HexString;
 

@@ -1,4 +1,6 @@
 package net.cloudengine.client.workbench;
+import net.cloudengine.rpc.controller.ticket.InboxController;
+
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.layout.GridData;
@@ -68,11 +70,11 @@ public class BrowserPanel extends Composite {
 
 		browser = new Browser(browserPane, SWT.NONE);
 		browser.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-		this.setMail(null);
+		this.setTicket(null);
 	}
 
 	// Specific e-mail messages into the list
-	public void setMail(Object mail) {
+	public void setTicket(Object mail) {
 //		if (mail != null) {
 //			subjectLabel.setText(mail.getTitle() + "     ,");
 //			addressLabel.setText(mail.getSender() + "     ,");

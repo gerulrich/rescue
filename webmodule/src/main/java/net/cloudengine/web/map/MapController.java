@@ -4,10 +4,10 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import net.cloudengine.model.geo.Tile;
-import net.cloudengine.service.admin.ConfigurationService;
-import net.cloudengine.service.map.TileCache;
-import net.cloudengine.service.map.TileServer;
-import net.cloudengine.service.map.impl.KeyConfigTileServer;
+import net.cloudengine.service.ConfigurationService;
+import net.cloudengine.service.TileCache;
+import net.cloudengine.service.TileServer;
+import net.cloudengine.service.impl.KeyConfigTileServer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -1,6 +1,10 @@
 package net.cloudengine.rpc.controller.ticket;
 
+import java.util.List;
+
+import net.cloudengine.rest.model.resource.Response;
 import net.cloudengine.rest.model.ticket.TicketModel;
+import net.cloudengine.rpc.model.ActionModel;
 
 public interface TicketController {
 	
@@ -18,17 +22,10 @@ public interface TicketController {
 	TicketModel create();
 	
 	/**
-	 * Actualiza el estado de un ticket.
+	 * Actualiza la informaci&oacute;n de un ticket.
 	 * @param ticket
 	 */
 	boolean update(TicketModel ticketModel);
-	
-	/**
-	 * Une un grupo al ticket.
-	 * @param ticketId
-	 * @param groupId
-	 */
-	void joinGroup(Long ticketId, String groupId);
 	
 	/**
 	 * Asigna el ticket al usuario actual.
@@ -39,5 +36,10 @@ public interface TicketController {
 	
 	void leaveTicket(Long ticketId);
 	
+	
+	Response<String> exec(Long ticketId, String action);
+	Response<String> fork(Long ticketId, String action, List<String> groupIds);
+	
+	List<ActionModel> getActions(Long ticketId);
 
 }

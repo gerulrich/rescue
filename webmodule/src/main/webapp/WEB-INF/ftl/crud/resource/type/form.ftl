@@ -3,7 +3,7 @@
 <#macro breadcrumbs>
 	<li><a href="<@spring.url '/'/>">Dashboard</a></li>
 	<li><a href="<@spring.url '/resource/type/list/'/>">Tipo de Recurso</a></li>
-	<li><#if !type.id??>Nuevo tipo de recurso<#else>Editar tipo de recurso</#if></li>
+	<li><#if !entity.id??>Nuevo tipo de recurso<#else>Editar tipo de recurso</#if></li>
 </#macro>
 
 <#macro menu>
@@ -16,12 +16,12 @@
 
 
 <#macro body>
-	<#if !type.id??>
+	<#if !entity.id??>
 		<#assign title="Nuevo tipo de Recurso"/>
 		<#assign url="/resource/type/new/"/>
 	<#else>
 		<#assign title="Editar tipo de Recurso"/>
-		<#assign url="/resource/type/edit/${type.id}"/>
+		<#assign url="/resource/type/edit/${entity.id}"/>
 	</#if>
 	
 	<@page.section>
@@ -29,7 +29,7 @@
 			<form action="<@spring.url '${url}'/>" method="post" class="valid">
 				
 				<@form.row label="Nombre *">
-					<@spring.formInput  "type.name" "class='{validate:{required:true, messages:{required:\"Ingrese un nombre para el tipo\"}}}'"/>
+					<@spring.formInput  "entity.name" "class='{validate:{required:true, messages:{required:\"Ingrese un nombre para el tipo\"}}}'"/>
 					<@spring.showErrors "<br/>" />
 				</@form.row>
 				

@@ -18,9 +18,9 @@
 
 <#macro body>
 
-	<#if user.id??>
+	<#if entity.id??>
 		<#assign title="Editar usuario."/>
-		<#assign url="/user/${user.id}"/>
+		<#assign url="/user/edit/${entity.id}"/>
 	<#else>
 		<#assign title="Alta de usuario"/>
 		<#assign url="/user/new"/>
@@ -40,58 +40,58 @@
 		<@page.box title=title>
 			<form  action="<@spring.url '${url}'/>" method="post">
 				<@form.row label="Email">
-					<@spring.formInput  "user.username" "class='{validate:{required:true, email:true, messages:{email:\"Ingrese una direccion de E-mail valida.\", required:\"Ingrese una dirección de E-mail\"}}}'"/>
+					<@spring.formInput  "entity.username" "class='{validate:{required:true, email:true, messages:{email:\"Ingrese una direccion de E-mail valida.\", required:\"Ingrese una dirección de E-mail\"}}}'"/>
 					<@spring.showErrors "<br/>"/>				
 				</@form.row>
 				
 				<@form.row label="Nombre a visualizar">
-					<@spring.formInput  "user.displayName" "class='{validate:{required:true, messages:{required:\"Ingrese el nombre del usuario.\"}}}'"/>
+					<@spring.formInput  "entity.displayName" "class='{validate:{required:true, messages:{required:\"Ingrese el nombre del usuario.\"}}}'"/>
 					<@spring.showErrors "<br/>"/>				
 				</@form.row>			
 						
 				<@form.row label="Roles">
-					<@spring.formInput  "user.roles" "class='{validate:{required:true, messages:{required:\"Ingrese los roles del usuario.\"}}}'"/>
+					<@spring.formInput  "entity.roles" "class='{validate:{required:true, messages:{required:\"Ingrese los roles del usuario.\"}}}'"/>
 					<@spring.showErrors "<br/>"/>				
 				</@form.row>						
 						
 				<@form.row label="N&uacute;mero de agente">
-					<@spring.formInput  "user.account.agentNumber"/>
+					<@spring.formInput  "entity.account.agentNumber"/>
 					<@spring.showErrors "<br/>"/>				
 				</@form.row>
 						
 				<@form.row label="Contrase&ntilde;a del agente">
-					<@spring.formInput  "user.account.agentPassword"/>
+					<@spring.formInput  "entity.account.agentPassword"/>
 					<@spring.showErrors "<br/>"/>				
 				</@form.row>
 				
-				<#if user.id??>
-					
-					<@form.row label="Grupo">
-						<@form.pojoSelect "group" groups "id" "name"/>
-						<@spring.showErrors "<br/>"/>
-					</@form.row>
-					
+				<@form.row label="Grupo">
+					<@form.pojoSelect "group" groups "id" "name"/>
+					<@spring.showErrors "<br/>"/>
+				</@form.row>
+				
+				<#if entity.id??>
+				
 					<@form.row label="">
-						<@spring.formCheckbox  "user.account.enabled"/>
+						<@spring.formCheckbox  "entity.account.enabled"/>
 						<label for="account.enabled">Habilitado</label>
 					</@form.row>
 					
 					<@form.row label="">
-						<@spring.formCheckbox  "user.account.locked"/>
+						<@spring.formCheckbox  "entity.account.locked"/>
 						<label for="account.locked">Cuenta bloqueada</label>
 					</@form.row>
-							
+
 				<#else>
 				
-					<@form.row label="Contrase&ntilde;a">
-						<@spring.formPasswordInput  "passwordForm.password" "class='{validate:{required:true, messages:{required:\"Ingrese una contraseña.\"}}}'"/>
-						<@spring.showErrors "<br/>"/>					
-					</@form.row>
+					<#-- @form.row label="Contrase&ntilde;a" -->
+						<#-- @spring.formPasswordInput  "passwordForm.password" "class='{validate:{required:true, messages:{required:\"Ingrese una contraseña.\"}}}'"/-->
+						<#--@spring.showErrors "<br/>"/-->
+					<#--/@form.row-->
 					
-					<@form.row label="Repetir contrase&ntilde;a">
-						<@spring.formPasswordInput  "passwordForm.passwordVerification" "class='{validate:{required:true, messages:{required:\"Repita la contraseña.\"}}}'"/>
-						<@spring.showErrors "<br/>"/>					
-					</@form.row >
+					<#--@form.row label="Repetir contrase&ntilde;a"-->
+						<#--@spring.formPasswordInput  "passwordForm.passwordVerification" "class='{validate:{required:true, messages:{required:\"Repita la contraseña.\"}}}'"/-->
+						<#--@spring.showErrors "<br/>"/-->					
+					<#--/@form.row -->
 						
 				</#if>
 				

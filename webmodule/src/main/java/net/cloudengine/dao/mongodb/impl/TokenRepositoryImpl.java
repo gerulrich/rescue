@@ -5,7 +5,6 @@ import static org.springframework.data.mongodb.core.query.Query.query;
 
 import java.util.Date;
 
-import net.cloudengine.dao.mongodb.MongoRepository;
 import net.cloudengine.dao.mongodb.TokenRepository;
 import net.cloudengine.model.auth.RememberMeToken;
 

@@ -6,25 +6,33 @@ import javax.persistence.GeneratedValue
 import javax.persistence.GenerationType
 import javax.persistence.Id
 import javax.persistence.ManyToOne
-import javax.persistence.Version;
 import javax.validation.constraints.NotNull
+
+import net.cloudengine.dao.jpa.impl.DynamicUpdate;
+import net.cloudengine.dao.jpa.impl.QuerySupport
+import net.cloudengine.web.crud.support.CrudProperty
 
 import org.apache.bval.constraints.NotEmpty
 
 @Entity
+@QuerySupport
+@DynamicUpdate
 class Resource {
-	
+
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	@Id Long id;
 	
 	@NotNull
 	@NotEmpty
+	@CrudProperty
 	String name;
 	
+	@CrudProperty
 	String imei;
 	
 	@ManyToOne(optional = false, fetch = FetchType.LAZY)
 	@NotNull
+	@CrudProperty(embedded=true)
 	ResourceType type;
 	
 	Date lastModified;

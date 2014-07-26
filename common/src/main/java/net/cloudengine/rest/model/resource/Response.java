@@ -1,7 +1,10 @@
 package net.cloudengine.rest.model.resource;
 
-public class Response<T> {
+import java.io.Serializable;
+
+public class Response<T> implements Serializable {
 	
+	private static final long serialVersionUID = -1983747782286700064L;
 	public static final int OK_RESPONSE = 0;
 	public static final int ERROR_RESPONSE = 1;
 	public static final int UNAUTHRORIZED = 2;

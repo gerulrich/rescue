@@ -38,6 +38,8 @@ public interface Repository<E, PK extends Serializable> {
 	
 	Page<E> find(SearchParameters searchParameters, int page, int size);
 	
+	List<E> findAll(SearchParameters searchParameters);
+	
 	Page<E> list(SearchParameters searchParameters);
 	
 	E findOne(SearchParameters searchParameters);

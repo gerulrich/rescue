@@ -3,7 +3,7 @@
 <#macro breadcrumbs>
 	<li><a href="<@spring.url '/'/>">Dashboard</a></li>
 	<li><a href="<@spring.url '/resource/list'/>">Recursos</a></li>
-	<li>Detalle ${resource.name}</li>
+	<li>Detalle ${entity.name}</li>
 </#macro>
 
 <#macro menu>
@@ -16,10 +16,10 @@
 
 <#macro body>
 	<@page.section>
-		<@page.box title="Recurso ${resource.name}">
-			<@form.row label="Nombre">${resource.name}</@form.row>
-			<@form.row label="Tipo">${resource.type.name}</@form.row>
-			<@form.row label="IMEI">${resource.imei}</@form.row>
+		<@page.box title="Recurso ${entity.name}">
+			<@form.row label="Nombre">${entity.name}</@form.row>
+			<@form.row label="Tipo">${entity.type.name}</@form.row>
+			<@form.row label="IMEI">${entity.imei}</@form.row>
 		</@page.box>
 	</@page.section>
 </#macro>

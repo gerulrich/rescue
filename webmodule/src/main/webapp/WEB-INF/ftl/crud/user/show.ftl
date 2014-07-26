@@ -3,7 +3,7 @@
 <#macro breadcrumbs>
 	<li><a href="<@spring.url '/'/>">Dashboard</a></li>
 	<li><a href="<@spring.url '/user/list'/>">Usuarios</a></li>
-	<li>Detalle ${user.displayName}</li>
+	<li>Detalle ${entity.displayName}</li>
 </#macro>
 
 <#macro menu>
@@ -16,13 +16,13 @@
 
 <#macro body>
 	<@page.section>
-		<@page.box title="Datos datos del usuario ${user.displayName}">
-			<@form.row label="Email">${user.username}</@form.row>
-			<@form.row label="Nombre a visualizar">${user.displayName}</@form.row>
-			<@form.row label="Roles">${user.roles}</@form.row>
-			<@form.row label="Habilitado">${user.account.enabled?string("Si","No")}</@form.row>
-			<@form.row label="Cuenta bloqueada">${user.account.locked?string("Si","No")}</@form.row>
-			<@form.row label="Interno">${user.account.agentNumber!}&nbsp;</@form.row>
+		<@page.box title="Datos datos del usuario ${entity.displayName}">
+			<@form.row label="Email">${entity.username}</@form.row>
+			<@form.row label="Nombre a visualizar">${entity.displayName}</@form.row>
+			<@form.row label="Roles">${entity.roles}</@form.row>
+			<@form.row label="Habilitado">${entity.account.enabled?string("Si","No")}</@form.row>
+			<@form.row label="Cuenta bloqueada">${entity.account.locked?string("Si","No")}</@form.row>
+			<@form.row label="Interno">${entity.account.agentNumber!}&nbsp;</@form.row>
 		</@page.box>
 	</@page.section>
 </#macro>

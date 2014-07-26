@@ -2,7 +2,7 @@ package net.cloudengine.web.console;
 
 import javax.servlet.http.HttpServletRequest;
 
-import net.cloudengine.service.console.MongoService;
+import net.cloudengine.service.MongoService;
 import net.cloudengine.util.HexString;
 
 import org.apache.commons.codec.DecoderException;

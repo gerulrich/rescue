@@ -2,7 +2,6 @@ package net.cloudengine.dao.mongodb.impl;
 
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 import static org.springframework.data.mongodb.core.query.Query.query;
-import net.cloudengine.dao.mongodb.MongoRepository;
 import net.cloudengine.dao.mongodb.TileRepository;
 import net.cloudengine.model.geo.Tile;
 

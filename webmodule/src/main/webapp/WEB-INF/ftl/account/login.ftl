@@ -10,7 +10,7 @@
 	<div id="login">
 		<h1><a href="#" title="rescue.cloudfoundry.com"><span class="hide">rescue.cloudfoundry.com</span></a></h1>
 	<@widget.loginError/>
-	<form name="loginform" id="loginform" action="<@spring.url '/j_spring_security_check'/>" method="post">
+	<form name="loginform" id="loginform" action="<@spring.url '/account/check.html'/>" method="post">
 		<p>
 			<label for="user_login"><@spring.message "signin.username"/><br />
 				<input type="text" name="username" id="user_login" class="input" value="" size="20" tabindex="1" />

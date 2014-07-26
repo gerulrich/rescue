@@ -13,6 +13,7 @@
 				<li>JVM: <div class="info blue"><span>${javaVersion!"-"}</span></div></li>
 				<li>Build <div class="info green"><span>${buildNumber}</span></div></li>
 				<li>Version <div class="info black"><span>${appVersion}</span></div></li>
+				<li>CPU <div class="info blue"><span>${cpuInfo}</span></div></li>
 			</ul>
 		</div>
 	</div>
@@ -52,6 +53,14 @@
 			</li>
 			</@widget.hasPermission>
 			
+			<@widget.hasPermission "DASHBOARD_MANAG">
+				<li><a href="<@spring.url '/chart/list'/>">Configurar dashboard</a></li>
+			</@widget.hasPermission>
+			
+			<@widget.hasPermission "WORKFLOW_MANAG">
+				<li><a href="<@spring.url '/workflow/list'/>">Configurar workflow</a></li>
+			</@widget.hasPermission>			
+			
 			<@widget.hasPermission "FILE_UPLOAD">
 			<li><a href="<@spring.url '/file/list.html'/>">Archivos</a></li>
 			</@widget.hasPermission>
@@ -70,10 +79,11 @@
 	<@widget.hasPermission "EXEC_REPORT">
 	<li <#if (selected="reports")> class="current"</#if>><a href="#">Reportes</a>
 		<ul>
-			<li><a href="<@spring.url '/report/list'/>">Lista de reportes</a></li>
+			<li><a href="<@spring.url '/report/metadata/list'/>">Lista de reportes</a></li>
+			<li><a href="<@spring.url '/report/list'/>">Mis reportes</a></li>
 		</ul>
 	</li>
-	</@widget.hasPermission>	
+	</@widget.hasPermission>
 	
 </ul>
 </#macro>
@@ -124,7 +134,6 @@
 		@import url("<@spring.url '/static/css/wysiwyg.modal.css'/>");
 		@import url("<@spring.url '/static/css/wysiwyg-editor.css'/>");
 		@import url("<@spring.url '/static/css/handheld.css'/>");
-		@import url("<@spring.url '/static/css/prettyLoader.css'/>");
 
 		#wrapper {
 			width : auto;
@@ -166,8 +175,7 @@
 	<script type="text/javascript" src="<@spring.url '/static/js/controls/wysiwyg.link.js'/>"></script>
 	<script type="text/javascript" src="<@spring.url '/static/js/controls/wysiwyg.table.js'/>"></script>
 	<script type="text/javascript" src="<@spring.url '/static/js/plugins/wysiwyg.rmFormat.js'/>"></script>
-	<script type="text/javascript" src="<@spring.url '/static/js/plugins/jquery.prettyLoader.js'/>"></script>
-	<script type="text/javascript" src="<@spring.url '/static/js/costum.js?version=01'/>"></script>
+	<script type="text/javascript" src="<@spring.url '/static/js/costum.js?version=${buildNumber}'/>"></script>
 </#macro>
 
 <#macro detail url>

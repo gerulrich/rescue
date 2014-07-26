@@ -3,7 +3,7 @@
 <#macro breadcrumbs>
 	<li><a href="<@spring.url '/'/>">Dashboard</a></li>
 	<li><a href="<@spring.url '/role/list'/>">Roles</a></li>
-	<li>${role.name}</li>
+	<li>${entity.name}</li>
 </#macro>
 
 <#macro menu>
@@ -17,12 +17,12 @@
 <#macro body>
 
 	<@page.section>
-		<@page.box title="Rol ${role.name}">
-			<@form.row label="Nombre">${role.name}</@form.row>
-			<@form.row label="Descripci&oacute;n">${role.name}</@form.row>
+		<@page.box title="Rol ${entity.name}">
+			<@form.row label="Nombre">${entity.name}</@form.row>
+			<@form.row label="Descripci&oacute;n">${entity.name}</@form.row>
 		</@page.box>
 		
-		<@page.box title="Permisos del role ${role.name}">
+		<@page.box title="Permisos del role ${entity.name}">
 			<table cellspacing="0" cellpadding="0" border="0"> 
 				<thead> 
 					<tr>
@@ -31,7 +31,7 @@
 					</tr>
 				</thead>
 				<tbody>
-					<#list role.permissions as permission>
+					<#list entity.permissions as permission>
 					<tr>
 	 					<td>${permission.name}</td>
 	 					<td>${permission.description}</td>

@@ -38,12 +38,12 @@
 			<form  action="<@spring.url '/user/password/${user.id}'/>" method="post" class="valid">
 				
 				<@form.row label="Contraseña">
-					<@spring.formPasswordInput "passwordForm.password" "class='{validate:{required:true, messages:{required:\"Ingrese una contraseña\"}}}'"/>
+					<@spring.formPasswordInput "form.password" "class='{validate:{required:true, messages:{required:\"Ingrese una contraseña\"}}}'"/>
 					<@spring.showErrors "<br/>"/>
 				</@form.row>
 			
 				<@form.row label="Repita la contraseña">
-					<@spring.formPasswordInput "passwordForm.passwordVerification" "class='{validate:{required:true, messages:{required:\"Repita la contraseña\"}}}'"/>
+					<@spring.formPasswordInput "form.passwordVerification" "class='{validate:{required:true, messages:{required:\"Repita la contraseña\"}}}'"/>
 					<@spring.showErrors "<br/>"/>				
 				</@form.row>			
 				

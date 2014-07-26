@@ -953,3 +953,8 @@ img { border: 0; }
 	color : #727272;
 	text-decoration : none;
 }
+
+td {
+	max-width: 150px;
+	word-wrap: break-word;
+}

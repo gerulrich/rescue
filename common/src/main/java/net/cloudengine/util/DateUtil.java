@@ -11,6 +11,7 @@ public class DateUtil {
     // Add your own format here.
     private static List<SimpleDateFormat> dateFormats = new ArrayList<SimpleDateFormat>() {
     	{
+    		add(new SimpleDateFormat("dd/MM/yyyy HH:mm:ss"));
             add(new SimpleDateFormat("M/dd/yyyy"));
             add(new SimpleDateFormat("dd.M.yyyy"));
             add(new SimpleDateFormat("M/dd/yyyy hh:mm:ss a"));

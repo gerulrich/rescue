@@ -5,10 +5,10 @@ import java.util.Collection;
 
 import javax.servlet.http.HttpServletRequest;
 
-import net.cloudengine.api.PagingResult;
+import net.cloudengine.dao.support.Page;
 import net.cloudengine.model.console.Row;
 import net.cloudengine.model.console.Table;
-import net.cloudengine.service.console.SqlService;
+import net.cloudengine.service.SqlService;
 import net.cloudengine.util.HexString;
 
 import org.apache.commons.codec.DecoderException;
@@ -68,7 +68,7 @@ public class SQLController {
 	@RequestMapping(value="/sql/table/list/{table}/{page}/{size}", method = RequestMethod.GET)
 	public ModelAndView listTable(@PathVariable("table") String tableName, @PathVariable("page") int page, @PathVariable("size") int size) {
 		// FIXME chequear nombre de la tabla para evitar sql injection.
-		PagingResult<Row> pageResult = sqlService.getRows(HexString.decode(tableName), page, size);
+		Page<Row> pageResult = sqlService.getRows(HexString.decode(tableName), page, size);
 		String fields[] = null;
 		if (pageResult.getTotalSize() > 0) {
 			fields = pageResult.getList().get(0).getAliases();

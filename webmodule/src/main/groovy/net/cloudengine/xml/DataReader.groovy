@@ -11,7 +11,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.cloudengine.AppListener;
-import net.cloudengine.api.mongo.MongoBlobStore;
 
 import com.mongodb.BasicDBObject
 import com.mongodb.DB
@@ -42,10 +41,15 @@ class DataReader {
 			String colName = node.name();
 			DBCollection collection = db.getCollection(colName);
 
-			BasicDBObject doc = new BasicDBObject();
+			DBObject doc = new BasicDBObject();
 			
-			node.children().each { Node child ->
-				processNode(child, doc, true);
+			String type = node.'@type';
+			if ("json".equals(type)) {
+				doc = (DBObject) JSON.parse(node.text());
+			} else {
+				node.children().each { Node child ->
+					processNode(child, doc, true);
+				}
 			}
 			
 			String id = node.'@id';
@@ -95,7 +99,10 @@ class DataReader {
 				ObjectId idRef = (ObjectId) dbObject.get("_id");
 				DBRef ref = new DBRef(mongoDB, collectionRef, idRef);
 				
-				object.put(node.name(), ref);
+				if (object.get(node.name())==null) {
+					object.put(node.name(), new ArrayList());
+				}
+				object.get(node.name()).add(ref);
 				
 			} else {
 				BasicDBObject embeedd = new BasicDBObject();

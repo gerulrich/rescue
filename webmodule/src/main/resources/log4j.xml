@@ -30,7 +30,7 @@
 	</category>
 	
 	<category name="org.springframework.web">
-		<priority value="info"/>
+		<priority value="warn"/>
 		<appender-ref ref="CONSOLE"/>
 	</category>
 
@@ -57,6 +57,13 @@
 	<category name="org.hibernatespatial">
 		<priority value="error"/>
 		<appender-ref ref="CONSOLE"/>
-	</category>	
+	</category>
+	
+	<category name="com.zaxxer.hikari">
+		<priority value="warn"/>
+		<appender-ref ref="CONSOLE"/>
+	</category>
+	
+		
 
 </log4j:configuration>

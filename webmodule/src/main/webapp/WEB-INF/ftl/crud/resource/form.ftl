@@ -3,7 +3,7 @@
 <#macro breadcrumbs>
 	<li><a href="<@spring.url '/'/>">Dashboard</a></li>
 	<li><a href="<@spring.url '/resource/list/'/>">Recursos</a></li>
-	<li><#if !resource.id??>Nuevo<#else>Editar</#if></li>
+	<li><#if !entity.id??>Nuevo<#else>Editar</#if></li>
 </#macro>
 
 <#macro menu>
@@ -17,29 +17,29 @@
 
 <#macro body>
 
-	<#if !resource.id??>
+	<#if !entity.id??>
 		<#assign title="Nuevo Recurso"/>
 		<#assign url="/resource/new"/>
 	<#else>
 		<#assign title="Editar Recurso"/>
-		<#assign url="/resource/edit/${resource.id}"/>
+		<#assign url="/resource/edit/${entity.id}"/>
 	</#if>
 
 	<@page.section>
 		<@page.box title=title>
 			<form action="<@spring.url '${url}'/>" method="post" class="valid">
 				<@form.row label="Nombre *">
-					<@spring.formInput  "resource.name" "class='{validate:{required:true, messages:{required:\"Ingrese un nombre para el recurso\"}}}'"/>
+					<@spring.formInput  "entity.name" "class='{validate:{required:true, messages:{required:\"Ingrese un nombre para el recurso\"}}}'"/>
 					<@spring.showErrors "<br/>"/>
 				</@form.row>
 				
 				<@form.row label="Tipo">
-					<@widget.formSingleSelect "resource.type" types "id" "name"/>
+					<@widget.formSingleSelect "entity.type" types "id" "name"/>
 					<@spring.showErrors "<br/>"/>
 				</@form.row>
 
 				<@form.row label="IMEI">
-					<@spring.formInput  "resource.imei"/>
+					<@spring.formInput  "entity.imei"/>
 					<@spring.showErrors "<br/>"/>
 				</@form.row>
 

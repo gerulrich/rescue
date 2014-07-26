@@ -1,18 +1,14 @@
 package net.cloudengine.utils;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.cloudengine.api.Datastore;
-import net.cloudengine.api.Field;
-import net.cloudengine.api.Query;
 import net.cloudengine.model.auth.Group;
 import net.cloudengine.model.auth.Permission;
 import net.cloudengine.model.auth.User;
-import net.cloudengine.service.auth.UserService;
+import net.cloudengine.service.UserService;
 import net.cloudengine.util.Cipher;
 
 import org.bson.types.ObjectId;
@@ -84,55 +80,55 @@ public class TestUtil {
 		return userService;
 	}
 	
-	/**
-	 * Mockea un {@link Datastore} para realizar la siguiente consulta:
-	 * Datastore<E,K> datastore = ...
-	 * datastore.createQuery().field("field").eq(value).get();
-	 * @param object
-	 * @return
-	 */
-	@SuppressWarnings("unchecked")
-	public static <E,K extends Serializable> Datastore<E, K> mockDatastore(E object) {
-
-		Query<E> query = Mockito.mock(Query.class);
-		Field<E> field = Mockito.mock(Field.class);
-
-		Mockito.when(query.field(Mockito.anyString())).thenReturn(field);
-		Mockito.when(field.eq(Mockito.any())).thenReturn(query);
-		Mockito.when(field.le(Mockito.any())).thenReturn(query);
-		Mockito.when(field.lt(Mockito.any())).thenReturn(query);
-		Mockito.when(field.ge(Mockito.any())).thenReturn(query);
-		Mockito.when(field.gt(Mockito.any())).thenReturn(query);
-		Mockito.when(query.get()).thenReturn(object);
-
-		Datastore<E, K> datastore = Mockito.mock(Datastore.class);
-		Mockito
-			.when(datastore.createQuery())
-			.thenReturn(query);
-		return datastore;
-	}
+//	/**
+//	 * Mockea un {@link Datastore} para realizar la siguiente consulta:
+//	 * Datastore<E,K> datastore = ...
+//	 * datastore.createQuery().field("field").eq(value).get();
+//	 * @param object
+//	 * @return
+//	 */
+//	@SuppressWarnings("unchecked")
+//	public static <E,K extends Serializable> Datastore<E, K> mockDatastore(E object) {
+//
+//		Query<E> query = Mockito.mock(Query.class);
+//		Field<E> field = Mockito.mock(Field.class);
+//
+//		Mockito.when(query.field(Mockito.anyString())).thenReturn(field);
+//		Mockito.when(field.eq(Mockito.any())).thenReturn(query);
+//		Mockito.when(field.le(Mockito.any())).thenReturn(query);
+//		Mockito.when(field.lt(Mockito.any())).thenReturn(query);
+//		Mockito.when(field.ge(Mockito.any())).thenReturn(query);
+//		Mockito.when(field.gt(Mockito.any())).thenReturn(query);
+//		Mockito.when(query.get()).thenReturn(object);
+//
+//		Datastore<E, K> datastore = Mockito.mock(Datastore.class);
+//		Mockito
+//			.when(datastore.createQuery())
+//			.thenReturn(query);
+//		return datastore;
+//	}
 	
-	@SuppressWarnings("unchecked")
-	public static <E,K extends Serializable> Datastore<E, K> mockDatastore(List<E> objects) {
-
-		Query<E> query = Mockito.mock(Query.class);
-		Field<E> field = Mockito.mock(Field.class);
-
-		Mockito.when(query.field(Mockito.anyString())).thenReturn(field);
-		Mockito.when(field.eq(Mockito.any())).thenReturn(query);
-		Mockito.when(field.le(Mockito.any())).thenReturn(query);
-		Mockito.when(field.lt(Mockito.any())).thenReturn(query);
-		Mockito.when(field.ge(Mockito.any())).thenReturn(query);
-		Mockito.when(field.gt(Mockito.any())).thenReturn(query);
-		
-		Mockito.when(query.list()).thenReturn(objects);
-
-		Datastore<E, K> datastore = Mockito.mock(Datastore.class);
-		Mockito
-			.when(datastore.createQuery())
-			.thenReturn(query);
-		return datastore;
-	}
+//	@SuppressWarnings("unchecked")
+//	public static <E,K extends Serializable> Datastore<E, K> mockDatastore(List<E> objects) {
+//
+//		Query<E> query = Mockito.mock(Query.class);
+//		Field<E> field = Mockito.mock(Field.class);
+//
+//		Mockito.when(query.field(Mockito.anyString())).thenReturn(field);
+//		Mockito.when(field.eq(Mockito.any())).thenReturn(query);
+//		Mockito.when(field.le(Mockito.any())).thenReturn(query);
+//		Mockito.when(field.lt(Mockito.any())).thenReturn(query);
+//		Mockito.when(field.ge(Mockito.any())).thenReturn(query);
+//		Mockito.when(field.gt(Mockito.any())).thenReturn(query);
+//		
+//		Mockito.when(query.list()).thenReturn(objects);
+//
+//		Datastore<E, K> datastore = Mockito.mock(Datastore.class);
+//		Mockito
+//			.when(datastore.createQuery())
+//			.thenReturn(query);
+//		return datastore;
+//	}
 	
 	public static User createInstanceUser(String username) {
 		Group group = new Group();

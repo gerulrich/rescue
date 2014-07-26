@@ -13,7 +13,7 @@ import net.cloudengine.mapviewer.tiles.TileServerType;
 import net.cloudengine.mapviewer.tools.renderer.RendererLayer;
 import net.cloudengine.mapviewer.tools.selection.Cast;
 import net.cloudengine.rpc.controller.auth.SigninService;
-import net.cloudengine.rpc.controller.geo.ZoneController;
+import net.cloudengine.rpc.controller.geo.GeoController;
 import net.cloudengine.rpc.controller.resource.ResourceController;
 
 import org.eclipse.swt.SWT;
@@ -77,10 +77,10 @@ public class MapMain extends MapApplication {
 		context.addLayer(new DebugTileLayer(context));
 
 		// Agrego los layers de zona existentes.
-		ZoneController zoneController = injector.getInstance(ZoneController.class);
-		List<String> zoneTypes = zoneController.getZoneTypes();
+		GeoController geoController = injector.getInstance(GeoController.class);
+		List<String> zoneTypes = geoController.getZoneTypes();
 		for(String zoneType : zoneTypes) {
-			ZoneDatasource zd = new ZoneDatasource(zoneController, zoneType);
+			ZoneDatasource zd = new ZoneDatasource(geoController, zoneType);
 			ZoneSymbolizer zs = new ZoneSymbolizer();
 			context.addLayer(new ZoneLayer(zoneType, context, zd, zs, false));
 		}

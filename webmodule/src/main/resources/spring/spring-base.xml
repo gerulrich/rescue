@@ -18,17 +18,58 @@
 		
 		<!-- MONGO REPOSITORIES -->
 		
-		<bean id="authTokenRepository" class="net.cloudengine.dao.mongodb.MongoRepository">
+		<bean id="authTokenRepository" class="net.cloudengine.dao.mongodb.impl.MongoRepository">
 			<constructor-arg type="java.lang.Class" value="net.cloudengine.model.auth.AuthenticationToken"/>
 			<constructor-arg ref="mongoTemplate"/>
 		</bean>
 		
-		<bean id="groupRepository" class="net.cloudengine.dao.mongodb.MongoRepository">
-			<constructor-arg type="java.lang.Class" value="net.cloudengine.model.auth.Group"/>
+		<bean id="chartInfoRepository" class="net.cloudengine.dao.mongodb.impl.MongoRepository">
+			<constructor-arg type="java.lang.Class" value="net.cloudengine.model.chart.ChartInfo"/>
 			<constructor-arg ref="mongoTemplate"/>
 		</bean>
 		
-		<bean id="reqLogRepository" class="net.cloudengine.dao.mongodb.impl.RequestLogRepositoryImpl">
+		<bean id="deviceRepository" class="net.cloudengine.dao.mongodb.impl.MongoRepository">
+			<constructor-arg type="java.lang.Class" value="net.cloudengine.model.gcm.RegisteredDevice"/>
+			<constructor-arg ref="mongoTemplate"/>
+		</bean>		
+		
+		<bean id="fileRepository" class="net.cloudengine.dao.mongodb.impl.MongoRepository">
+			<constructor-arg type="java.lang.Class" value="net.cloudengine.model.commons.FileDescriptor"/>
+			<constructor-arg ref="mongoTemplate"/>
+		</bean>		
+
+		<bean id="groupRepository" class="net.cloudengine.dao.mongodb.impl.MongoRepository">
+			<constructor-arg type="java.lang.Class" value="net.cloudengine.model.auth.Group"/>
+			<constructor-arg ref="mongoTemplate"/>
+		</bean>
+
+		<bean id="permissionRepository" class="net.cloudengine.dao.mongodb.impl.MongoRepository">
+			<constructor-arg type="java.lang.Class" value="net.cloudengine.model.auth.Permission"/>
+			<constructor-arg ref="mongoTemplate"/>
+		</bean>
+		
+		<bean id="poiRepository" class="net.cloudengine.dao.mongodb.impl.MongoRepository">
+			<constructor-arg type="java.lang.Class" value="net.cloudengine.model.geo.POI"/>
+			<constructor-arg ref="mongoTemplate"/>
+		</bean>		
+		
+		<bean id="propertyRepository" class="net.cloudengine.dao.mongodb.impl.MongoRepository">
+			<constructor-arg type="java.lang.Class" value="net.cloudengine.model.config.AppProperty"></constructor-arg>
+			<constructor-arg ref="mongoTemplate"/>
+		</bean>
+		
+		<bean id="reportMetadataRepository" class="net.cloudengine.dao.mongodb.impl.MongoRepository">
+			<constructor-arg type="java.lang.Class" value="net.cloudengine.model.report.ReportMetadata"/>
+			<constructor-arg ref="mongoTemplate"/>
+		</bean>
+		
+		<bean id="reportRepository" class="net.cloudengine.dao.mongodb.impl.MongoRepository">
+			<constructor-arg type="java.lang.Class" value="net.cloudengine.model.report.Report"/>
+			<constructor-arg ref="mongoTemplate"/>
+		</bean>
+		
+		<bean id="roleRepository" class="net.cloudengine.dao.mongodb.impl.MongoRepository">
+			<constructor-arg type="java.lang.Class" value="net.cloudengine.model.auth.Role"/>
 			<constructor-arg ref="mongoTemplate"/>
 		</bean>
 		
@@ -43,98 +84,53 @@
 		<bean id="userRepository" class="net.cloudengine.dao.mongodb.impl.UserRepositoryImpl">
 			<constructor-arg ref="mongoTemplate"/>
 		</bean>
+		
+		<bean id="wayPointRepository" class="net.cloudengine.dao.mongodb.impl.MongoRepository">
+			<constructor-arg type="java.lang.Class" value="net.cloudengine.model.resource.WayPoint"/>
+			<constructor-arg ref="mongoTemplate"/>
+		</bean>
 
-		<bean class="net.cloudengine.service.admin.ConfigurationServiceImpl" autowire="byType">
+		<bean id="wfRepository" class="net.cloudengine.dao.mongodb.impl.MongoRepository">
+			<constructor-arg type="java.lang.Class" value="net.cloudengine.domain.workflow.PersistentWorkflow"/>
+			<constructor-arg ref="mongoTemplate"/>
+		</bean>
+		
+		<bean id="wfProcessRepository" class="net.cloudengine.dao.mongodb.impl.MongoRepository">
+			<constructor-arg type="java.lang.Class" value="net.cloudengine.domain.workflow.PersistentWorkflowProcess"/>
+			<constructor-arg ref="mongoTemplate"/>
+		</bean>		
+
+		<bean class="net.cloudengine.service.impl.ConfigurationServiceImpl" autowire="byType">
 			<property name="version" value="${project.version}" />
 			<property name="buildNumber" value="${timestamp}"/>
-			<property name="datastore" ref="propertyStore"/>
+			<property name="datastore" ref="propertyRepository"/>
 		</bean>
 
 		<bean id="mongoTemplate" class="org.springframework.data.mongodb.core.MongoTemplate">
 			<constructor-arg ref="mongoDbFactory"></constructor-arg>
 		</bean>
-		<bean id="mongoWrapper" class="net.cloudengine.api.mongo.MongoDBWrapper" autowire="byType">
-			<constructor-arg ref="mongoDbFactory"></constructor-arg>
-		</bean>
 	
-		<bean id="roleStore" class="net.cloudengine.api.mongo.MongoStore">
-			<constructor-arg ref="mongoTemplate"/>
-			<constructor-arg type="java.lang.Class" value="net.cloudengine.model.auth.Role"/>
-		</bean>
-	
-		<bean id="propertyStore" class="net.cloudengine.api.mongo.MongoStore">
-			<constructor-arg ref="mongoTemplate"/>
-			<constructor-arg type="java.lang.Class" value="net.cloudengine.model.config.AppProperty"></constructor-arg>
-		</bean>
-		
-		<bean id="fileStore" class="net.cloudengine.api.mongo.MongoStore">
-			<constructor-arg ref="mongoTemplate"/>
-			<constructor-arg type="java.lang.Class" value="net.cloudengine.model.commons.FileDescriptor"/>
-		</bean>
-		
-		<bean id="poiStore" class="net.cloudengine.api.mongo.MongoStore">
-			<constructor-arg ref="mongoTemplate"/>
-			<constructor-arg type="java.lang.Class" value="net.cloudengine.model.geo.POI"/>
-		</bean>
-		
-		<bean id="permissionStore" class="net.cloudengine.api.mongo.MongoStore">
-			<constructor-arg ref="mongoTemplate"/>
-			<constructor-arg type="java.lang.Class" value="net.cloudengine.model.auth.Permission"/>
-		</bean>
-		
-		<bean id="wayPointStore" class="net.cloudengine.api.mongo.MongoStore">
-			<constructor-arg ref="mongoTemplate"/>
-			<constructor-arg type="java.lang.Class" value="net.cloudengine.model.resource.WayPoint"/>
-		</bean>
-		
-		<bean id="reportExecution" class="net.cloudengine.api.mongo.MongoStore">
-			<constructor-arg ref="mongoTemplate"/>
-			<constructor-arg type="java.lang.Class" value="net.cloudengine.reports.ReportExecution"/>
-		</bean>
-		
-		<bean id="deviceStore" class="net.cloudengine.api.mongo.MongoStore">
-			<constructor-arg ref="mongoTemplate"/>
-			<constructor-arg type="java.lang.Class" value="net.cloudengine.model.gcm.RegisteredDevice"/>
-		</bean>
-		
-		<bean id="wfStore" class="net.cloudengine.api.mongo.MongoStore">
-			<constructor-arg ref="mongoTemplate"/>
-			<constructor-arg type="java.lang.Class" value="net.cloudengine.domain.dsl.workflow.PersistentWorkflow"/>
-		</bean>		
-		
-		<bean id="blobStore" class="net.cloudengine.api.mongo.MongoBlobStore" />
+		<bean id="blobStore" class="net.cloudengine.dao.mongodb.impl.MongoBlobStore" />
 		
 		<bean id="appListener" class="net.cloudengine.AppListener">
-			<constructor-arg ref="mongoWrapper"></constructor-arg>
-<!-- 			<constructor-arg ref="morphia"></constructor-arg> -->
+			<constructor-arg ref="mongoTemplate"></constructor-arg>
 		</bean>
 		
 		<bean class="net.cloudengine.management.Injector"/>
 		
 		<context:component-scan base-package="net.cloudengine.service"/>
 		<context:component-scan base-package="net.cloudengine.api"/>
+		<context:component-scan base-package="net.cloudengine.dao"/>
 		<context:component-scan base-package="net.cloudengine.rpc"/>
 		
 		<bean id="mappers" class="net.cloudengine.rpc.mappers.MappersRegistry">
-<!-- 			<property name="mappers"> -->
-<!-- 				<map> -->
-<!-- 					<entry></entry> -->
-<!-- 				</map> -->
-<!-- 			</property> -->
+			<property name="mappers">
+				<map>
+				<!-- <entry key="" value-ref=""/> -->
+				</map>
+			</property>
 		</bean>
 		
-		 <!-- Este bean toma propiedades de archivos properties y permite utilizar las
-			  claves como atributos de otros beans. Se utiliza principalmente para los datos de 
-			  conexión a la base de datos, servidores smtp, etc.
-         -->
-        <bean id="propertyPlaceholderConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-			<property name="locations">
-				<list>
-					<value>classpath:web.properties</value>
-				</list>
-			</property>
-			<property name="ignoreUnresolvablePlaceholders"><value>true</value></property>
-        </bean>	
         
 	<!-- BeanPostProcessor that processes PersistenceUnit and PersistenceContext annotations, 
          for injection of the corresponding JPA resources EntityManagerFactory and EntityManager. 
@@ -168,13 +164,20 @@
 	</bean>
 	
   	<jdbc:initialize-database data-source="dataSource">
+  		<jdbc:script location="classpath:spring/sequence.sql" separator="$$"/>
   		<jdbc:script location="classpath:spring/sequence_table.sql"/>
-      	<jdbc:script location="classpath:spring/sequence.sql" separator="$$"/>
+      	
     </jdbc:initialize-database>
     
 	<bean id="threadExecutor" class="org.springframework.scheduling.concurrent.ThreadPoolExecutorFactoryBean">
   		<property name="corePoolSize" value="1" />
   		<property name="maxPoolSize" value="1" />
+	</bean>
+	
+	<bean id="workflow.datasource" class="net.cloudengine.service.impl.WorkflowServiceImpl" autowire="byType"/>
+	
+	<bean id="workflow.engine" class="org.simple.workflow.services.impl.WorkflowEngineImpl">
+		<property name="datasource" ref="workflow.datasource"/>
 	</bean>
 
 </beans>

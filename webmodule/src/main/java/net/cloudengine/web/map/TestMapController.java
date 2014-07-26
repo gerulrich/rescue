@@ -3,12 +3,12 @@ package net.cloudengine.web.map;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import net.cloudengine.api.jpa.dao.StreetBlockDao;
-import net.cloudengine.api.jpa.dao.ZoneDao;
+import net.cloudengine.dao.jpa.StreetBlockRepository;
+import net.cloudengine.dao.jpa.ZoneRepository;
 import net.cloudengine.model.geo.Location;
 import net.cloudengine.model.geo.StreetBlock;
 import net.cloudengine.model.map.geo.FeatureCollection;
-import net.cloudengine.service.admin.ConfigurationService;
+import net.cloudengine.service.ConfigurationService;
 import net.shapefile.Point;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,13 +28,13 @@ import org.springframework.web.servlet.ModelAndView;
 public class TestMapController {
 	
 	private ConfigurationService service; 
-	private ZoneDao zoneDao;
-	private StreetBlockDao streetDao;
+	private ZoneRepository zoneRepository;
+	private StreetBlockRepository streetDao;
 	
 	@Autowired
-	public TestMapController(ConfigurationService service, ZoneDao zoneDao, StreetBlockDao streetDao) {
+	public TestMapController(ConfigurationService service, ZoneRepository zoneRepository, StreetBlockRepository streetDao) {
 		this.service = service;
-		this.zoneDao = zoneDao;
+		this.zoneRepository = zoneRepository;
 		this.streetDao = streetDao;
 	}
 	
@@ -43,7 +43,7 @@ public class TestMapController {
 		ModelAndView mav = new ModelAndView();
 		mav.addObject("map.google.street", service.getProperty("map.google.street"));
 		mav.addObject("map.osm", service.getProperty("map.osm"));
-		mav.addObject("zones", zoneDao.getZonesType());
+		mav.addObject("zones", zoneRepository.getZonesType());
 		mav.setViewName("/map/testMap");
 		return mav;
 	}
@@ -53,7 +53,7 @@ public class TestMapController {
 		ModelAndView mav = new ModelAndView();
 		mav.addObject("map.google.street", service.getProperty("map.google.street"));
 		mav.addObject("map.osm", service.getProperty("map.osm"));
-		mav.addObject("zones", zoneDao.getZonesType());
+		mav.addObject("zones", zoneRepository.getZonesType());
 		mav.setViewName("/map/testZoneMap");
 		return mav;
 	}
@@ -75,7 +75,7 @@ public class TestMapController {
 	
 	@RequestMapping(value = "/zone", method = RequestMethod.GET)
 	public @ResponseBody FeatureCollection getZones(@RequestParam("name") String name, @RequestParam("type") String type) {
-		FeatureCollection fc = new FeatureCollection(zoneDao.getByNameAndType(name, type));
+		FeatureCollection fc = new FeatureCollection(zoneRepository.getByNameAndType(name, type));
 		return fc;
 	}
 	

@@ -3,6 +3,7 @@ package net.cloudengine.service.auth;
 import static org.mockito.Mockito.when;
 import junit.framework.TestCase;
 import net.cloudengine.model.auth.User;
+import net.cloudengine.service.UserService;
 
 import org.junit.Before;
 import org.junit.Ignore;

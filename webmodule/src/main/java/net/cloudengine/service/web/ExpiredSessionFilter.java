@@ -10,13 +10,15 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import net.cloudengine.model.auth.User;
+import net.cloudengine.service.SessionService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.filter.GenericFilterBean;
 
 /**
- * 
+ * Filtro que detecta si la sesion del usuario ha expirado.
+ * Si el request es por ajax, y la sesion ha expirado, response con un 403.
  * @author German Ulrich
  *
  */

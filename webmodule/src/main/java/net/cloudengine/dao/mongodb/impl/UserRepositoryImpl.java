@@ -8,7 +8,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import net.cloudengine.dao.mongodb.MongoRepository;
 import net.cloudengine.dao.mongodb.UserRepository;
 import net.cloudengine.model.auth.Permission;
 import net.cloudengine.model.auth.Role;
@@ -50,6 +49,7 @@ public class UserRepositoryImpl extends MongoRepository<User, ObjectId> implemen
 		} catch (UsernameNotFoundException e) {
 			throw e;
 		} catch (Exception e) {
+			e.printStackTrace();
 			throw new UsernameNotFoundException("No matching account", e);
 		}
 	}

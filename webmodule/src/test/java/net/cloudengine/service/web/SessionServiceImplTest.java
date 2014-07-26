@@ -1,6 +1,8 @@
 package net.cloudengine.service.web;
 
 import net.cloudengine.model.auth.User;
+import net.cloudengine.service.SessionService;
+import net.cloudengine.service.impl.SessionServiceImpl;
 import net.cloudengine.utils.TestUtil;
 
 import org.junit.Assert;

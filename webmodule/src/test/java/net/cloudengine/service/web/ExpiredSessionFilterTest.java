@@ -8,8 +8,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import net.cloudengine.model.auth.User;
+import net.cloudengine.service.SessionService;
 import net.cloudengine.service.web.ExpiredSessionFilter;
-import net.cloudengine.service.web.SessionService;
 
 import org.junit.Before;
 import org.junit.Test;

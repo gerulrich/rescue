@@ -1,5 +1,7 @@
 package net.cloudengine.model.config
 
+import net.cloudengine.web.crud.support.CrudProperty;
+
 import org.bson.types.ObjectId
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document
@@ -9,10 +11,13 @@ class AppProperty {
 	
 	@Id ObjectId id;
 	
+	@CrudProperty(editable=false)
 	String key;
 	
+	@CrudProperty
 	String value; 
 	
+	@CrudProperty
 	boolean clientProperty;
 	
 	public AppProperty() {

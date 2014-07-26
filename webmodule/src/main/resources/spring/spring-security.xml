@@ -34,15 +34,18 @@
     	<intercept-url pattern="/sql/**" access="hasRole('SQL_CONSOLE')"/>
     	<intercept-url pattern="/shp/**" access="hasRole('GEO_MANAGER')"/>
     	<intercept-url pattern="/file/**" access="hasRole('FILE_UPLOAD')"/>
+    	<intercept-url pattern="/chart/**" access="hasRole('DASHBOARD_MANAG')"/>
+    	<intercept-url pattern="/workflow/**" access="hasRole('WORKFLOW_MANAG')"/>
     	
     	<!--  Para todas las otras url se debe estar autenticado. -->
         <intercept-url pattern="/**" access="isAuthenticated()" />
 		<form-login 
 			login-page="/account/signin.html" 
-			authentication-failure-url="/account/signin.html" 
+			authentication-failure-url="/account/signin.html"
+			login-processing-url="/account/check.html"
 			username-parameter="username"
 			password-parameter="password" />
-		<logout />
+		<logout logout-success-url="/account/signout.html" />
         <remember-me key="rescuemeApp" services-ref="rememberMeServices"/>
         
         <custom-filter after="REMEMBER_ME_FILTER" ref="expiredSessionFilter" />

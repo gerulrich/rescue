@@ -2,8 +2,8 @@
 
 <#macro breadcrumbs>
 	<li><a href="<@spring.url '/'/>">Dashboard</a></li>
-	<li><a href="<@spring.url '/workf/upload'/>">Cargar capa desde archivo</a></li>
-	<li>Zonas</li>	
+	<li><a href="<@spring.url '/workflow/list'/>">Workflow</a></li>
+	<li><a>Nuevo</a></li>
 </#macro>
 
 <#macro menu>

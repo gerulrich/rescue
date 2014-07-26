@@ -5,17 +5,62 @@
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
                         http://www.springframework.org/schema/rabbit http://www.springframework.org/schema/rabbit/spring-rabbit-1.0.xsd">
  
-  <rabbit:connection-factory id="connectionFactory" host="173.205.188.166" virtual-host="rescue" username="appserver" password="123456" />
-<!--   <rabbit:admin connection-factory="connectionFactory" /> -->
-  <!-- >rabbit:queue name="testqueue" /-->
-  <!-- rabbit:direct-exchange name="test exchange">
-	<rabbit:bindings>
-		<rabbit:binding queue="testqueue"></rabbit:binding>
-	</rabbit:bindings>
-  </rabbit:direct-exchange-->
+	
+	<rabbit:connection-factory id="rabbitMQFactory" host="${amqp.host}" port="${amqp.port}" 
+		virtual-host="${amqp.vhost}" username="${amqp.username}" password="${amqp.password}" connection-factory="rcf"/>
+	
+		<bean id="rcf" class="com.rabbitmq.client.ConnectionFactory">
+        	<property name="host" value="${amqp.host}"/>
+        	<property name="port" value="${amqp.port}"/>
+        	<property name="requestedHeartbeat" value="1" />
+		</bean>
+	
+	<rabbit:admin connection-factory="rabbitMQFactory" />
   
+	<rabbit:template id="inboxupdateTemplate" connection-factory="rabbitMQFactory" routing-key="${amqp.prefix}inboxupdate" />
+	<rabbit:queue name="${amqp.prefix}inboxupdate" />
+	
+	<rabbit:template id="fileuploadTemplate" connection-factory="rabbitMQFactory" exchange="${amqp.prefix}fileupload"/>
+<!-- 	<rabbit:template id="fileuploadTemplate" connection-factory="rabbitMQFactory" routing-key="${amqp.prefix}fileupload" /> -->
+	
+	<rabbit:direct-exchange name="${amqp.prefix}fileupload" durable="true">
+	
+	</rabbit:direct-exchange>
+	
+	
+<!-- 	<rabbit:queue name="${amqp.prefix}fileupload" /> -->
+	
+	<rabbit:template id="reportTemplate" connection-factory="rabbitMQFactory" routing-key="${amqp.prefix}report_delayed" />
+	<rabbit:queue name="${amqp.prefix}report_delayed" >
+		<rabbit:queue-arguments>
+			<entry key="x-message-ttl">
+				<bean class="java.lang.Long"><constructor-arg value="3000"/></bean>
+			</entry>
+			<entry key="x-dead-letter-exchange" value="${amqp.prefix}reportRedirect" />
+			<entry key="x-dead-letter-routing-key" value="${amqp.prefix}report" />
+		</rabbit:queue-arguments>
+	</rabbit:queue>
+	
+	<rabbit:queue name="${amqp.prefix}report" />
+	<rabbit:fanout-exchange name="${amqp.prefix}reportRedirect" durable="true">
+		<rabbit:bindings>
+			<rabbit:binding queue="${amqp.prefix}report"></rabbit:binding>
+		</rabbit:bindings>
+	</rabbit:fanout-exchange>
+	
+	
+	<bean id="amqp.service" class="net.cloudengine.service.amqp.AMQPServiceImpl">
+		<constructor-arg>
+			<map key-type="java.lang.String" value-type="org.springframework.amqp.rabbit.core.RabbitTemplate">
+				<entry key="REPORT_EXECUTION" value-ref="reportTemplate"/>
+				<entry key="TICKET_UPDATE" value-ref="inboxupdateTemplate"/>
+				<entry key="REPORT_UPLOAD" value-ref="fileuploadTemplate"/>
+				<entry key="WORKFLOW_UPLOAD" value-ref="fileuploadTemplate"/>
+			</map>
+		</constructor-arg>
+	</bean>
   
-  <rabbit:fanout-exchange name="ticket_update" />  
- 
-   <rabbit:template id="amqpTemplate" connection-factory="connectionFactory" exchange="ticket_update"/> 
+<!--   <rabbit:fanout-exchange name="ticket_update" />   -->
+
+<!--    <rabbit:template id="amqpTemplate" connection-factory="rabbitMQFactory" exchange="ticket_update"/>  -->
 </beans>

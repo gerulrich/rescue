@@ -2,9 +2,9 @@ package net.cloudengine.service.web;
 
 import static org.mockito.Mockito.*;
 import net.cloudengine.model.auth.User;
+import net.cloudengine.service.SessionService;
 import net.cloudengine.service.web.CurrentUser;
 import net.cloudengine.service.web.CurrentUserArgumentResolver;
-import net.cloudengine.service.web.SessionService;
 
 import org.junit.Assert;
 import org.junit.Before;

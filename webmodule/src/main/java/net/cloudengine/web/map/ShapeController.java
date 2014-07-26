@@ -6,20 +6,21 @@ import java.util.Map;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
-import net.cloudengine.api.Datastore;
+import net.cloudengine.dao.support.Repository;
+import net.cloudengine.dao.support.RepositoryLocator;
+import net.cloudengine.dao.support.SearchParametersBuilder;
 import net.cloudengine.forms.shp.FileSelectForm;
 import net.cloudengine.forms.shp.POIForm;
 import net.cloudengine.forms.shp.StreetForm;
 import net.cloudengine.forms.shp.ZoneForm;
 import net.cloudengine.model.commons.FileDescriptor;
-import net.cloudengine.service.map.ShapefileService;
+import net.cloudengine.service.ShapefileService;
 import net.cloudengine.web.ajax.ResponseStatus;
 import net.cloudengine.web.files.FileUploadProgress;
 import net.cloudengine.web.files.UploadListener;
 
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -33,20 +34,22 @@ import org.springframework.web.servlet.ModelAndView;
 @RequestMapping("/shp")
 public class ShapeController {
 	
-	private Datastore<FileDescriptor, ObjectId> fileStore;
+	private Repository<FileDescriptor, ObjectId> fileRepository;
 	private ShapefileService shapeService;
 	
 	@Autowired
-	public ShapeController(@Qualifier("fileStore") Datastore<FileDescriptor, ObjectId> fileStore,
+	public ShapeController(RepositoryLocator repositoryLocator,
 			ShapefileService shapeService) {
-		this.fileStore = fileStore;
+		this.fileRepository = repositoryLocator.getRepository(FileDescriptor.class);
 		this.shapeService = shapeService;
 	}
 
 	@RequestMapping(value = "upload", method = RequestMethod.GET)
 	public ModelAndView submitForm() {
 		ModelAndView mav = new ModelAndView();
-		mav.addObject("files", fileStore.createQuery().field("type").eq("shp").list());
+		SearchParametersBuilder builder = SearchParametersBuilder.forClass(FileDescriptor.class);
+		builder.eq("type", "shp");
+		mav.addObject("files", fileRepository.findAll(builder.build()));
 		mav.setViewName("/map/uploadShapefile");
 		return mav;
 	}
@@ -81,7 +84,7 @@ public class ShapeController {
 	@RequestMapping(value = "upload/poi/{id}", method = RequestMethod.GET)
 	public ModelAndView submitFormPOI(@PathVariable("id") ObjectId id) {
 		ModelAndView mav = new ModelAndView();
-		FileDescriptor descriptor = fileStore.get(id);
+		FileDescriptor descriptor = fileRepository.get(id);
 		String fields[] = shapeService.readFileFields(descriptor);
 		mav.addObject("fields", fields);
 		mav.addObject("file", descriptor);
@@ -107,7 +110,7 @@ public class ShapeController {
 			UploadListener progressListener = new UploadListener();
 			session.setAttribute("PROGRESO", progressListener);
 			
-			FileDescriptor descriptor = fileStore.get(id);
+			FileDescriptor descriptor = fileRepository.get(id);
 			long count = shapeService.shp2Poi(descriptor, form.getNameField(), form.getTypeField(), form.getOverwrite(), progressListener);
 			
 			response.setCode(0);
@@ -123,7 +126,7 @@ public class ShapeController {
 	@RequestMapping(value = "upload/street/{id}", method = RequestMethod.GET)
 	public ModelAndView submitFormStreet(@PathVariable("id") ObjectId id) {
 		ModelAndView mav = new ModelAndView();
-		FileDescriptor descriptor = fileStore.get(id);
+		FileDescriptor descriptor = fileRepository.get(id);
 		String fields[] = shapeService.readFileFields(descriptor);
 		mav.addObject("fields", fields);
 		mav.addObject("file", descriptor);
@@ -145,7 +148,7 @@ public class ShapeController {
 		
 		try {
 			
-			FileDescriptor descriptor = fileStore.get(id);
+			FileDescriptor descriptor = fileRepository.get(id);
 			
 			Map<String,String> fieldNames = new HashMap<String, String>();
 			fieldNames.put(ShapefileService.NOMBRE, form.getNameField());
@@ -200,7 +203,7 @@ public class ShapeController {
 	@RequestMapping(value = "upload/zone/{id}", method = RequestMethod.GET)
 	public ModelAndView seputFormZone(@PathVariable("id") ObjectId id) {
 		ModelAndView mav = new ModelAndView();
-		FileDescriptor descriptor = fileStore.get(id);
+		FileDescriptor descriptor = fileRepository.get(id);
 		String fields[] = shapeService.readFileFields(descriptor);
 		mav.addObject("fields", fields);
 		mav.addObject("file", descriptor);
@@ -226,7 +229,7 @@ public class ShapeController {
 		session.setAttribute("PROGRESO", progressListener);
 		
 		try {
-			FileDescriptor descriptor = fileStore.get(id);
+			FileDescriptor descriptor = fileRepository.get(id);
 			long count = shapeService.shp2Zone(descriptor, form.getNameField(), form.getType(), form.getOverwrite(), progressListener);
 			response.setCode(0);
 			response.setData(String.valueOf(count));

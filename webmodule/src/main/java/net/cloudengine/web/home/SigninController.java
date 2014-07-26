@@ -7,9 +7,11 @@ import net.cloudengine.forms.auth.LoginForm;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.WebAttributes;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 /**
  * El SigninController verifica si hay algún error presente en el Security context de Spring.
@@ -26,7 +28,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/account")
 public class SigninController {
 	
-	@RequestMapping("signin")
+	@RequestMapping(value = "signin", method = RequestMethod.GET)
     public String index(@ModelAttribute("loginForm") LoginForm loginForm,  BindingResult result, HttpServletRequest request) {
 		AuthenticationException ae = (AuthenticationException) request.getSession().getAttribute(WebAttributes.AUTHENTICATION_EXCEPTION);
         request.getSession().removeAttribute(WebAttributes.AUTHENTICATION_EXCEPTION);
@@ -35,5 +37,10 @@ public class SigninController {
         }
         return "/account/login";
     }
+	
+	@RequestMapping(value="signout", method = RequestMethod.GET)
+	public String logout(ModelMap model) {
+		return "redirect:/account/signin.html";
+	}
 
 }

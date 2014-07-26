@@ -43,21 +43,24 @@ $(document).ready(function() {
 	});
 	
 	// HIDE LEFT PANEL
+	$("#left").animate({width:"0px"}, 0);
+	$("#right").animate({marginLeft:"20px"}, 0);
+	$("#wrapper, #container").animate({backgroundPosition:"-230px 0px"}, 0);
+	$(".hide-btn.top, .hide-btn.center, .hide-btn.bottom").animate({left: "-7px"}, 0);
+
 	$(".hide-btn").click(function(){
-		if($("#left").css("width") == "0px"){
-			$("#left").animate({width:"230px"}, 500);
-			$("#right").animate({marginLeft:"250px"}, 500);
-			$("#wrapper, #container").animate({backgroundPosition:"0 0"}, 500);
-			$(".hide-btn.top, .hide-btn.center, .hide-btn.bottom").animate({left: "223px"}, 500, function() { $(window).trigger("resize");});
-			$(this).attr("original-title", "Cerrar barra lateral");
-		}
-		else{
-			$("#left").animate({width:"0px"}, 500);
-			$("#right").animate({marginLeft:"20px"}, 500);
-			$("#wrapper, #container").animate({backgroundPosition:"-230px 0px"}, 500);
-			$(".hide-btn.top, .hide-btn.center, .hide-btn.bottom").animate({left: "-7px"}, 500, function() { $(window).trigger("resize");});
-			$(this).attr("original-title", "Mostrar barra lateral");
-		}
+	    if($("#left").css("width") == "0px"){
+	        $("#left").animate({width:"230px"}, 500);
+	        $("#right").animate({marginLeft:"250px"}, 500);
+	        $("#wrapper, #container").animate({backgroundPosition:"0 0"}, 500);
+	        $(".hide-btn.top, .hide-btn.center, .hide-btn.bottom").animate({left: "223px"}, 500, function() { $(window).trigger("resize");});
+	    }
+	    else{
+	        $("#left").animate({width:"0px"}, 500);
+	        $("#right").animate({marginLeft:"20px"}, 500);
+	        $("#wrapper, #container").animate({backgroundPosition:"-230px 0px"}, 500);
+	        $(".hide-btn.top, .hide-btn.center, .hide-btn.bottom").animate({left: "-7px"}, 500, function() { $(window).trigger("resize");});
+	    }
 	});
 	
 	// HIDE BOXES	
@@ -748,15 +751,5 @@ $(document).ready(function() {
 		      	 alert("otro error:"+datos.status);
 			}
 		}
-	});
-	
-	$.prettyLoader({
-		animation_speed: 'fast', /* fast/normal/slow/integer */
-		bind_to_ajax: true, /* true/false */
-		delay: 500, /* false OR time in milliseconds (ms) */
-		loader: location.path+'static/images/prettyLoader/ajax-loader.gif', /* Path to your loader gif */
-		offset_top: 13, /* integer */
-		offset_left: 10 /* integer */
 	});	
-	
 });

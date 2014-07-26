@@ -6,6 +6,7 @@ import net.cloudengine.client.service.Configuration;
 import net.cloudengine.client.workbench.BluePage;
 import net.cloudengine.client.workbench.CTIPage;
 import net.cloudengine.client.workbench.GreenPage;
+import net.cloudengine.client.workbench.InboxPage;
 import net.cloudengine.client.workbench.Page;
 import net.cloudengine.client.workbench.PageContainer;
 import net.cloudengine.client.workbench.TestPage;
@@ -135,7 +136,7 @@ public class Application extends ApplicationWindow {
 //		ctiEnabled ? injector.getInstance(CTIPage.class) : new BluePage();
 		
 		pageContainer = new PageContainer(mainComp, SWT.NONE);
-		pageContainer.setPages(injector.getInstance(TestPage.class), new GreenPage(), ctiPage);
+		pageContainer.setPages(injector.getInstance(InboxPage.class), new GreenPage(), ctiPage);
 		pageContainer.showPage(0);
 		
 		if (driver != null) {

@@ -7,4 +7,5 @@ CREATE TABLE IF NOT EXISTS sequences (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 INSERT IGNORE INTO sequences(name, value) VALUES('RESOURCE_SEQ', 0);
+call create_index('tp_street_block', 'street_block_start_vertex', 'vstart')
 

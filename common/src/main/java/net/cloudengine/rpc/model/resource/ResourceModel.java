@@ -19,6 +19,7 @@ public class ResourceModel implements Serializable {
 	private long version;
 	@Value(value="type.name")
 	private String typeName;
+	private String imei;
 	
 	public long getId() {
 		return id;
@@ -61,5 +62,11 @@ public class ResourceModel implements Serializable {
 	}
 	public void setTypeName(String typeName) {
 		this.typeName = typeName;
+	}
+	public String getImei() {
+		return imei;
+	}
+	public void setImei(String imei) {
+		this.imei = imei;
 	}
 }

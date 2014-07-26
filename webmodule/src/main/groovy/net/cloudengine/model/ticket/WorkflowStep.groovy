@@ -15,8 +15,8 @@ class WorkflowStep {
 	@Id Long id;
 	String name;
 	String description;
-	Date date;
 	String username;
+	Date date;
 	@ManyToOne
 	@JoinColumn(name="work_book")
 	WorkBook workBooK;

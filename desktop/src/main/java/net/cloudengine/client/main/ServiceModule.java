@@ -8,8 +8,9 @@ import net.cloudengine.rpc.controller.auth.Context;
 import net.cloudengine.rpc.controller.auth.SigninService;
 import net.cloudengine.rpc.controller.config.ContextImpl;
 import net.cloudengine.rpc.controller.config.PropertyController;
-import net.cloudengine.rpc.controller.geo.ZoneController;
+import net.cloudengine.rpc.controller.geo.GeoController;
 import net.cloudengine.rpc.controller.resource.ResourceController;
+import net.cloudengine.rpc.controller.ticket.InboxController;
 import net.cloudengine.util.UncheckedThrow;
 
 import com.caucho.hessian.client.MyHessianProxyFactory;
@@ -34,7 +35,8 @@ public class ServiceModule extends AbstractModule {
 			bindService(baseUrl, SigninService.class, factory);
 			bindService(baseUrl, PropertyController.class, factory);
 			bindService(baseUrl, ResourceController.class, factory);
-			bindService(baseUrl, ZoneController.class, factory);
+			bindService(baseUrl, GeoController.class, factory);
+			bindService(baseUrl, InboxController.class, factory);
 			
 		} catch (Exception e) {
 			UncheckedThrow.throwUnchecked(e);

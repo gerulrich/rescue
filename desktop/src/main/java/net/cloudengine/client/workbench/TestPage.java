@@ -1,8 +1,14 @@
 package net.cloudengine.client.workbench;
 
+import net.cloudengine.client.ui.AnnotatedCallbackResolver;
+import net.cloudengine.client.ui.JobUtils;
 import net.cloudengine.rpc.controller.auth.Context;
 import net.cloudengine.rpc.controller.auth.UserModel;
 import net.cloudengine.rpc.controller.config.PropertyController;
+import net.cloudengine.rpc.controller.ticket.InboxController;
+import net.cloudengine.rpc.model.Folder;
+import net.cloudengine.rpc.model.FolderTab;
+import net.cloudengine.rpc.model.TicketViewModel;
 import net.cloudengine.widgets.panel.PhonePanel;
 import net.cloudengine.widgets.sound.Settings;
 
@@ -14,6 +20,9 @@ import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 
@@ -27,12 +36,15 @@ public class TestPage extends AbstractPage {
 	private Composite previewComp;
 	private Composite listAndContentComp;
 	private PropertyController propertyController;
+	private InboxController inboxController;
 	private boolean sipEnabled;
+	private TreeItem inboxTree;
 	
 	@Inject
-	public TestPage(Context context, PropertyController propertyController) {
+	public TestPage(Context context, PropertyController propertyController, InboxController inboxController) {
 		this.userModel = context.getCurrentUser();
 		this.propertyController = propertyController;
+		this.inboxController = inboxController;
 	}
 	
 	@Override
@@ -68,8 +80,22 @@ public class TestPage extends AbstractPage {
 		SashForm hvf = new SashForm(listAndContentComp, SWT.VERTICAL | SWT.SMOOTH);
 
 		hvf.setLayoutData(gd5);
-		Composite listComp = new Composite(hvf, SWT.BORDER);
-		listComp.setLayout(new FillLayout());
+//		Composite listComp = new Composite(hvf, SWT.BORDER);
+//		listComp.setLayout(new FillLayout());
+		
+		///////////////////
+		Table table = new Table(hvf, SWT.CHECK | SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL);
+		table.setHeaderVisible(true);
+		String[] titles = { "Col 1", "Col 2", "Col 3", "Col 4" };
+		for (int loopIndex = 0; loopIndex < titles.length; loopIndex++) {
+		      TableColumn column = new TableColumn(table, SWT.NULL);
+		      column.setText(titles[loopIndex]);
+		 }
+		 
+		 for (int loopIndex = 0; loopIndex < titles.length; loopIndex++) {
+		      table.getColumn(loopIndex).pack();
+		 }
+		///////////////////		
 
 		previewComp = new Composite(hvf, SWT.BORDER);
 		previewComp.setLayout(new FillLayout());
@@ -78,6 +104,7 @@ public class TestPage extends AbstractPage {
 		
 		initMailPreviewUI();
 		updateMailBoxUI();
+		createQuickInbox();
 	}
 	
 	private void initMailPreviewUI() {
@@ -119,18 +146,36 @@ public class TestPage extends AbstractPage {
 		}
 		
 		
-		TreeItem tac = new TreeItem(acntTree, SWT.NULL);
-		tac.setText(userModel.getDisplayName() + " <" + userModel.getUsername() + ">");
+		inboxTree = new TreeItem(acntTree, SWT.NULL);
+		inboxTree.setText(userModel.getDisplayName() + " <" + userModel.getUsername() + ">");
 
-		String []fds = {"Bandeja de entrada", "Mis asignaciones", "Mis atajos"}; 
-		for (int i = 0; i < fds.length; i++) {
-			TreeItem tit = new TreeItem(tac, SWT.NULL);
-			tit.setText(fds[i]);
-		}
-		tac.setExpanded(true);
+//		String []fds = {"Bandeja de entrada", "Mis asignaciones", "Mis atajos"}; 
+//		for (int i = 0; i < fds.length; i++) {
+//			TreeItem tit = new TreeItem(tac, SWT.NULL);
+//			tit.setText(fds[i]);
+//		}
+		inboxTree.setExpanded(true);
 		treeComp.layout();
 	}
 	
+	public void createQuickInbox() {
+		JobUtils.execAsync(inboxController, new AnnotatedCallbackResolver(this, "setupInbox")).getQuick();
+	}
+	
+	public void setupInbox(final Folder<TicketViewModel> folder) {
+		Display.getDefault().asyncExec(new Runnable() {
+
+			@Override
+			public void run() {
+				for (FolderTab<TicketViewModel> tab : folder.getTabs()) {
+					TreeItem tit = new TreeItem(inboxTree, SWT.NULL);
+					tit.setText(tab.getName());
+				}
+			}
+			
+		});
+		
+	}
 	
 	@Override
 	protected void widgetDisposed(DisposeEvent e) {

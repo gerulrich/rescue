@@ -9,7 +9,7 @@ import java.io.OutputStream;
 
 import javax.servlet.http.HttpServletResponse;
 
-import net.cloudengine.service.cti.RecordingService;
+import net.cloudengine.service.RecordingService;
 import net.cloudengine.web.map.MapController;
 
 import org.apache.commons.io.IOUtils;

@@ -11,16 +11,16 @@ import javax.validation.Valid;
 
 import net.cloudengine.forms.auth.LoginForm;
 import net.cloudengine.model.auth.User;
-import net.cloudengine.reports.ReportExecution;
+import net.cloudengine.model.report.Report;
 import net.cloudengine.rest.model.resource.ReportModel;
 import net.cloudengine.rest.model.resource.Response;
 import net.cloudengine.rpc.mappers.DTOMapper;
 import net.cloudengine.rpc.mappers.MappersRegistry;
-import net.cloudengine.service.auth.AuthenticationService;
-import net.cloudengine.service.gcm.GCMMessage;
-import net.cloudengine.service.gcm.GCMService;
-import net.cloudengine.service.gcm.GCMSimpleMessage;
-import net.cloudengine.service.statistics.ReportService;
+import net.cloudengine.service.AuthenticationService;
+import net.cloudengine.service.GCMMessage;
+import net.cloudengine.service.GCMService;
+import net.cloudengine.service.ReportService;
+import net.cloudengine.service.impl.GCMSimpleMessage;
 
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -84,16 +84,16 @@ public class RestController {
 			responseHeaders.set("Content-Type", "text/html");
 			return new ResponseEntity<byte[]>("File not found".getBytes(), responseHeaders, HttpStatus.FORBIDDEN);
 		}
-		ReportExecution reportExecution = reportService.getReportExecution(id);
-		if (reportExecution == null || !user.getUsername().equals(reportExecution.getUsername())) {
+		Report report = reportService.getReport(id);
+		if (report == null || !user.getUsername().equals(report.getOwner())) {
 			HttpHeaders responseHeaders = new HttpHeaders();
 			responseHeaders.set("Content-Type", "text/html");
 			return new ResponseEntity<byte[]>("File not found".getBytes(), responseHeaders, HttpStatus.NOT_FOUND);
 		}
 		HttpHeaders responseHeaders = new HttpHeaders();
-		responseHeaders.add("Content-Disposition", "attachment;filename="+reportExecution.getFileName().replaceAll("zip", "pdf"));
+		responseHeaders.add("Content-Disposition", "attachment;filename="+report.getName());
 		responseHeaders.set("Content-Type", "application/pdf");
-		return new ResponseEntity<byte[]>(reportExecution.getReport(), responseHeaders, HttpStatus.OK);
+		return new ResponseEntity<byte[]>(report.getData(), responseHeaders, HttpStatus.OK);
 	}
 	
 	/**

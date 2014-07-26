@@ -4,7 +4,10 @@ import java.util.UUID;
 
 import net.cloudengine.dao.support.RepositoryLocator;
 import net.cloudengine.model.auth.User;
-import net.cloudengine.service.web.SessionService;
+import net.cloudengine.service.AuthenticationService;
+import net.cloudengine.service.SessionService;
+import net.cloudengine.service.UserService;
+import net.cloudengine.service.impl.AuthenticationServiceImpl;
 import net.cloudengine.utils.TestUtil;
 
 import org.junit.Assert;

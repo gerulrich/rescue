@@ -91,21 +91,21 @@
 		<value>192.168.0.104</value>
 		<clientProperty type="boolean">true</clientProperty>
 	</property>
-	<property id="key">
-		<key>openfire.enabled</key>
-		<value>false</value>
-		<clientProperty type="boolean">true</clientProperty>
-	</property>
-	<property id="key">
-		<key>openfire.domain</key>
-		<value>asterisk.localdomain.net</value>
-		<clientProperty type="boolean">false</clientProperty>
-	</property>
-	<property id="key">
-		<key>openfire.token</key>
-		<value>q0A205xd</value>
-		<clientProperty type="boolean">false</clientProperty>
-	</property>
+<!-- 	<property id="key"> -->
+<!-- 		<key>openfire.enabled</key> -->
+<!-- 		<value>false</value> -->
+<!-- 		<clientProperty type="boolean">true</clientProperty> -->
+<!-- 	</property> -->
+<!-- 	<property id="key"> -->
+<!-- 		<key>openfire.domain</key> -->
+<!-- 		<value>asterisk.localdomain.net</value> -->
+<!-- 		<clientProperty type="boolean">false</clientProperty> -->
+<!-- 	</property> -->
+<!-- 	<property id="key"> -->
+<!-- 		<key>openfire.token</key> -->
+<!-- 		<value>q0A205xd</value> -->
+<!-- 		<clientProperty type="boolean">false</clientProperty> -->
+<!-- 	</property> -->
 	<property id="key">
 		<key>gcm.key</key>
 		<value>replace_gcm_key</value>
@@ -163,7 +163,16 @@
 	<permission id="name">
 		<name>DEBUG</name>
 		<description>Debug</description>
-	</permission>			
+	</permission>
+	<permission id="name">
+		<name>DASHBOARD_MANAG</name>
+		<description>Configurar dashboard</description>
+	</permission>
+	<permission id="name">
+		<name>WORKFLOW_MANAG</name>
+		<description>Gestión de workflow</description>
+	</permission>
+		
 
 	<!-- ============================= -->
 	<!-- roles por defecto             -->
@@ -172,7 +181,41 @@
 		<name>ADMIN</name>
 		<description>Administrador</description>
 		<permissions reference="permission" id="name" value="ADMIN"></permissions>
-		<permissions reference="permission" id="name" value="USER_MANAG"></permissions>		
+		<permissions reference="permission" id="name" value="USER_MANAG"></permissions>
 	</role>
-
+	
+	
+	<workflow id="name" type="json">
+		{
+			"name": "basico",
+			"active": false,
+			"nodes": [
+				{"name": "OPEN","description": "Abierto", "joinNode": false, "_class": "org.simple.workflow.impl.NodeImpl", "endNode": false},
+				{"name": "DISPATCHED","description": "Despachado", "joinNode": false, "_class": "org.simple.workflow.impl.NodeImpl", "endNode": false},
+				{"name": "IN_PROGRESS","description": "En progreso", "joinNode": false, "_class": "org.simple.workflow.impl.NodeImpl", "endNode": false},
+				{"name": "WAIT_CLOSED","description": "Espera de cierre", "joinNode": true, "_class": "org.simple.workflow.impl.NodeImpl", "endNode": false},
+				{"name": "CLOSED","description": "Cerrado", "joinNode": false, "_class": "org.simple.workflow.impl.NodeImpl", "endNode": true}
+			],
+			"transitions": [
+				{"name": "DISPATCH", "description": "Despachar", "from": "OPEN", "to": "DISPATCHED", "forkTo": "IN_PROGRESS", "forkTransition": true, "_class": "org.simple.workflow.impl.TransitionImpl"},
+				{"name": "COMPLETE_TREATMENT", "description": "Finalizar tratamiento", "from": "DISPATCHED", "to": "WAIT_CLOSED", "forkTransition": false, "_class": "org.simple.workflow.impl.TransitionImpl"},
+				{"name": "COMPLETE_TREATMENT", "description": "Finalizar tratamiento", "from": "IN_PROGRESS", "to": "WAIT_CLOSED", "forkTransition": false, "_class": "org.simple.workflow.impl.TransitionImpl"},
+				{"name": "CLOSE", "description": "Cerrar", "from": "WAIT_CLOSED", "to": "CLOSED", "forkTransition": false, "_class": "org.simple.workflow.impl.TransitionImpl"},
+				{"name": "DIRECT_CLOSE", "description": "Cerrar en forma directa", "from": "OPEN", "to": "CLOSED", "forkTransition": false, "_class": "org.simple.workflow.impl.TransitionImpl"}
+			]
+		}
+	</workflow>	
+	<workflow id="name" type="json">
+		{
+			"name": "simple",
+			"active": true,
+			"nodes": [
+				{"name": "OPEN","description": "Abierto", "joinNode": false, "_class": "org.simple.workflow.impl.NodeImpl", "endNode": false},
+				{"name": "CLOSED","description": "Cerrado", "joinNode": false, "_class": "org.simple.workflow.impl.NodeImpl", "endNode": true}
+			],
+			"transitions": [
+				{"name": "CLOSE", "description": "Cerrar", "from": "OPEN", "to": "CLOSED", "forkNode": false, "_class": "org.simple.workflow.impl.TransitionImpl"}
+			]
+		}
+	</workflow>
 </records>

@@ -17,6 +17,9 @@ public class TicketModel implements Serializable {
 	@ReadOnly
 	@Value(value="creationDate", transformer=DateToStringTransformer.class)
 	private String creationDate;
+	@ReadOnly
+	@Value(value="closingDate", transformer=DateToStringTransformer.class)
+	private String closingDate;
 	private WorkBookModel workBook;
 
 	public Long getId() {
@@ -49,6 +52,14 @@ public class TicketModel implements Serializable {
 
 	public void setCreationDate(String creationDate) {
 		this.creationDate = creationDate;
+	}
+	
+	public String getClosingDate() {
+		return closingDate;
+	}
+
+	public void setClosingDate(String closingDate) {
+		this.closingDate = closingDate;
 	}
 
 	public WorkBookModel getWorkBook() {

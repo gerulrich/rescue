@@ -59,7 +59,7 @@
 <!--   		</property> -->
 	</bean>
 	
-	<bean id="freemarkerConfig" class="net.cloudengine.service.web.MyFMConfigurer">
+	<bean id="freemarkerConfig" class="net.cloudengine.service.web.CustomFreeMarkerConfigurer">
     	<property name="templateLoaderPath" value="/WEB-INF/ftl/"/>
     	<property name="defaultEncoding" value="UTF-8"></property>
 	</bean>
@@ -70,7 +70,13 @@
 	</bean>
     
     <!-- Declare the Resolver -->
-    <bean id="localeResolver" class="org.springframework.web.servlet.i18n.SessionLocaleResolver" />
+	<bean id="localeResolver" class="org.springframework.web.servlet.i18n.SessionLocaleResolver">
+		<property name="defaultLocale" value="es" />
+	</bean>
+    
+<!-- 	<bean id="localeChangeInterceptor" class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor"> -->
+<!-- 		<property name="paramName" value="language" /> -->
+<!-- 	</bean>     -->
     
     <bean
         class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerExceptionResolver" p:order="1">
@@ -92,10 +98,7 @@
 	<bean id="serviceExporter" class="net.cloudengine.management.HessianServiceExporterPostProcessor" />
 	
 	<aop:aspectj-autoproxy/>
-	<bean class="net.cloudengine.management.RequestInterceptorAspect" factory-method="aspectOf">
-		<property name="sessionService" ref="sessionServiceImpl"/>
-		<property name="executorService" ref="threadExecutor"/>
-		<property name="dao" ref="reqLogRepository"/>
-	</bean>
+	<bean class="net.cloudengine.management.WebRequestInterceptorAspect" factory-method="aspectOf">
+	</bean>	
 	
 </beans>

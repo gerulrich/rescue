@@ -1,16 +1,12 @@
 package net.cloudengine.model.auth
 
-//import com.google.code.morphia.annotations.Converters;
-//import com.google.code.morphia.annotations.Embedded;
-//import com.google.code.morphia.annotations.Property;
-//import com.google.code.morphia.converters.DateConverter;
+import net.cloudengine.web.crud.support.CrudProperty
 
-//@Embedded
-//@Converters(DateConverter.class)
 class Account {
 
 	Date accountExpirationDate;
 	Date credentialsExpirationDate;
+	@CrudProperty
 	boolean enabled = true;
 	boolean locked = false;
 	String agentNumber;

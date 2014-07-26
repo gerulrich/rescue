@@ -1,13 +1,15 @@
 package net.cloudengine.service.web;
 
 
+import net.cloudengine.service.SessionService;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebArgumentResolver;
 import org.springframework.web.context.request.NativeWebRequest;
 
 /**
- * 
+ * ArgumentResolver para la annotation {@link CurrentUser}
  * @author German Ulrich
  *
  */

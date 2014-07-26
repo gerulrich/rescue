@@ -41,7 +41,7 @@
 							<li><a href="#">Trash</a></li>
 						</ul>
 					</li-->
-					<li><a href="<@spring.url '/j_spring_security_logout' />" class="logout"></a></li>
+					<li><a href="<@spring.url '/account/signout.html' />" class="logout"></a></li>
 				</ul>
 			</div>
 			<!-- FIN DE LA BARRA SUPERIOR -->

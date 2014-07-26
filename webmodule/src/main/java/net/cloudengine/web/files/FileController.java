@@ -11,8 +11,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
-import net.cloudengine.api.BlobStore;
-import net.cloudengine.api.Datastore;
+import net.cloudengine.dao.support.BlobStore;
+import net.cloudengine.dao.support.Repository;
+import net.cloudengine.dao.support.RepositoryLocator;
 import net.cloudengine.model.commons.FileDescriptor;
 import net.cloudengine.web.map.MapController;
 
@@ -26,7 +27,6 @@ import org.bson.types.ObjectId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -42,13 +42,13 @@ public class FileController {
 	private static Logger logger = LoggerFactory.getLogger(MapController.class);
 	
 	private BlobStore blobStore;
-	private Datastore<FileDescriptor, ObjectId> dataStore;
+	private Repository<FileDescriptor, ObjectId> fileRepository;
 	
 	@Autowired
 	public FileController(BlobStore blobStore, 
-			@Qualifier("fileStore") Datastore<FileDescriptor, ObjectId> dataStore) {
+			RepositoryLocator repositoryLocator) {
 		this.blobStore = blobStore;
-		this.dataStore = dataStore;
+		this.fileRepository = repositoryLocator.getRepository(FileDescriptor.class);
 	}
 	
 	/**
@@ -60,7 +60,7 @@ public class FileController {
 	@RequestMapping(value = "download/{id}", method = RequestMethod.GET)
 	public void downloadFile(@PathVariable("id") ObjectId id, HttpServletResponse response) throws Exception {
 		
-		FileDescriptor fileDescriptor = dataStore.get(id);
+		FileDescriptor fileDescriptor = fileRepository.get(id);
 		
 		logger.debug("Petición de archivo : {}", fileDescriptor.getFilename());
 		
@@ -79,7 +79,6 @@ public class FileController {
 			is = new FileInputStream(tempFile);
 			IOUtils.copy(is, response.getOutputStream());
 			return;
-			
 		} catch (IOException e) {
 			// no se pudo obtener el archivo.
 			
@@ -105,12 +104,12 @@ public class FileController {
 	public ModelAndView removeFile(@PathVariable("id") ObjectId id) {
 		ModelAndView mav = new ModelAndView();
 
-		FileDescriptor fileDescriptor = dataStore.get(id);
+		FileDescriptor fileDescriptor = fileRepository.get(id);
 		
 		logger.debug("Eliminar archivo : {}", fileDescriptor.getFilename());
 		
 		blobStore.remove(new ObjectId(fileDescriptor.getFileId()));
-		dataStore.delete(fileDescriptor.getId());
+		fileRepository.delete(fileDescriptor.getId());
 		
 		mav.setViewName("redirect:/file/list");
 		return mav;
@@ -181,6 +180,7 @@ public class FileController {
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
+		
 		return "redirect:/file/upload";
 	}
 	
@@ -194,7 +194,7 @@ public class FileController {
 	@RequestMapping(value = "list/{page}/{size}", method = RequestMethod.GET)
 	public ModelAndView list(@PathVariable("page") int page, @PathVariable("size") int size) {
 		ModelAndView mav = new ModelAndView();
-		mav.addObject("files", dataStore.list(page, size));
+		mav.addObject("files", fileRepository.list(page, size));
 		mav.setViewName("crud/file/list");
 		return mav;
 	}
