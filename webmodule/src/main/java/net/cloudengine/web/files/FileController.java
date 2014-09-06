@@ -6,6 +6,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -174,7 +176,9 @@ public class FileController {
 						}						
 					}
 				} else {
-					blobStore.storeFile(item.getName(), stream, description, type, version);
+					Path path = Paths.get(item.getName());
+					String file = path.getFileName().toString();
+					blobStore.storeFile(file, stream, description, type, version);
 				}
 			}
 		} catch (Exception e) {
