@@ -13,7 +13,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document
 
 @Document(collection="group")
-class Group implements Identifiable<ObjectId>, DistributionGroup {
+class Group implements Identifiable<ObjectId>, DistributionGroup, Serializable {
 	
 	@Id ObjectId id;
 	

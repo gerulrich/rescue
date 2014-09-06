@@ -4,8 +4,10 @@ webmodule/release.properties
 release.properties
 pom.xml.releaseBackup
 webmodule/pom.xml.releaseBackup
+webmodule/.tomcatplugin
 webmodule/src/main/resources/web.properties
 webmodule/target/
+webmodule/work/*
 utilities/target
 utilities/.settings
 target/

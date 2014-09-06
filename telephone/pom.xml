@@ -105,7 +105,7 @@
 		<dependency>
 			<artifactId>javaforce</artifactId>
 			<groupId>javaforce</groupId>
-			<version>0.1</version>
+			<version>0.6.13</version>
 		</dependency>
 
 		<dependency>

@@ -63,8 +63,8 @@
 	
 	<filter-mapping>
 		<filter-name>IgnoreNewRelicTransaction</filter-name>
-		<url-pattern>/static/*</url-pattern>
-		<url-pattern>/account/check*</url-pattern>
+		<url-pattern>/static/</url-pattern>
+		<url-pattern>/account/check</url-pattern>
 	</filter-mapping>	
 
 	<filter-mapping>

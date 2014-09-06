@@ -2,7 +2,7 @@ package net.cloudengine.model.auth
 
 import net.cloudengine.web.crud.support.CrudProperty
 
-class Account {
+class Account implements Serializable {
 
 	Date accountExpirationDate;
 	Date credentialsExpirationDate;
